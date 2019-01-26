@@ -1,0 +1,7 @@
+add_test( RequestTests.MethodTypeCheckCorrectness [==[/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build/bin/request_test]==] [==[--gtest_filter=RequestTests.MethodTypeCheckCorrectness]==] --gtest_also_run_disabled_tests)
+set_tests_properties( RequestTests.MethodTypeCheckCorrectness PROPERTIES WORKING_DIRECTORY [==[/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build]==])
+add_test( RequestTests.HTTPVersionCorrectness [==[/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build/bin/request_test]==] [==[--gtest_filter=RequestTests.HTTPVersionCorrectness]==] --gtest_also_run_disabled_tests)
+set_tests_properties( RequestTests.HTTPVersionCorrectness PROPERTIES WORKING_DIRECTORY [==[/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build]==])
+add_test( RequestTests.InvalidInputTest [==[/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build/bin/request_test]==] [==[--gtest_filter=RequestTests.InvalidInputTest]==] --gtest_also_run_disabled_tests)
+set_tests_properties( RequestTests.InvalidInputTest PROPERTIES WORKING_DIRECTORY [==[/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build]==])
+set( request_test_TESTS RequestTests.MethodTypeCheckCorrectness RequestTests.HTTPVersionCorrectness RequestTests.InvalidInputTest)

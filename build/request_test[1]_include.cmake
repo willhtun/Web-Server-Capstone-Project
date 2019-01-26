@@ -1,0 +1,5 @@
+if(EXISTS "/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build/request_test[1]_tests.cmake")
+  include("/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build/request_test[1]_tests.cmake")
+else()
+  add_test(request_test_NOT_BUILT request_test_NOT_BUILT)
+endif()

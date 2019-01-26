@@ -1,0 +1,58 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/config_parser.h
+iostream
+-
+memory
+-
+string
+-
+vector
+-
+
+../include/server.h
+boost/bind.hpp
+-
+boost/asio.hpp
+-
+cstdlib
+-
+iostream
+-
+session.h
+../include/session.h
+
+../include/session.h
+boost/bind.hpp
+-
+boost/asio.hpp
+-
+cstdlib
+-
+iostream
+-
+string
+-
+
+/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/src/server_main.cc
+cstdlib
+-
+iostream
+-
+string
+-
+boost/bind.hpp
+-
+boost/asio.hpp
+-
+config_parser.h
+/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/src/config_parser.h
+server.h
+/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/src/server.h
+
