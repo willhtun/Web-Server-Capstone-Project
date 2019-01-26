@@ -1,0 +1,26 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    docker pull gcr.io/$PROJECT_ID/hw2_gitrdone:base || exit 0
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-f', 'docker/base.Dockerfile',
+    '-t', 'hw2_gitrdone:base',
+    '-t', 'gcr.io/$PROJECT_ID/hw2_gitrdone:base',
+    '--cache-from', 'gcr.io/$PROJECT_ID/hw2_gitrdone:base',
+    '.'
+  ]
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/hw2_gitrdone:base']
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-f', 'docker/Dockerfile',
+    '-t', 'gcr.io/$PROJECT_ID/hw2_gitrdone:latest',
+    '.'
+  ]
+images: ['gcr.io/$PROJECT_ID/hw2_gitrdone:base', 'gcr.io/$PROJECT_ID/hw2_gitrdone:latest']
