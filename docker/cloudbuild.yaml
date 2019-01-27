@@ -23,13 +23,13 @@ steps:
     '-t', 'gcr.io/$PROJECT_ID/server_gitrdone:latest',
     '.'
   ]
-- name: 'gcr.io/cloud-builders/docker-gcovr'
-  args: {
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
     'build',
     '-f', 'docker/coverage.Dockerfile',
     '-t', 'gcr.io/$PROJECT_ID/server_gitrdone:coverage',
     '.'
-  }
-- name: 'gcr.io/cloud-builders/docker-gcovr'
+  ]
+- name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/$PROJECT_ID/server_gitrdone:coverage']
-images: ['gcr.io/$PROJECT_ID/server_gitrdone:base', 'gcr.io/$PROJECT_ID/server_gitrdone:latest']
+images: ['gcr.io/$PROJECT_ID/server_gitrdone:base', 'gcr.io/$PROJECT_ID/server_gitrdone:latest', 'gcr.io/$PROJECT_ID/server_gitrdone:coverage']
