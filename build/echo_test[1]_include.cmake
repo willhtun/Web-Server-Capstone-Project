@@ -1,5 +1,0 @@
-if(EXISTS "/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build/echo_test[1]_tests.cmake")
-  include("/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build/echo_test[1]_tests.cmake")
-else()
-  add_test(echo_test_NOT_BUILT echo_test_NOT_BUILT)
-endif()

@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/echo_test.dir/tests/echo_test.cc.o  -o bin/echo_test libserver.a libsession.a librequest.a libconfig_parser.a googletest/googlemock/gtest/libgtest_main.a /usr/lib/x86_64-linux-gnu/libboost_system.a googletest/googlemock/gtest/libgtest.a -lpthread 

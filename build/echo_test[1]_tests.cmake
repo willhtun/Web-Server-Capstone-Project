@@ -1,7 +1,0 @@
-add_test( EchoConfigParserTest.ExampleConfig [==[/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build/bin/echo_test]==] [==[--gtest_filter=EchoConfigParserTest.ExampleConfig]==] --gtest_also_run_disabled_tests)
-set_tests_properties( EchoConfigParserTest.ExampleConfig PROPERTIES WORKING_DIRECTORY [==[/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build]==])
-add_test( EchoConfigParserTest.FullConfig [==[/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build/bin/echo_test]==] [==[--gtest_filter=EchoConfigParserTest.FullConfig]==] --gtest_also_run_disabled_tests)
-set_tests_properties( EchoConfigParserTest.FullConfig PROPERTIES WORKING_DIRECTORY [==[/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build]==])
-add_test( EchoConfigParserTest.FullConfig2 [==[/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build/bin/echo_test]==] [==[--gtest_filter=EchoConfigParserTest.FullConfig2]==] --gtest_also_run_disabled_tests)
-set_tests_properties( EchoConfigParserTest.FullConfig2 PROPERTIES WORKING_DIRECTORY [==[/c/Users/Will Htun/Desktop/Classes/CS130/WebServer/build]==])
-set( echo_test_TESTS EchoConfigParserTest.ExampleConfig EchoConfigParserTest.FullConfig EchoConfigParserTest.FullConfig2)
