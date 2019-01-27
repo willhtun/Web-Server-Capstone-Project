@@ -1,5 +1,5 @@
 ### Build/test container ###
-FROM hw2_gitrdone:base as builder
+FROM server_gitrdone:base as builder
 
 COPY . /usr/src/project
 WORKDIR /usr/src/project/build
