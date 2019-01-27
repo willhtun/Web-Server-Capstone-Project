@@ -65,8 +65,8 @@ gtest_discover_tests(request_test /usr/src/projects/git-r-done build/googletest)
 gtest_discover_tests(echo_test /usr/src/projects/git-r-done build/googletest)
 
 # TODO(!): Update with target/test targets
- include(cmake/CodeCoverageReportConfig.cmake)
+ # include(cmake/CodeCoverageReportConfig.cmake)
  #generate_coverage_report(TARGETS example_server example_lib TESTS example_lib_test)
 
-# include(cmake/CodeCoverageReportConfig.cmake)
+ include(cmake/CodeCoverageReportConfig.cmake)
  generate_coverage_report(TARGETS server_main server session request config_parser TESTS request_test echo_test)
