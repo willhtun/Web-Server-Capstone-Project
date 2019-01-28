@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /usr/src/projects/git-r-done/build 
+cd /usr/src/projects/build 
 # Build the web server binary
 echo 'BUILDING'
 make clean
