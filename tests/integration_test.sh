@@ -16,8 +16,9 @@ echo "http {
 }" > /usr/src/projects/git-r-done/tests/integration_test_config
 
 #build the server with the config file
-bin/server_main /usr/src/projects/git-r-done/tests/integration_test_config & 
-
+/usr/src/projects/git-r-done/build/bin/server_main /usr/src/projects/git-r-done/tests/integration_test_config & 
+#PROCESS_ID = $!
+#echo $PROCESS_ID
 #send server a request
 echo "SENDING SERVER REQUEST"
 curl -i http://localhost:8080 > /usr/src/projects/git-r-done/tests/integration_test_response
