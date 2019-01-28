@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 cd /usr/src/projects/git-r-done/build 
 # Build the web server binary
