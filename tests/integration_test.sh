@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /usr/src/projects/build 
+cd /usr/src/project/build 
 # Build the web server binary
 echo 'BUILDING'
 make clean
