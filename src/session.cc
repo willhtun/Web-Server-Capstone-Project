@@ -18,6 +18,7 @@ void session::start()
 
     Replaces those with a singular character.
 */
+/*
 std::string session::process_data()
 {
     std::string new_data;
@@ -41,7 +42,7 @@ std::string session::process_data()
     }
     return new_data;
 }
-
+*/
 // Ex GET request? GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: close\r\n\r\n
 
 void session::handle_read(const boost::system::error_code& error,
