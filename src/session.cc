@@ -59,10 +59,6 @@ void session::handle_read(const boost::system::error_code& error,
       // print original data
       std::cout << "My input: " <<  data_ << std::endl;
       
-      // process data
-      //std::string data = session::process_data();
-      // check for newline
-      
       // send data
       bool COMPLETE_ERROR = true;
       
@@ -96,8 +92,6 @@ void session::handle_read(const boost::system::error_code& error,
           boost::asio::buffer(data_, bytes_transferred),
           boost::bind(&session::handle_write, this,
             boost::asio::placeholders::error));
-
-      
     }
     /*
     else
