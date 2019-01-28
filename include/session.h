@@ -23,7 +23,6 @@ private:
   void handle_read(const boost::system::error_code& error,
       size_t bytes_transferred);
   void handle_write(const boost::system::error_code& error);
-  std::string process_data();
 
   tcp::socket socket_;
   enum { max_length = 1024 };
