@@ -7,14 +7,12 @@
 class ServerTest : public ::testing::Test {
   protected:
     NginxConfigParser parser_;
-	NginxConfig out_config_;
+	  NginxConfig out_config_;
 
-	bool parseString(const std::string config_string) {
-		std::stringstream config_stream(config_string);
-		return parser_.Parse(&config_stream, &out_config_);
-	}	
-
-
+    bool parseString(const std::string config_string) {
+      std::stringstream config_stream(config_string);
+      return parser_.Parse(&config_stream, &out_config_);
+    }	
 };
 
 TEST_F(ServerTest, HandleAcceptTest) {

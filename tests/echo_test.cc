@@ -16,7 +16,6 @@ class EchoConfigParserTest : public ::testing::Test {
 
 // test given example
 TEST_F(EchoConfigParserTest, ExampleConfig) {
-  
   EXPECT_TRUE(parseFile("../tests/example_config"));
   // out_config should have indicated port
   Server_o* server_config = out_config_.GetServerObject();

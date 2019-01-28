@@ -15,12 +15,36 @@ class NginxConfigParserTest : public ::testing::Test {
     bool parseFile(std::string config_file) {
       return parser_.Parse(config_file.c_str(), &out_config_);
     }
+};
 
+class NginxConfigTest : public ::testing::Test {
+  protected:
+      NginxConfig config_;
+      NginxConfigParser parser_;
+
+      bool parseString(std::string config_string) {
+        std::stringstream config_stream(config_string);
+        return parser_.Parse(&config_stream, &config_);
+      }
+
+      bool parseFile(std::string config_file) {
+        return parser_.Parse(config_file.c_str(), &config_);
+      }
+
+      Server_o* getServerObject(std::string config_file) {
+        parser_.Parse(config_file.c_str(), &config_);
+        return config_.GetServerObject();
+      }
+
+      Server_o* getServerObject_fromString(std::string config_string) {
+        parser_.Parse(config_string.c_str(), &config_);
+        return config_.GetServerObject();
+      }
 };
 
 // test given example
 TEST_F(NginxConfigParserTest, ExampleConfig) {
-  EXPECT_TRUE(parseFile("example_config"));
+  EXPECT_TRUE(parseFile("../tests/example_config"));
 }
 
 // test invalid input
@@ -78,11 +102,36 @@ TEST_F(NginxConfigParserTest, ToStringTest) {
 }
 
 // check big example
-TEST_F(NginxConfigParserTest, FullConfig) {
-  EXPECT_TRUE(parseFile("full_config"));
+TEST_F(NginxConfigParserTest, FullConfig1) {
+  EXPECT_TRUE(parseFile("../tests/full_config"));
 }
 
 // check on separate large example for depth of validity
 TEST_F(NginxConfigParserTest, FullConfig2) {
-  EXPECT_TRUE(parseFile("full_config2"));
+  EXPECT_TRUE(parseFile("../tests/full_config2"));
+}
+
+// check object construction
+TEST_F(NginxConfigTest, ObjectConstruction) {
+  NginxConfig config_test;
+  NginxConfigParser configparser_test;
+  
+  EXPECT_TRUE(configparser_test.Parse("../tests/echo_server_config", &config_test));
+  Server_o* server_config = config_test.GetServerObject();
+  EXPECT_EQ(server_config->port, 80);
+}
+
+// check valid port number
+TEST_F(NginxConfigTest, PortTest1) {
+  EXPECT_TRUE(parseFile("../tests/echo_server_config"));
+  Server_o* server_config = config_.GetServerObject();
+  EXPECT_EQ(server_config->port, 80);
+}
+
+TEST_F(NginxConfigTest, PortTest2) {
+  EXPECT_TRUE(parseFile("../tests/prac_request"));
+  Server_o* server_config = config_.GetServerObject();
+  EXPECT_EQ(server_config, nullptr);
+
+  EXPECT_EQ(getServerObject_fromString("http { server { foo abc; } }"), nullptr);
 }

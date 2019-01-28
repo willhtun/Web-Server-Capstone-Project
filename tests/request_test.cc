@@ -45,6 +45,27 @@ TEST_F(RequestTests, HTTPVersionCorrectness)
     EXPECT_EQ(req, nullptr);
 }
 
+TEST_F(RequestTests, HTTPBodyValueParsing)
+{
+    std::string request = "GET / HTTP/1.1\r\n\r\nHost: 35.185.231.37\r\nConnection: keep-alive\r\n\r\n";
+    std::unique_ptr<Request> req = check_request(request);
+    EXPECT_EQ(req->http_version(), "HTTP/1.1");
+}
+
+TEST_F(RequestTests, HTTPBodyValueParsingInvalidBody)
+{
+    std::string request = "GET / HTTP/1.1\r\n\r\nHost 35.185.231.37\r\nConnection keep-alive\r\n\r\n";
+    std::unique_ptr<Request> req = check_request(request);
+    EXPECT_EQ(req->http_version(), "HTTP/1.1");
+}
+
+TEST_F(RequestTests, OnlyOneLF)
+{
+    std::string request = "GET / HTTP/1.1\n";
+    std::unique_ptr<Request> req = check_request(request);
+    EXPECT_EQ(req->http_version(), "HTTP/1.1");
+}
+
 TEST_F(RequestTests, InvalidInputTest)
 {
     // did not specify a method type and incorrect args

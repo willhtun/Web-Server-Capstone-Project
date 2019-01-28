@@ -53,6 +53,9 @@ target_link_libraries(server_main server session request config_parser Boost::sy
 # add_executable(example_lib_test tests/example_lib_test.cc)
 # target_link_libraries(example_lib_test example_lib gtest_main)
 
+add_executable(config_parser_test tests/config_parser_test.cc)
+target_link_libraries(config_parser_test config_parser gtest_main)
+
 add_executable(request_test tests/request_test.cc)
 target_link_libraries(request_test server session request config_parser gtest_main)
 
@@ -67,6 +70,7 @@ target_link_libraries(session_test server session request config_parser gtest_ma
 
 # TODO(!): Update with test binary
 # gtest_discover_tests(example_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+gtest_discover_tests(config_parser_test /usr/src/projects/git-r-done build/googletest)
 gtest_discover_tests(request_test /usr/src/projects/git-r-done build/googletest)
 gtest_discover_tests(echo_test /usr/src/projects/git-r-done build/googletest)
 gtest_discover_tests(server_test /usr/src/projects/git-r-done build/googletest)
@@ -77,4 +81,4 @@ gtest_discover_tests(session_test /usr/src/projects/git-r-done build/googletest)
 #generate_coverage_report(TARGETS example_server example_lib TESTS example_lib_test)
 
 include(cmake/CodeCoverageReportConfig.cmake)
-generate_coverage_report(TARGETS server_main server session request config_parser TESTS request_test echo_test server_test session_test)
+generate_coverage_report(TARGETS server_main server session request config_parser TESTS config_parser_test request_test echo_test server_test session_test)
