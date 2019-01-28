@@ -76,5 +76,5 @@ gtest_discover_tests(session_test /usr/src/projects/git-r-done build/googletest)
 # include(cmake/CodeCoverageReportConfig.cmake)
 #generate_coverage_report(TARGETS example_server example_lib TESTS example_lib_test)
 
-#include(cmake/CodeCoverageReportConfig.cmake)
-#generate_coverage_report(TARGETS server_main server session request config_parser TESTS request_test echo_test server_test session_test)
+include(cmake/CodeCoverageReportConfig.cmake)
+generate_coverage_report(TARGETS server_main server session request config_parser TESTS request_test echo_test server_test session_test)
