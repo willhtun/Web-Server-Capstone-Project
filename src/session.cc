@@ -48,6 +48,12 @@ std::string session::process_data()
 void session::handle_read(const boost::system::error_code& error,
     size_t bytes_transferred)
 {
+    if (error == boost::asio::error::eof)
+    {
+        std::cout << "EOF Received" << std::endl;
+        // TODO: Should we close the socket here?
+        return;
+    }
     if (!error)
     {
       // print original data
@@ -55,6 +61,7 @@ void session::handle_read(const boost::system::error_code& error,
       
       // process data
       //std::string data = session::process_data();
+      // check for newline
       
       // send data
       bool COMPLETE_ERROR = true;
@@ -92,10 +99,12 @@ void session::handle_read(const boost::system::error_code& error,
 
       
     }
+    /*
     else
     {
       delete this;
     }
+    */
 }
 
 void session::handle_write(const boost::system::error_code& error)

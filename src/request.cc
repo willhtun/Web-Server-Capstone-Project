@@ -74,9 +74,6 @@ bool Request::parse_request()
         if (field_index == std::string::npos) 
         {
             std::cout << "Error!: " << field_index <<  std::endl;
-            //std::cout << req_.find("\n") << std::endl;
-            //std::cout << req_.find("\r\n") << std::endl;
-            //std::cout << req_.find("\r\n\r\n") << std::endl;
             return false;
         }
         
@@ -96,15 +93,7 @@ bool Request::parse_request()
         boost::split(req_lines, req_, boost::is_any_of("\n"), boost::token_compress_on);
     }
     
-    
-
-    for (int i = 0; i < req_lines.size(); i++)
-    {
-        std::cout << "line: " << req_lines.at(i) << std::endl;
-    }
-
     // check first line of request
-
     if (!check_first_request_line(req_lines[0]))
     {
         std::cout << req_lines[0] << std::endl;
