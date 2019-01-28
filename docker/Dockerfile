@@ -8,7 +8,6 @@ RUN cmake ..
 RUN make
 RUN ctest --output-on_failure
 
-
 ### Deploy container ###
 FROM ubuntu:latest as deploy
 

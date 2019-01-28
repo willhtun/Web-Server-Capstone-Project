@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /usr/src/projects/git-r-done/build 
+cd ../build 
 # Build the web server binary
 echo 'BUILDING'
 make clean
@@ -13,10 +13,10 @@ echo "http {
     listen 8080;
     server_name 127.0.0.1;
   }
-}" > /usr/src/projects/git-r-done/tests/integration_test_config
+}" > ../tests/integration_test_config
 
 #build the server with the config file
-/usr/src/projects/git-r-done/build/bin/server_main /usr/src/projects/git-r-done/tests/integration_test_config & 
+./bin/server_main ../tests/integration_test_config & 
 #PROCESS_ID = $!
 #echo $PROCESS_ID
 #send server a request
@@ -38,9 +38,9 @@ fi
 
 echo "SHUTTING DOWN"
 # Shutdown the webserver 
-pkill server_main
+pkill ./bin/server_main
 
-rm -f /usr/src/projects/git-r-done/tests/integration_test_response
+rm -f ../tests/integration_test_response
 
 # success (0) or failure (1)
 exit "$EXIT_STATUS"
