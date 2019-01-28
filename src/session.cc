@@ -50,9 +50,10 @@ void session::handle_read(const boost::system::error_code& error,
 {
     if (error == boost::asio::error::eof)
     {
-        std::cout << "EOF Received" << std::endl;
+        // std::cout << "EOF Received" << std::endl;
         // TODO: Should we close the socket here?
-        return;
+        // delete this;
+       return;
     }
     if (!error)
     {
@@ -73,32 +74,42 @@ void session::handle_read(const boost::system::error_code& error,
       }
 
       //Writes back the response code and content type to the client
-      const char* httpresponse;
+      // const char* httpresponse;
+      std::string httpresponse;
       if (!COMPLETE_ERROR)
       {
-          httpresponse = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n"; //The default response if request is complete
+          httpresponse = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " + std::to_string(bytes_transferred) + "\r\n\r\n"; //The default response if request is complete
       }
       else
       {
           httpresponse = "Incomplete request!\r\n\r\n";
       }
       boost::asio::async_write(socket_,
-          boost::asio::buffer(httpresponse, strlen(httpresponse)),
+          boost::asio::buffer(httpresponse.c_str(), strlen(httpresponse.c_str())),
           boost::bind(&session::handle_write, this,
             boost::asio::placeholders::error));
 
       //Writes back the request in the body of the response
+      
       boost::asio::async_write(socket_,
           boost::asio::buffer(data_, bytes_transferred),
           boost::bind(&session::handle_write, this,
             boost::asio::placeholders::error));
+        
+
+/*
+      boost::asio::async_write(socket_,
+          boost::asio::buffer("Hello\r\nHi\r\n\r\n", 13),
+          boost::bind(&session::handle_write, this,
+            boost::asio::placeholders::error));
+            */
     }
-    /*
+    
     else
     {
       delete this;
     }
-    */
+    
 }
 
 void session::handle_write(const boost::system::error_code& error)
