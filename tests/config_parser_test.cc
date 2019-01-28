@@ -42,6 +42,8 @@ class NginxConfigTest : public ::testing::Test {
       }
 };
 
+
+
 // test given example
 TEST_F(NginxConfigParserTest, ExampleConfig) {
   EXPECT_TRUE(parseFile("../tests/example_config"));
@@ -73,6 +75,13 @@ TEST_F(NginxConfigParserTest, StatementSizeTest) {
   EXPECT_EQ(out_config_.statements_.size(), 3) << "Only 3 statements in config";
 }
 
+
+// testing correct behavior when there is no listen token
+TEST_F(NginxConfigParserTest, NoListenTest) {
+  EXPECT_TRUE(parseString("server { test 80; }"));
+}
+
+
 // check correct parsing for nested statement
 TEST_F(NginxConfigParserTest, NestedParseCheck) {
   std::string config_string = 
@@ -101,6 +110,8 @@ TEST_F(NginxConfigParserTest, ToStringTest) {
   EXPECT_EQ(stmt.ToString(0), "location / { proxy_pass http://127.0.0.1:8080 ; };\n");
 }
 
+
+
 // check big example
 TEST_F(NginxConfigParserTest, FullConfig1) {
   EXPECT_TRUE(parseFile("../tests/full_config"));
@@ -111,6 +122,12 @@ TEST_F(NginxConfigParserTest, FullConfig2) {
   EXPECT_TRUE(parseFile("../tests/full_config2"));
 }
 
+
+// check bad example with no port
+TEST_F(NginxConfigParserTest, BadConfig) {
+  EXPECT_FALSE(parseFile("../tests/bad_config"));
+
+}
 // check object construction
 TEST_F(NginxConfigTest, ObjectConstruction) {
   NginxConfig config_test;

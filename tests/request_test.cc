@@ -79,3 +79,10 @@ TEST_F(RequestTests, InvalidInputTest)
     EXPECT_EQ(req, nullptr);
 }
 
+
+TEST_F(RequestTests, MultilineTest)
+{
+    // check for two lines
+     std::unique_ptr<Request> req = check_request("GET / HTTP/1.1\r\n\r\nHost: 35.185.231.37\r\n\r\n");
+}
+
