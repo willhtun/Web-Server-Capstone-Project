@@ -10,7 +10,7 @@ echo "BUILD COMPLETE"
 #config for the server. Outputs config to file
 echo "http {
   server {
-    listen 80;
+    listen 8080;
     server_name 127.0.0.1;
   }
 }" > ./tests/integration_test_config
@@ -21,7 +21,7 @@ echo "http {
 #echo $PROCESS_ID
 #send server a request
 echo "SENDING SERVER REQUEST"
-curl -i http://35.233.235.101 > ./tests/integration_test_response
+curl -i http://localhost:8080 > ./tests/integration_test_response
 #curl -i -s GET / HTTP/1.1> /usr/src/projects/git-r-done/tests/integration_test_response
 echo "CHECKING REQUEST FOR CORRECTNESS"
 #check response of correctness

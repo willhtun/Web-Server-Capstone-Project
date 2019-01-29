@@ -67,6 +67,17 @@ TEST_F(NginxConfigParserTest, InvalidInput) {
 TEST_F(NginxConfigParserTest, CommentTest) {
   EXPECT_TRUE(parseString("user www www; ## Default: nobody"));
   EXPECT_EQ(out_config_.statements_.size(),1) << "Only 1 statement in config";
+  EXPECT_TRUE(parseString("server { listen 123; }\r\n## Useless comment"));
+}
+
+// test quotes
+TEST_F(NginxConfigParserTest, QuoteTest) {
+  EXPECT_TRUE(parseString("server { test \"80\"; }"));
+}
+
+// test unknown tokens
+TEST_F(NginxConfigParserTest, UnknownTokens) {
+  EXPECT_FALSE(parseString("server { test 80; @^#%^&@#*&)%&#(@*!@)_(!)#_$&%& ABC}"));
 }
 
 // statement size checks
@@ -81,6 +92,11 @@ TEST_F(NginxConfigParserTest, NoListenTest) {
   EXPECT_TRUE(parseString("server { test 80; }"));
 }
 
+// testing correct behavior when there is no block name
+TEST_F(NginxConfigParserTest, NoNameTest) {
+  EXPECT_FALSE(parseString("{ test 80; }"));
+  EXPECT_FALSE(parseString("{{ test 80; }}"));
+}
 
 // check correct parsing for nested statement
 TEST_F(NginxConfigParserTest, NestedParseCheck) {
@@ -151,4 +167,11 @@ TEST_F(NginxConfigTest, PortTest2) {
   EXPECT_EQ(server_config, nullptr);
 
   EXPECT_EQ(getServerObject_fromString("http { server { foo abc; } }"), nullptr);
+}
+
+// check no port specified
+TEST_F(NginxConfigTest, PortTest3) {
+  EXPECT_TRUE(parseFile("../tests/no_port_config"));
+  Server_o* server_config = config_.GetServerObject();
+  EXPECT_EQ(server_config, nullptr);
 }

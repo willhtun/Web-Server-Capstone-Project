@@ -38,9 +38,11 @@ Server_o* NginxConfig::GetServerObject() {
         return this->LoadServerObject(temp_str.substr(index, index+i)); // Pass in the server {...} block to extract the parameters
       }
     }
+    /*
     if (statement->ToString(0).substr(0,8) == "server {") {
       return this->LoadServerObject(statement->ToString(0)); // Pass in the server {...} block to extract the parameters
     }
+    */
   }
   return nullptr;
 }
