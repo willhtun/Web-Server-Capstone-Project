@@ -154,6 +154,13 @@ TEST_F(NginxConfigTest, ObjectConstruction) {
   EXPECT_EQ(server_config->port, 80);
 }
 
+// single block server test
+TEST_F(NginxConfigTest, SingleServerBlockTest) {
+  EXPECT_TRUE(parseFile("../tests/single_server_config"));
+  Server_o* server_config = config_.GetServerObject();
+  EXPECT_EQ(server_config->port, 80);
+}
+
 // check valid port number
 TEST_F(NginxConfigTest, PortTest1) {
   EXPECT_TRUE(parseFile("../tests/echo_server_config"));
