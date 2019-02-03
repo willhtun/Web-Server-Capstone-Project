@@ -12,6 +12,7 @@ class SessionTest : public ::testing::Test {
     boost::asio::io_service io_service_;
 };
 
+
 TEST_F(SessionTest, SocketTest) {
     // also tests session's socket function
     io_service_.run();
@@ -53,14 +54,3 @@ TEST_F(SessionTest, HandleWriteTest) {
     sesh.call_handle_write(s,boost::asio::error::eof);
     EXPECT_EQ(1,1);
 }
-
-/*
-    Too complicated
-TEST_F(SessionTest, HandleReadRegularTest) {
-    session s(io_service_);
-    Sesh sesh;
-    s.data_ = 
-    sesh.call_handle_read(s, boost::asio::error::not_found, 100);
-    EXPECT_EQ(1,1);
-}
-*/

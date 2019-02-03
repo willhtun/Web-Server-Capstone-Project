@@ -4,9 +4,13 @@
 #include <istream>
 #include "session.h"
 #include "request.h"
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+
 
 void session::start()
 {
+    BOOST_LOG_TRIVIAL(trace) << "Session has started...";
     socket_.async_read_some(boost::asio::buffer(data_, max_length),
         boost::bind(&session::handle_read, this,
             boost::asio::placeholders::error,
@@ -50,10 +54,12 @@ void session::handle_read(const boost::system::error_code& error,
 {
     if (error == boost::asio::error::eof)
     {
-        // std::cout << "EOF Received" << std::endl;
+
+        std::cout << "EOF Received" << std::endl;
         // TODO: Should we close the socket here?
-        // delete this;
-       return;
+        // TODO; trace or error here?
+        BOOST_LOG_TRIVIAL(trace) << "EOF received...";
+        return;
     }
     if (!error)
     {
@@ -63,6 +69,7 @@ void session::handle_read(const boost::system::error_code& error,
       // send data
       bool COMPLETE_ERROR = true;
       
+      BOOST_LOG_TRIVIAL(trace) << "Sending data to request handler...";
       std::unique_ptr<Request> req = Request::request_handler(data_);
       if (req != nullptr)
       {
@@ -74,7 +81,6 @@ void session::handle_read(const boost::system::error_code& error,
       }
 
       //Writes back the response code and content type to the client
-      // const char* httpresponse;
       std::string httpresponse;
       if (!COMPLETE_ERROR)
       {
@@ -96,18 +102,12 @@ void session::handle_read(const boost::system::error_code& error,
           boost::bind(&session::handle_write, this,
             boost::asio::placeholders::error));
         
-
-/*
-      boost::asio::async_write(socket_,
-          boost::asio::buffer("Hello\r\nHi\r\n\r\n", 13),
-          boost::bind(&session::handle_write, this,
-            boost::asio::placeholders::error));
-            */
     }
     
     else
     {
-      delete this;
+        BOOST_LOG_TRIVIAL(error) << "async_read_some failed...";
+        delete this;
     }
     
 }
@@ -116,10 +116,11 @@ void session::handle_write(const boost::system::error_code& error)
 {
     if (!error)
     {
-      socket_.async_read_some(boost::asio::buffer(data_, max_length),
-          boost::bind(&session::handle_read, this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+        BOOST_LOG_TRIVIAL(trace) << "Writing response...";
+        socket_.async_read_some(boost::asio::buffer(data_, max_length),
+            boost::bind(&session::handle_read, this,
+                boost::asio::placeholders::error,
+                boost::asio::placeholders::bytes_transferred));
     }
     else
     {

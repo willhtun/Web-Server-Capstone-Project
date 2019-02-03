@@ -4,6 +4,9 @@
 #include <memory>
 #include <sstream>
 
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+
 #include "request.h"
 
 Request::Request(std::string req) : req_(req) {}
@@ -62,6 +65,7 @@ bool Request::check_first_request_line(std::string req_line)
 
 bool Request::parse_request()
 {
+    BOOST_LOG_TRIVIAL(trace) << "Parsing input data...";
     // where I will read in data and split
     std::vector<std::string> req_lines;
     bool CRLF_FLAG = true;
@@ -74,6 +78,7 @@ bool Request::parse_request()
         if (field_index == std::string::npos) 
         {
             std::cout << "Error!: " << field_index <<  std::endl;
+            BOOST_LOG_TRIVIAL(error) << "Error finding request field before request body";
             return false;
         }
         
@@ -94,10 +99,12 @@ bool Request::parse_request()
     }
     
     // check first line of request
+    BOOST_LOG_TRIVIAL(trace) << "Checking first request line...";
     if (!check_first_request_line(req_lines[0]))
     {
         std::cout << req_lines[0] << std::endl;
         std::cout << "Error parsing first request line" << std::endl;
+        BOOST_LOG_TRIVIAL(error) << "Error parsing first request line";
         return false;
     }
 
@@ -119,5 +126,6 @@ bool Request::parse_request()
         std::pair<std::string,std::string> header_field(header_key, header_value);
         this->header_fields_.push_back(header_field);
     }
+    BOOST_LOG_TRIVIAL(trace) << "Finished adding heading pairs...";
     return true;
 }
