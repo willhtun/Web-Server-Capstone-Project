@@ -48,22 +48,44 @@ Server_o* NginxConfig::GetServerObject() {
 Server_o* NginxConfig::LoadServerObject(std::string config_string) {
   // Only loads port number for now
   NginxConfigParser parser;
+  Server_o* output = new Server_o;
+
+  // Port
   std::size_t index = config_string.find("listen");
   if (index != std::string::npos) {
-    Server_o* output = new Server_o;
     int ending_pos = 0;
-    while (config_string[index + 6 + ending_pos] != ';')
+    while (config_string[index + 6 + ending_pos] != ';') {
+      if ((index + 6 + ending_pos) >= config_string.length()) // 6 to move to end of listen
+        return nullptr;
       ending_pos++;
+    }
     try {
-      output->port = std::atoi(config_string.substr(index + 7, ending_pos).c_str());
-      return output;
+      output->port = std::atoi(config_string.substr(index + 7, ending_pos).c_str()); // start reading the value 1 space after listen
     }
     catch (std::exception& e) {
       return nullptr;
     }
-    return nullptr;
   }
-  return nullptr;
+
+  // Static files directory
+  index = config_string.find("location");
+  if (index != std::string::npos) {
+    int ending_pos = 0;
+    while (config_string[index + 8 + ending_pos] != ';') {
+      if ((index + 8 + ending_pos) >= config_string.length())
+        return nullptr;
+      ending_pos++;
+    }
+    try {
+      if (index + 8 >= ending_pos) // 8 to move to end of location
+        output->static_directory = config_string.substr(index + 9, ending_pos - 1); // start reading the value 1 space after location
+    }
+    catch (std::exception& e) {
+      return nullptr;
+    }
+  }
+
+  return output;
 }
 
 

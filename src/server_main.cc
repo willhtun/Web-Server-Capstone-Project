@@ -96,11 +96,18 @@ int main(int argc, char* argv[])
       std::cerr << "Bad config\n";
       return 1;
     }
+
     if (server_config->port == 0) { // Exit with error if port is unspecified
       BOOST_LOG_TRIVIAL(fatal) << "No port specified...";
       std::cerr << "No port specified\n";
       return 1;
     } 
+    if (server_config->static_directory == "") { // Do we want to exit or use root folder if location is not specified
+      std::cerr << "No static directory specified\n";
+      return 1;
+    } 
+
+    std::cout << server_config->port << " " << server_config->static_directory << std::endl;
 
     BOOST_LOG_TRIVIAL(info) << "Starting server...";
     server s(io_service, server_config->port);

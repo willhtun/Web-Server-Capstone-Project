@@ -10,6 +10,7 @@ class NginxConfig;
 // A struct containing all the parameters for the server
 struct Server_o {
   int port = 0;
+  std::string static_directory = "";
 };
 
 // The parsed representation of a single config statement.
