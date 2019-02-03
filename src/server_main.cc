@@ -35,20 +35,21 @@ namespace sinks = boost::log::sinks;
 namespace keywords = boost::log::keywords;
 namespace expr = boost::log::expressions;
 
+BOOST_LOG_ATTRIBUTE_KEYWORD(thread_id, "ThreadID", boost::log::attributes::current_thread_id::value_type)
 
 void init()
 {
     logging::add_file_log
     (
-        keywords::file_name = "../logs/server_%Y-%m-%d_%H-%M-%S.%N.log",
-        keywords::rotation_size = 10 * 1024 * 1024,
-        keywords::time_based_rotation = sinks::file::rotation_at_time_point(0, 0, 0),
-        //keywords::format = "%TimeStamp% | %Severity% | %Message%",
+        keywords::file_name = "../logs/server_%Y-%m-%d_%H-%M-%S.%N.log",                // create server log
+        keywords::rotation_size = 10 * 1024 * 1024,                                     // rotate after 10Mb
+        keywords::time_based_rotation = sinks::file::rotation_at_time_point(0, 0, 0),   // new log after midnight
         keywords::format = 
         (
             expr::stream
-              << expr::format_date_time< boost::posix_time::ptime > ("TimeStamp", "%Y-%m-%d %H:%M:%S") << " | "
-              << logging::trivial::severity << " | "
+              << expr::format_date_time< boost::posix_time::ptime > ("TimeStamp", "%Y-%m-%d %H:%M:%S") << "\t| "
+              << thread_id << "\t| "
+              << logging::trivial::severity << "\t| "
               << expr::message
         ),
         keywords::auto_flush = true
@@ -56,6 +57,7 @@ void init()
 
     logging::core::get()->set_filter
     (
+        // will only log items with severity level greater than trace
         logging::trivial::severity >= logging::trivial::trace
     );
 }
@@ -65,7 +67,7 @@ int main(int argc, char* argv[])
   try
   {
     init();
-    logging::add_common_attributes();
+    logging::add_common_attributes(); // add attributes most likely to be used
 
     if (argc != 2)
     {

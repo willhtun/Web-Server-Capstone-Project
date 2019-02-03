@@ -34,7 +34,7 @@ message(STATUS "Boost version: ${Boost_VERSION}")
 
 include_directories(include)
 
-# TODO(!): Update name and srcs
+# Update name and srcs
 # add_library(example_lib src/example_lib.cc)
 
 add_library(request src/request.cc)
@@ -42,14 +42,14 @@ add_library(server src/server.cc)
 add_library(session src/session.cc)
 add_library(config_parser src/config_parser.cc)
 
-# TODO(!): Update executable name, srcs, and deps
+# Update executable name, srcs, and deps
 # add_executable(example_server src/example_server_main.cc)
 # target_link_libraries(example_server example_lib Boost::system)
 
 add_executable(server_main src/server_main.cc)
 target_link_libraries(server_main server session request config_parser Boost::system Boost::log_setup Boost::log)
 
-# TODO(!): Update test executable name, srcs, and deps
+# Update test executable name, srcs, and deps
 # add_executable(example_lib_test tests/example_lib_test.cc)
 # target_link_libraries(example_lib_test example_lib gtest_main)
 
@@ -68,7 +68,7 @@ target_link_libraries(server_test server session request config_parser gtest_mai
 add_executable(session_test tests/session_test.cc)
 target_link_libraries(session_test server session request config_parser gtest_main Boost::system Boost::log_setup Boost::log)
 
-# TODO(!): Update with test binary
+# Update with test binary
 # gtest_discover_tests(example_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 gtest_discover_tests(config_parser_test /usr/src/projects/git-r-done build/googletest)
 gtest_discover_tests(request_test /usr/src/projects/git-r-done build/googletest)
@@ -76,7 +76,7 @@ gtest_discover_tests(echo_test /usr/src/projects/git-r-done build/googletest)
 gtest_discover_tests(server_test /usr/src/projects/git-r-done build/googletest)
 gtest_discover_tests(session_test /usr/src/projects/git-r-done build/googletest)
 
-# TODO(!): Update with target/test targets
+# Update with target/test targets
 # include(cmake/CodeCoverageReportConfig.cmake)
 #generate_coverage_report(TARGETS example_server example_lib TESTS example_lib_test)
 

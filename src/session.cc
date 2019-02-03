@@ -11,6 +11,7 @@
 void session::start()
 {
     BOOST_LOG_TRIVIAL(trace) << "Session has started...";
+    BOOST_LOG_TRIVIAL(info) << "New connection from IP: " << socket_.remote_endpoint().address().to_string();
     socket_.async_read_some(boost::asio::buffer(data_, max_length),
         boost::bind(&session::handle_read, this,
             boost::asio::placeholders::error,
@@ -57,8 +58,8 @@ void session::handle_read(const boost::system::error_code& error,
 
         std::cout << "EOF Received" << std::endl;
         // TODO: Should we close the socket here?
-        // TODO; trace or error here?
         BOOST_LOG_TRIVIAL(trace) << "EOF received...";
+        BOOST_LOG_TRIVIAL(info) << "Dropped connection with IP: " << socket_.remote_endpoint().address().to_string() << "...";
         return;
     }
     if (!error)
@@ -90,15 +91,12 @@ void session::handle_read(const boost::system::error_code& error,
       {
           httpresponse = "Incomplete request!\r\n\r\n";
       }
+
+      // combine response with original request
+      httpresponse = httpresponse + std::string(data_);
+
       boost::asio::async_write(socket_,
           boost::asio::buffer(httpresponse.c_str(), strlen(httpresponse.c_str())),
-          boost::bind(&session::handle_write, this,
-            boost::asio::placeholders::error));
-
-      //Writes back the request in the body of the response
-      
-      boost::asio::async_write(socket_,
-          boost::asio::buffer(data_, bytes_transferred),
           boost::bind(&session::handle_write, this,
             boost::asio::placeholders::error));
         
@@ -116,7 +114,7 @@ void session::handle_write(const boost::system::error_code& error)
 {
     if (!error)
     {
-        BOOST_LOG_TRIVIAL(trace) << "Writing response...";
+        BOOST_LOG_TRIVIAL(info) << "Writing response to IP " << socket_.remote_endpoint().address().to_string() << "...";
         socket_.async_read_some(boost::asio::buffer(data_, max_length),
             boost::bind(&session::handle_read, this,
                 boost::asio::placeholders::error,

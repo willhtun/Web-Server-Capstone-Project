@@ -5,7 +5,7 @@
 void server::start_accept()
 {
     session* new_session = new session(io_service_);
-    BOOST_LOG_TRIVIAL(trace) << "New session started...";
+    BOOST_LOG_TRIVIAL(trace) << "Server accepting connections...";
     acceptor_.async_accept(new_session->socket(),
         boost::bind(&server::handle_accept, this, new_session,
           boost::asio::placeholders::error));
