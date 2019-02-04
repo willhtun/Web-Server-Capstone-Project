@@ -1,5 +1,8 @@
+#pragma once
+
 #include <string>
 #include <vector>
+#include <memory>
 
 typedef std::vector<std::pair<std::string,std::string>> Header_Fields;
 
@@ -11,7 +14,7 @@ public:
 
   // function to handle the creation and parsing
   static std::unique_ptr<Request> request_handler(std::string raw_req);  
-  std::string raw_req();
+  std::string getReqRaw();
 
   // get methods
   std::string method();

@@ -1,7 +1,12 @@
+#pragma once
+
 #include <string>
 #include <vector>
 #include "request.h"
 #include "response.h"
+
+class Request;
+class Response;
 
 class RequestHandler
 {
@@ -27,11 +32,7 @@ public:
     SERVICE_UNAVAILABLE = 503
 };
 
-virtual statuscode HandleRequest(const Request request, Response response);
+virtual statuscode HandleRequest(Request request, Response response) = 0;
 
-private: 
-
-
-
-
+private:
 };

@@ -2,12 +2,12 @@
 #include <vector>
 #include "echo_handler.h"
 
-RequestHandler::statuscode HandleRequest(Request request, Response response)
+RequestHandler::statuscode EchoHandler::HandleRequest(Request request, Response response)
 {
 
     response.SetStatus(Response::OK);
     response.SetHeader("Content-Type","text/plain");
-    response.SetBody(std::string(request.raw_req));
+    response.SetBody(std::string(request.getReqRaw()));
 
     return RequestHandler::OK;
 

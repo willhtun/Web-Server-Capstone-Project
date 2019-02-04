@@ -6,6 +6,7 @@
 #include "request.h"
 #include "response.h"
 #include "echo_handler.h"
+#include "static_handler.h"
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 
@@ -96,13 +97,19 @@ void session::handle_read(const boost::system::error_code& error,
           tester.SetHeader("Content-Type","text/plain");
           tester.SetBody(std::string(data_));
           */
-         EchoHandler tester;
-         Response test_response;
-         tester.HandleRequest(*req,test_response); 
 
-         httpresponse = test_response.Output();
-
-
+         if ((req->uri_path()).substr(1, 6) == "static") {
+            StaticHandler handler;
+            Response response_;
+            handler.HandleRequest(*req, response_); 
+            httpresponse = response_.Output();
+         }
+         else if ((req->uri_path()).substr(1, 4) == "echo") {
+            EchoHandler handler;
+            Response response_;
+            handler.HandleRequest(*req, response_); 
+            httpresponse = response_.Output();
+         }
       }
       else
       {
