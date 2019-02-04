@@ -27,6 +27,7 @@
 #include <boost/log/support/date_time.hpp>
 #include "config_parser.h"
 #include "server.h"
+#include "response.h"
 
 using boost::asio::ip::tcp;
 

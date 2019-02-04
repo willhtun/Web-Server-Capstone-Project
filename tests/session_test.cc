@@ -3,6 +3,7 @@
 #include "gtest/gtest.h"
 #include "gtest/gtest_prod.h"
 #include "session.h"
+#include "response.h"
 
 using boost::asio::ip::tcp;
 

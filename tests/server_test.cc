@@ -3,6 +3,7 @@
 #include "gtest/gtest.h"
 #include "config_parser.h"
 #include "server.h"
+#include "response.h"
 
 class ServerTest : public ::testing::Test {
   protected:
