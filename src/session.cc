@@ -97,18 +97,23 @@ void session::handle_read(const boost::system::error_code& error,
           tester.SetHeader("Content-Type","text/plain");
           tester.SetBody(std::string(data_));
           */
+          BOOST_LOG_TRIVIAL(trace) << "Checking uri path...";
+          if ((req->uri_path()).substr(1, 6) == "static") 
+          {
 
-         if ((req->uri_path()).substr(1, 6) == "static") {
-            StaticHandler handler;
-            Response response_;
-            handler.HandleRequest(*req, response_); 
-            httpresponse = response_.Output();
+              BOOST_LOG_TRIVIAL(trace) << "Static uri path found...";
+              StaticHandler handler;
+              Response response_;
+              handler.HandleRequest(*req, response_); 
+              httpresponse = response_.Output();
          }
-         else if ((req->uri_path()).substr(1, 4) == "echo") {
-            EchoHandler handler;
-            Response response_;
-            handler.HandleRequest(*req, response_); 
-            httpresponse = response_.Output();
+         else if ((req->uri_path()).substr(1, 4) == "echo")
+         {
+              BOOST_LOG_TRIVIAL(trace) << "Echo uri path found...";
+              EchoHandler handler;
+              Response response_;
+              handler.HandleRequest(*req, response_); 
+              httpresponse = response_.Output();
          }
       }
       else
