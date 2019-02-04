@@ -28,6 +28,7 @@
 #include "config_parser.h"
 #include "server.h"
 #include "response.h"
+#include "server_object.h"
 
 using boost::asio::ip::tcp;
 
@@ -106,8 +107,8 @@ int main(int argc, char* argv[])
       std::cerr << "No static directory specified\n";
       return 1;
     } 
-
-    std::cout << server_config->port << " " << server_config->static_directory << std::endl;
+    ServerObject::port = server_config->port;
+    ServerObject::staticfile_dir = server_config->static_directory;
 
     BOOST_LOG_TRIVIAL(info) << "Starting server...";
     server s(io_service, server_config->port);

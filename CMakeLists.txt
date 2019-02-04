@@ -44,13 +44,14 @@ add_library(config_parser src/config_parser.cc)
 add_library(response src/response.cc)
 add_library(echo_handler src/echo_handler.cc)
 add_library(static_handler src/static_handler.cc)
+add_library(server_object src/server_object.cc)
 
 # Update executable name, srcs, and deps
 # add_executable(example_server src/example_server_main.cc)
 # target_link_libraries(example_server example_lib Boost::system)
 
 add_executable(server_main src/server_main.cc)
-target_link_libraries(server_main server session echo_handler static_handler request config_parser response Boost::system Boost::log_setup Boost::log)
+target_link_libraries(server_main server session echo_handler static_handler request config_parser response server_object Boost::system Boost::log_setup Boost::log)
 
 # Update test executable name, srcs, and deps
 # add_executable(example_lib_test tests/example_lib_test.cc)
