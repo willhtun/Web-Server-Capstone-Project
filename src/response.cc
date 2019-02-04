@@ -3,6 +3,9 @@
 
 #include "response.h"
 
+Response::Response() {
+    header_ = "";
+}
 
 void Response::SetStatus(const statuscode status_code)
 {
@@ -11,7 +14,7 @@ void Response::SetStatus(const statuscode status_code)
 void Response::SetHeader(const std::string& header_name, const std::string& header_value)
 {
     const std::string CRLF = "\r\n";
-    header_ = header_name + ": " + header_value + CRLF; 
+    header_ += header_name + ": " + header_value + CRLF; 
     //TODO: Handle multiple sections headers? 
     //This only handles one set of header_name:header_value right now but there may be multiple. 
 }

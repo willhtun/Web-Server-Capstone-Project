@@ -7,6 +7,7 @@
 class Response 
 {
 public: 
+    Response();
     enum statuscode
 {
     OK = 200,

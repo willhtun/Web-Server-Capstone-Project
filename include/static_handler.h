@@ -9,9 +9,8 @@
 class StaticHandler : public RequestHandler
 {
 public: 
-
-virtual RequestHandler::statuscode HandleRequest(Request request, Response response);
-
+    StaticHandler(std::string filedir);
+    virtual RequestHandler::statuscode HandleRequest(Request request, Response& response);
 private:
-
+    std::string filedir_;
 };
