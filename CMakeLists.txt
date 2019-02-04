@@ -42,6 +42,7 @@ add_library(server src/server.cc)
 add_library(session src/session.cc)
 add_library(config_parser src/config_parser.cc)
 add_library(response src/response.cc)
+add_library(echo_handler src/echo_handler.cc)
 
 # Update executable name, srcs, and deps
 # add_executable(example_server src/example_server_main.cc)
@@ -67,7 +68,7 @@ add_executable(server_test tests/server_test.cc)
 target_link_libraries(server_test server session request config_parser response gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(session_test tests/session_test.cc)
-target_link_libraries(session_test server session request config_parser response gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(session_test server session request config_parser response echo_handler gtest_main Boost::system Boost::log_setup Boost::log)
 
 # Update with test binary
 # gtest_discover_tests(example_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)

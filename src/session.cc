@@ -5,6 +5,7 @@
 #include "session.h"
 #include "request.h"
 #include "response.h"
+#include "echo_handler.h"
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 
@@ -83,16 +84,24 @@ void session::handle_read(const boost::system::error_code& error,
 
       //Writes back the response code and content type to the client
       std::string httpresponse;
+      
       if (!COMPLETE_ERROR)
       {
           //httpresponse = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " + std::to_string(bytes_transferred) + "\r\n\r\n"; //The default response if request is complete
           //The default response if request is complete
+          
+          /*
           Response tester;
           tester.SetStatus(Response::OK);
           tester.SetHeader("Content-Type","text/plain");
           tester.SetBody(std::string(data_));
+          */
+         EchoHandler tester;
+         Response test_response;
+         tester.HandleRequest(*req,test_response); 
 
-          httpresponse = tester.Output();
+         httpresponse = test_response.Output();
+
 
       }
       else
