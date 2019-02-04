@@ -4,9 +4,9 @@
 #include <istream>
 #include "session.h"
 #include "request.h"
+#include "reponse.h"
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
-
 
 void session::start()
 {
@@ -85,7 +85,15 @@ void session::handle_read(const boost::system::error_code& error,
       std::string httpresponse;
       if (!COMPLETE_ERROR)
       {
-          httpresponse = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " + std::to_string(bytes_transferred) + "\r\n\r\n"; //The default response if request is complete
+          //httpresponse = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " + std::to_string(bytes_transferred) + "\r\n\r\n"; //The default response if request is complete
+          //The default response if request is complete
+          Response tester;
+          tester.SetStatus(Response::OK);
+          tester.SetHeader("Content-Type","text/plain");
+          tester.SetBody(std::string(data_));
+
+          httpresponse = tester.Output();
+
       }
       else
       {
@@ -93,7 +101,7 @@ void session::handle_read(const boost::system::error_code& error,
       }
 
       // combine response with original request
-      httpresponse = httpresponse + std::string(data_);
+      //httpresponse = httpresponse + std::string(data_);
 
       boost::asio::async_write(socket_,
           boost::asio::buffer(httpresponse.c_str(), strlen(httpresponse.c_str())),

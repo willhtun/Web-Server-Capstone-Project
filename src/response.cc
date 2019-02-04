@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 
-#include "reponse.h"
+#include "response.h"
 
 
 void Response::SetStatus(const statuscode status_code)
@@ -10,11 +10,30 @@ void Response::SetStatus(const statuscode status_code)
 }
 void Response::SetHeader(const std::string& header_name, const std::string& header_value)
 {
-    //TODO: Handle splicing the header onto the message 
+    const std::string CRLF = "\r\n";
+    header_ = header_name + ": " + header_value + CRLF; 
+    //TODO: Handle multiple sections headers? 
+    //This only handles one set of header_name:header_value right now but there may be multiple. 
 }
 void Response::SetBody(const std::string& body_value)
 {
-    body_value_ = body_value
+    body_ = body_value;
 }
 
-//TODO: Convert this response to a string to output message 
+std::string Response::Output()
+{   
+    const std::string CRLF = "\r\n";
+
+    //Build the full response message from pieces
+    std::string status_line = "HTTP/1.1 " + std::to_string(status_code_) + CRLF; 
+    //std::string header = full_header;
+    //std::string message_body = body_value_;
+    
+
+    std::string full_reponse = status_line + header_ + CRLF + body_; 
+    return full_reponse;
+
+};
+
+//testing something in the repo 
+
