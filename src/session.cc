@@ -73,7 +73,8 @@ void session::handle_read(const boost::system::error_code& error,
       }
 
       //Writes back the response code and content type to the client
-      std::string httpresponse;
+      char* httpresponse;
+      Response response_;
       
       if (!COMPLETE_ERROR)
       {
@@ -86,35 +87,28 @@ void session::handle_read(const boost::system::error_code& error,
           tester.SetHeader("Content-Type","text/plain");
           tester.SetBody(std::string(data_));
           */
-          BOOST_LOG_TRIVIAL(trace) << "Checking uri path...";
-          if ((req->uri_path()).substr(1, 6) == "static") 
-          {
-
-              BOOST_LOG_TRIVIAL(trace) << "Static uri path found...";
-              StaticHandler handler;
-              Response response_;
-              handler.HandleRequest(*req, response_); 
-              httpresponse = response_.Output();
+         if ((req->uri_path()).substr(1, 6) == "static") {
+            StaticHandler handler;
+            handler.HandleRequest(*req, response_); 
+            httpresponse = response_.Output();
          }
-         else if ((req->uri_path()).substr(1, 4) == "echo")
-         {
-              BOOST_LOG_TRIVIAL(trace) << "Echo uri path found...";
-              EchoHandler handler;
-              Response response_;
-              handler.HandleRequest(*req, response_); 
-              httpresponse = response_.Output();
+         else if ((req->uri_path()).substr(1, 4) == "echo") {
+            EchoHandler handler;
+            handler.HandleRequest(*req, response_); 
+            httpresponse = response_.Output();
          }
       }
       else
       {
-          httpresponse = "Incomplete request!\r\n\r\n";
+          std::string inc_req = "Incomplete request!\r\n\r\n";
+          //httpresponse = inc_req.c_str();
       }
 
       // combine response with original request
       //httpresponse = httpresponse + std::string(data_);
-
+      
       boost::asio::async_write(socket_,
-          boost::asio::buffer(httpresponse.c_str(), strlen(httpresponse.c_str())),
+          boost::asio::buffer(httpresponse, response_.Size()),
           boost::bind(&session::handle_write, this,
             boost::asio::placeholders::error));
         

@@ -1,5 +1,8 @@
 #include <string>
 #include <vector>
+#include <stdio.h>
+#include <string.h>
+#include <iostream>
 
 #include "response.h"
 
@@ -15,28 +18,37 @@ void Response::SetHeader(const std::string& header_name, const std::string& head
 {
     const std::string CRLF = "\r\n";
     header_ += header_name + ": " + header_value + CRLF; 
-    //TODO: Handle multiple sections headers? 
-    //This only handles one set of header_name:header_value right now but there may be multiple. 
 }
-void Response::SetBody(const std::string& body_value)
+void Response::SetBody(char* body_value, int body_size)
 {
     body_ = body_value;
+    bodysize_ = body_size;
 }
 
-std::string Response::Output()
+char* Response::Output()
 {   
     const std::string CRLF = "\r\n";
 
     //Build the full response message from pieces
     std::string status_line = "HTTP/1.1 " + std::to_string(status_code_) + CRLF; 
-    //std::string header = full_header;
-    //std::string message_body = body_value_;
     
+    char* full_response = new char [status_line.length() + header_.length() + bodysize_ + CRLF.length()];
+    statuslinesize_ = status_line.length();
+    headersize_ = header_.length() + CRLF.length(); // needed for output
 
-    std::string full_reponse = status_line + header_ + CRLF + body_; 
-    return full_reponse;
+    //strcpy(full_response, status_line.c_str());
+    //strcat(full_response, header_.c_str());
+    //strcat(full_response, CRLF.c_str());
+    strcpy(full_response, body_);
+
+    std::cout << "HERE IS OUTPUT=========================" << std::endl;
+    for (int i = 0; i < bodysize_; i++) {
+        std::cout << body_[i]; //fullresponse[i]
+    }
+    return full_response;
 
 };
 
-//testing something in the repo 
-
+int Response::Size() {
+    return  bodysize_ + headersize_ + statuslinesize_;
+}

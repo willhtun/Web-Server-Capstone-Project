@@ -33,14 +33,18 @@ public:
 
     void SetHeader(const std::string& header_name, const std::string& header_value);
 
-    void SetBody(const std::string& body_value);
+    void SetBody(char* body_value, int body_size);
 
-    std::string Output();
-private:
+    char* Output();
+    int Size();
+//private:
 
     statuscode status_code_;
     std::string header_;
-    std::string body_;
+    char* body_;
+    int statuslinesize_;
+    int headersize_;
+    int bodysize_;
 
 
 };
