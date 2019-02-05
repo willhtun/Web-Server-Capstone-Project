@@ -21,7 +21,7 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     response.SetHeader("Content-Length", std::to_string(filecontent.length()));
     response.SetBody(filecontent);
     BOOST_LOG_TRIVIAL(trace) << "Response built...";
-
+    
     return RequestHandler::OK;
 
 };

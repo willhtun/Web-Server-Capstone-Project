@@ -87,6 +87,8 @@ int main(int argc, char* argv[])
       return 1;
     }
 
+    BOOST_LOG_TRIVIAL(info) << "Config parsing success...";
+
     boost::asio::io_service io_service;
     using namespace std; // For atoi.
 
@@ -110,7 +112,7 @@ int main(int argc, char* argv[])
     ServerObject::port = server_config->port;
     ServerObject::staticfile_dir = server_config->static_directory;
 
-    BOOST_LOG_TRIVIAL(info) << "Starting server...";
+    BOOST_LOG_TRIVIAL(info) << "Starting server on port " << server_config->port << "...";
     server s(io_service, server_config->port);
     io_service.run();
   }

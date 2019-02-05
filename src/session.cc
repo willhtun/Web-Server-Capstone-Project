@@ -77,9 +77,10 @@ void session::handle_read(const boost::system::error_code& error,
       if (req != nullptr)
       {
           // view data members
-          std::cout << req->method() << std::endl;
-          std::cout << req->uri_path() << std::endl;
-          std::cout << req->http_version() << std::endl;
+          BOOST_LOG_TRIVIAL(trace) << "Info about request: "
+                                   << "Method: " << req->method()
+                                   << " URI Path: " << req->uri_path()
+                                   << " HTTP Version: " << req->http_version();
           COMPLETE_ERROR = false;
       }
 
