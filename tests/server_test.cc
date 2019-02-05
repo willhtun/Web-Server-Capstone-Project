@@ -55,3 +55,33 @@ TEST_F(ServerTest, ToStringTest) {
   stmt.tokens_.push_back("}");
   EXPECT_EQ(stmt.ToString(0), "location / { proxy_pass http://127.0.0.1:8080 ; };\n");
 }
+
+// Test start accept
+TEST_F(ServerTest, TestStartAccept) {
+  boost::asio::io_service io_service_;
+  server* serv = new server(io_service_, 8080);
+  Serv serv_friend;
+  serv_friend.call_start_accept(serv);
+  EXPECT_EQ(1,1);
+}
+
+// Test handle accept
+TEST_F(ServerTest, TestHandleAccept) {
+  boost::asio::io_service io_service_;
+  server* serv = new server(io_service_, 8080);
+  session* s = new session(io_service_);
+  Serv serv_friend;
+  boost::system::error_code ec;
+  serv_friend.call_handle_accept(serv, s, ec);
+  EXPECT_EQ(1,1);
+}
+
+// Test handle accept w/error
+TEST_F(ServerTest, TestHandleBadAccept) {
+  boost::asio::io_service io_service_;
+  server* serv = new server(io_service_, 8080);
+  session* s = new session(io_service_);
+  Serv serv_friend;
+  serv_friend.call_handle_accept(serv, s, boost::asio::error::eof);
+  EXPECT_EQ(1,1);
+}

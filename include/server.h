@@ -17,6 +17,8 @@ public:
     start_accept();
   }
 
+  friend class Serv;
+
 private:
   void start_accept();
   void handle_accept(session* new_session,
@@ -24,4 +26,15 @@ private:
   
   boost::asio::io_service& io_service_;
   tcp::acceptor acceptor_;
+};
+
+
+class Serv {
+  public:
+    void call_start_accept(server* serv) {
+      serv->start_accept();
+    }
+    void call_handle_accept(server* serv, session* new_session, const boost::system::error_code& error) {
+      serv->handle_accept(new_session, error);
+    }
 };
