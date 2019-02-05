@@ -66,19 +66,19 @@ target_link_libraries(request_test server session request config_parser response
 add_executable(echo_test tests/echo_test.cc)
 target_link_libraries(echo_test server session request config_parser gtest_main Boost::system Boost::log_setup Boost::log)
 
-#add_executable(server_test tests/server_test.cc)
-#target_link_libraries(server_test server session request config_parser response server_object echo_handler static_handler gtest_main Boost::system Boost::log_setup Boost::log)
+add_executable(server_test tests/server_test.cc)
+target_link_libraries(server_test server session request config_parser response echo_handler static_handler server_object gtest_main Boost::system Boost::log_setup Boost::log)
 
-#add_executable(session_test tests/session_test.cc)
-#target_link_libraries(session_test server session request config_parser response server_object echo_handler static_handler gtest_main Boost::system Boost::log_setup Boost::log)
+add_executable(session_test tests/session_test.cc)
+target_link_libraries(session_test server session request config_parser response echo_handler static_handler server_object gtest_main Boost::system Boost::log_setup Boost::log)
 
 # Update with test binary
 # gtest_discover_tests(example_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 gtest_discover_tests(config_parser_test /usr/src/projects/git-r-done build/googletest)
 gtest_discover_tests(request_test /usr/src/projects/git-r-done build/googletest)
 gtest_discover_tests(echo_test /usr/src/projects/git-r-done build/googletest)
-#gtest_discover_tests(server_test /usr/src/projects/git-r-done build/googletest)
-#gtest_discover_tests(session_test /usr/src/projects/git-r-done build/googletest)
+gtest_discover_tests(server_test /usr/src/projects/git-r-done build/googletest)
+gtest_discover_tests(session_test /usr/src/projects/git-r-done build/googletest)
 
 # Update with target/test targets
 # include(cmake/CodeCoverageReportConfig.cmake)
