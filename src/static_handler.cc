@@ -13,15 +13,20 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     std::string filename = (request.uri_path()).substr(8, request.uri_path().length());
 
     std::ifstream ifs(".." + ServerObject::staticfile_dir + "/" + filename);
-    std::string filecontent( (std::istreambuf_iterator<char>(ifs) ),
-                            (std::istreambuf_iterator<char>()    ) );
+    try {
+        std::string filecontent( (std::istreambuf_iterator<char>(ifs) ),
+                            (std::istreambuf_iterator<char>()    ) );    
 
-    response.SetStatus(Response::OK);
-    response.SetHeader("Content-Type","text/html");
-    response.SetHeader("Content-Length", std::to_string(filecontent.length()));
-    response.SetBody(filecontent);
-    BOOST_LOG_TRIVIAL(trace) << "Response built...";
+        response.SetStatus(Response::OK);
+        response.SetHeader("Content-Type","text/html");
+        response.SetHeader("Content-Length", std::to_string(filecontent.length()));
+        response.SetBody(filecontent);
+        BOOST_LOG_TRIVIAL(trace) << "Response built...";
+    
+    } catch (std::exception& e) {
+        BOOST_LOG_TRIVIAL(fatal) << "Exception: " << e.what();
+        return RequestHandler::NOT_FOUND;
+    }
     
     return RequestHandler::OK;
-
 };
