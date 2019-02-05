@@ -9,11 +9,21 @@
 #include "static_handler.h"
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/system/system_error.hpp>
 
 void session::start()
 {
     BOOST_LOG_TRIVIAL(trace) << "Session has started...";
-    BOOST_LOG_TRIVIAL(info) << "New connection from IP: " << socket_.remote_endpoint().address().to_string();
+
+    // try-catch to help pass basic session->start() case
+    try
+    {
+        BOOST_LOG_TRIVIAL(info) << "New connection from IP: " << socket_.remote_endpoint().address().to_string();
+    }
+    catch(boost::system::system_error const& e) {
+        std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n";
+    }
+
     socket_.async_read_some(boost::asio::buffer(data_, max_length),
         boost::bind(&session::handle_read, this,
             boost::asio::placeholders::error,
@@ -58,10 +68,17 @@ void session::handle_read(const boost::system::error_code& error,
     if (error == boost::asio::error::eof)
     {
 
-        std::cout << "EOF Received" << std::endl;
-        // TODO: Should we close the socket here?
         BOOST_LOG_TRIVIAL(trace) << "EOF received...";
-        BOOST_LOG_TRIVIAL(info) << "Dropped connection with IP: " << socket_.remote_endpoint().address().to_string() << "...";
+        // try-catch for passing test case
+        try
+        {
+            BOOST_LOG_TRIVIAL(info) << "Dropped connection from IP: " << socket_.remote_endpoint().address().to_string() << "...";
+        }
+        catch(boost::system::system_error const& e)
+        {
+            std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n";
+        }
+        
         return;
     }
     if (!error)

@@ -1,7 +1,10 @@
 #include <boost/asio.hpp>
 #include <memory>
 #include "gtest/gtest.h"
+#include "echo_handler.h"
+#include "static_handler.h"
 #include "config_parser.h"
+#include "server_object.h"
 #include "server.h"
 #include "response.h"
 
