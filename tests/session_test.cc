@@ -82,6 +82,12 @@ TEST_F(SessionTest, HandleReadDataStaticPASSTest) {
     EXPECT_EQ(1,1);
 }
 
+TEST_F(SessionTest, HandleWriteNonErrorTest) {
+    session* s = new session(io_service_);
+    Sesh sesh;
+    boost::system::error_code ec;
+    sesh.call_handle_write(s, ec);
+}
 
 TEST_F(SessionTest, HandleWriteTest) {
     session* s = new session(io_service_);

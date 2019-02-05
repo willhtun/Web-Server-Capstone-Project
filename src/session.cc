@@ -132,7 +132,13 @@ void session::handle_write(const boost::system::error_code& error)
 {
     if (!error)
     {
-        BOOST_LOG_TRIVIAL(info) << "Writing response to IP " << socket_.remote_endpoint().address().to_string() << "...";
+        try
+        {
+            BOOST_LOG_TRIVIAL(info) << "Writing response to IP: " << socket_.remote_endpoint().address().to_string() << "...";
+        }
+        catch(boost::system::system_error const& e) {
+            std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n";
+        }
         socket_.async_read_some(boost::asio::buffer(data_, max_length),
             boost::bind(&session::handle_read, this,
                 boost::asio::placeholders::error,
