@@ -30,36 +30,6 @@ void session::start()
             boost::asio::placeholders::bytes_transferred));
 }
 
-/*
-    Handles weird error of CR and NL being interpreted as two characters.
-
-    Replaces those with a singular character.
-*/
-/*
-std::string session::process_data()
-{
-    std::string new_data;
-    for (size_t i = 0; i < strlen(data_); i++)
-    {
-        if (i != (strlen(data_)-1)) {
-            if (data_[i] == '\\' && data_[i+1] == 'r')
-            {
-                i++;
-                new_data += '\r';
-            }  
-            else if (data_[i] == '\\' && data_[i+1] == 'n')
-            {
-                i++;
-                new_data += '\n';
-            }
-            else{
-                new_data += data_[i];
-            }
-        }
-    }
-    return new_data;
-}
-*/
 // Ex GET request? GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: close\r\n\r\n
 
 void session::handle_read(const boost::system::error_code& error,
@@ -94,10 +64,11 @@ void session::handle_read(const boost::system::error_code& error,
       if (req != nullptr)
       {
           // view data members
-          BOOST_LOG_TRIVIAL(trace) << "Info about request: "
+          BOOST_LOG_TRIVIAL(trace) << "Info about request{ "
                                    << "Method: " << req->method()
-                                   << " URI Path: " << req->uri_path()
-                                   << " HTTP Version: " << req->http_version();
+                                   << ", URI Path: " << req->uri_path()
+                                   << ", HTTP Version: " << req->http_version()
+                                   << "}";
           COMPLETE_ERROR = false;
       }
 

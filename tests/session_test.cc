@@ -45,9 +45,43 @@ TEST_F(SessionTest, HandleReadRegularTest) {
     session* s = new session(io_service_);
     Sesh sesh;
     boost::system::error_code ec;
-    sesh.call_handle_read(s,ec,100);
+    sesh.call_handle_read(s, ec, 100);
     EXPECT_EQ(1,1);
 }
+
+
+TEST_F(SessionTest, HandleReadDatTest) {
+    session* s = new session(io_service_);
+    Sesh sesh;
+    boost::system::error_code ec;
+    sesh.assign_data_and_call_read(s, ec, 100, "GET / HTTP/1.1\r\n\r\n");
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(SessionTest, HandleReadDataEchoTest) {
+    session* s = new session(io_service_);
+    Sesh sesh;
+    boost::system::error_code ec;
+    sesh.assign_data_and_call_read(s, ec, 100, "GET /echo HTTP/1.1\r\n\r\n");
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(SessionTest, HandleReadDataStaticFAILTest) {
+    session* s = new session(io_service_);
+    Sesh sesh;
+    boost::system::error_code ec;
+    sesh.assign_data_and_call_read(s, ec, 100, "GET /static/ HTTP/1.1\r\n\r\n");
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(SessionTest, HandleReadDataStaticPASSTest) {
+    session* s = new session(io_service_);
+    Sesh sesh;
+    boost::system::error_code ec;
+    sesh.assign_data_and_call_read(s, ec, 100, "GET /static/file HTTP/1.1\r\n\r\n");
+    EXPECT_EQ(1,1);
+}
+
 
 TEST_F(SessionTest, HandleWriteTest) {
     session* s = new session(io_service_);
