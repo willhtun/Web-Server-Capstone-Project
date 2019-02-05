@@ -67,10 +67,10 @@ add_executable(echo_test tests/echo_test.cc)
 target_link_libraries(echo_test server session request config_parser gtest_main Boost::system Boost::log_setup Boost::log)
 
 #add_executable(server_test tests/server_test.cc)
-#target_link_libraries(server_test server session request config_parser response gtest_main Boost::system Boost::log_setup Boost::log)
+#target_link_libraries(server_test server session request config_parser response server_object echo_handler static_handler gtest_main Boost::system Boost::log_setup Boost::log)
 
 #add_executable(session_test tests/session_test.cc)
-#target_link_libraries(session_test server session request config_parser response echo_handler static_handler gtest_main Boost::system Boost::log_setup Boost::log)
+#target_link_libraries(session_test server session request config_parser response server_object echo_handler static_handler gtest_main Boost::system Boost::log_setup Boost::log)
 
 # Update with test binary
 # gtest_discover_tests(example_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)

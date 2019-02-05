@@ -180,5 +180,5 @@ TEST_F(NginxConfigTest, PortTest2) {
 TEST_F(NginxConfigTest, PortTest3) {
   EXPECT_TRUE(parseFile("../tests/no_port_config"));
   Server_o* server_config = config_.GetServerObject();
-  EXPECT_EQ(server_config, nullptr);
+  EXPECT_EQ(server_config->port, 0);
 }
