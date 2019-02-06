@@ -32,7 +32,42 @@ class StaticHandlerTest : public ::testing::Test {
 };
 
 
-TEST_F(StaticHandlerTest, RegularStaticCall) {
-    read_request_file("../tests/static_handler_tests/photo_request");
+TEST_F(StaticHandlerTest, JpgRequest) {
+    read_request_file("../tests/static_handler_tests/jpg_request");
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, JpegRequest) {
+    read_request_file("../tests/static_handler_tests/jpeg_request");
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, PngRequest) {
+    read_request_file("../tests/static_handler_tests/png_request");
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, PdfRequest) {
+    read_request_file("../tests/static_handler_tests/pdf_request");
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, TiffRequest) {
+    read_request_file("../tests/static_handler_tests/tiff_request");
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, DocRequest) {
+    read_request_file("../tests/static_handler_tests/doc_request");
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, TxtRequest) {
+    read_request_file("../tests/static_handler_tests/txt_request");
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, CsvRequest) {
+    read_request_file("../tests/static_handler_tests/csv_request");
     EXPECT_EQ(1,1);
 }
