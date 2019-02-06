@@ -22,7 +22,7 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
 
     //read in file
     std::string image;
-    std::ifstream ifs("usr/src/project" + ServerObject::staticfile_dir + "/" + filename, std::ios::in | std::ios::binary);
+    std::ifstream ifs("usr/source/projects" + ServerObject::staticfile_dir + "/" + filename, std::ios::in | std::ios::binary);
    
    //if fail, give 404 error
    if (!ifs.is_open())
@@ -30,7 +30,7 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     response.SetStatus(Response::NOT_FOUND);
     response.SetHeader("Content-Type", "text/plain");
     response.SetHeader("Content-Length", std::to_string(19));
-    response.SetBody("404: File not found on path: usr/src/project" + ServerObject::staticfile_dir + "/" + filename);
+    response.SetBody("404: File not found");
     return RequestHandler::NOT_FOUND;
   }
     char buf[512];
