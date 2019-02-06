@@ -36,7 +36,7 @@ public:
     void SetBody(std::string body_value);
 
     std::string Output();
-//private:
+private:
 
     statuscode status_code_;
     std::string header_;

@@ -37,8 +37,9 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     std::ifstream ifs(".." + ServerObject::staticfile_dir + "/" + filename, std::ios::in | std::ios::binary);
    
     char buf[512];
-    while (ifs.read(buf, sizeof(buf)).gcount() > 0)
+    while (ifs.read(buf, sizeof(buf)).gcount() > 0) {
         image.append(buf, ifs.gcount());
+    }
         
 
 

@@ -101,7 +101,7 @@ void session::handle_read(const boost::system::error_code& error,
       else
       {
           std::string inc_req = "Incomplete request!\r\n\r\n";
-          //httpresponse = inc_req.c_str();
+          httpresponse = inc_req.c_str();
       }
 
       // combine response with original request
