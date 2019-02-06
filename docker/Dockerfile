@@ -25,3 +25,6 @@ FROM ubuntu:latest as deploy
 # TODO(!): Update with real server args
  COPY --from=builder /usr/src/project/tests/echo_server_config .
  CMD ["./echo_server_config"]
+
+ # Copy static files directory
+ COPY --from=builder /usr/src/project/static_files ./usr/src/project/
