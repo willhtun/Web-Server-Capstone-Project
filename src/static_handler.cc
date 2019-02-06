@@ -20,19 +20,6 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     if (dot_index != std::string::npos)
         fileextension = filename.substr(dot_index + 1, filename.length() - dot_index - 1);
 
-    // PNG testing
-    /*
-    std::ifstream ifs(".." + ServerObject::staticfile_dir + "/" + filename, std::ios::in | std::ios::binary | std::ios::ate);
-    ifs.seekg(0, std::ios::end);
-    int size = ifs.tellg() - 8;
-    char* image = new char [size];
-
-    ifs.seekg(0, std::ios::beg);
-    ifs.seekg(8);
-    ifs.read(image, size);
-    ifs.close();
-    */
-
     std::string image;
     std::ifstream ifs(".." + ServerObject::staticfile_dir + "/" + filename, std::ios::in | std::ios::binary);
    
@@ -40,34 +27,8 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     while (ifs.read(buf, sizeof(buf)).gcount() > 0) {
         image.append(buf, ifs.gcount());
     }
-        
-
-
-/* NORMAL (working for html and jpeg) 
-    std::ifstream ifs(".." + ServerObject::staticfile_dir + "/" + filename, std::ios::in | std::ios::binary);
-    int size = ifs.tellg();
-    char* image = new char [size];
-    ifs.seekg(0, std::ios::beg);
-    ifs.read(image, size);
-    */
-
-/*
-    char nextChar = ifs.get();
-    bool first = true;
-    while (ifs.good()) {
-        if (first) {
-            strncpy(image, &nextChar, 1);
-            first = false;
-        }
-        else
-            strncat(image, &nextChar, 1);
-        nextChar = ifs.get();
-    } 
-*/
 
     ifs.close();
-
-    
 
     response.SetStatus(Response::OK);
 
@@ -89,7 +50,6 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
         contenttype = "text/plain";
     
     response.SetHeader("Content-Type", contenttype);
-    //response.SetHeader("Content-Transfer-Encoding", "binary");
     response.SetHeader("Content-Length", std::to_string(image.length()));
     response.SetBody(image);
     
