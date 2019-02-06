@@ -30,7 +30,7 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     response.SetStatus(Response::NOT_FOUND);
     response.SetHeader("Content-Type", "text/plain");
     response.SetHeader("Content-Length", std::to_string(19));
-    response.SetBody("404: File not found");
+    response.SetBody("404: File not found on path: usr/src/project" + ServerObject::staticfile_dir + "/" + filename);
     return RequestHandler::NOT_FOUND;
   }
     char buf[512];
