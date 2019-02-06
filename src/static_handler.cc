@@ -22,7 +22,7 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
 
     //read in file
     std::string image;
-    std::ifstream ifs("usr/source/projects" + ServerObject::staticfile_dir + "/" + filename, std::ios::in | std::ios::binary);
+    std::ifstream ifs("usr/src/projects" + ServerObject::staticfile_dir + "/" + filename, std::ios::in | std::ios::binary);
    
    //if fail, give 404 error
    if (!ifs.is_open())
