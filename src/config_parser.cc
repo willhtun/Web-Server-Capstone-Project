@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 
+#include "server_object.h"
 #include "config_parser.h"
 
 std::string NginxConfig::ToString(int depth) {
@@ -26,26 +27,34 @@ std::string NginxConfig::ToString(int depth) {
 }
 
 // test review
-Server_o* NginxConfig::GetServerObject() {
+void NginxConfig::GetServerObject() {
   for (const auto& statement : statements_) {
     if (statement->ToString(0).substr(0,6) == "http {") {
       std::size_t index = statement->ToString(0).find("server {");
       if (index != std::string::npos) {
         int i = 0;
         std::string temp_str = statement->ToString(0);
-        while (temp_str[index + i] != '}')
+        int opened_brackets = 1;
+        int count = 0;
+        while (count < temp_str.length()) {
+          if (temp_str[index + i] == '}' && opened_brackets == 1) {
+            i++;
+            break;
+          }
+          if (temp_str[index + i] == '{')
+            opened_brackets++;
+          if (temp_str[index + i] == '}')
+            opened_brackets--;
           i++;
-        return this->LoadServerObject(temp_str.substr(index, index+i)); // Pass in the server {...} block to extract the parameters
+          count++;
+        }
+        this->LoadServerObject(temp_str.substr(index, index+i)); // Pass in the server {...} block to extract the parameters
       }
     }
-    if (statement->ToString(0).substr(0,8) == "server {") {
-      return this->LoadServerObject(statement->ToString(0)); // Pass in the server {...} block to extract the parameters
-    }
   }
-  return nullptr;
 }
 
-Server_o* NginxConfig::LoadServerObject(std::string config_string) {
+void NginxConfig::LoadServerObject(std::string config_string) {
   // Only loads port number for now
   NginxConfigParser parser;
   Server_o* output = new Server_o;
@@ -56,36 +65,64 @@ Server_o* NginxConfig::LoadServerObject(std::string config_string) {
     int ending_pos = 0;
     while (config_string[index + 6 + ending_pos] != ';') {
       if ((index + 6 + ending_pos) >= config_string.length()) // 6 to move to end of listen
-        return nullptr;
+        return;
       ending_pos++;
     }
     try {
-      output->port = std::atoi(config_string.substr(index + 7, ending_pos).c_str()); // start reading the value 1 space after listen
+      ServerObject::port = std::atoi(config_string.substr(index + 7, ending_pos).c_str()); // start reading the value 1 space after listen
     }
     catch (std::exception& e) {
-      return nullptr;
+      return;
     }
   }
 
   // Static files directory
-  index = config_string.find("location");
-  if (index != std::string::npos) {
-    int ending_pos = 0;
-    while (config_string[index + 8 + ending_pos] != ';') {
-      if ((index + 8 + ending_pos) >= config_string.length())
-        return nullptr;
-      ending_pos++;
+  for (int i = 0; i < 10; i++) { 
+    int dir_index = config_string.find("directory {");
+    if (dir_index == std::string::npos) {
+      break;
     }
-    try {
-      if (index + 8 >= ending_pos) // 8 to move to end of location
-        output->static_directory = config_string.substr(index + 9, ending_pos - 1); // start reading the value 1 space after location
-    }
-    catch (std::exception& e) {
-      return nullptr;
-    }
-  }
+    int dir_length = dir_index;
+    while (config_string[dir_length] != '}')
+      dir_length++;
+    std::string dir_block = config_string.substr(dir_index, dir_length);
 
-  return output;
+    index = dir_block.find("location");
+    if (index != std::string::npos) {
+      int ending_pos = 0;
+      while (dir_block[index + 8 + ending_pos] != ';') {
+        if ((index + 8 + ending_pos) >= dir_block.length())
+          return;
+        ending_pos++;
+      }
+      try {
+        if (index + 8 >= ending_pos) // 8 to move to end of location
+          ServerObject::staticfile_dir.push_back(dir_block.substr(index + 9, ending_pos - 1)); // start reading the value 1 space after location
+      }
+      catch (std::exception& e) {
+        return;
+      }
+    }
+
+    index = dir_block.find("url");
+    if (index != std::string::npos) {
+      int ending_pos = 0;
+      while (dir_block[index + 3 + ending_pos] != ';') {
+        if ((index + 3 + ending_pos) >= dir_block.length())
+          return;
+        ending_pos++;
+      }
+      try {
+        if (index + 3 >= ending_pos) // 8 to move to end of location
+          ServerObject::staticfile_url.push_back(dir_block.substr(index + 4, ending_pos - 1)); // start reading the value 1 space after location
+      }
+      catch (std::exception& e) {
+        return;
+      }
+    }
+    config_string = config_string.substr(dir_index + 10, config_string.length() - dir_index + 10);
+  }
+  return;
 }
 
 

@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "config_parser.h"
+#include "server_object.h"
 
 // define fixture
 class NginxConfigParserTest : public ::testing::Test {
@@ -31,14 +32,14 @@ class NginxConfigTest : public ::testing::Test {
         return parser_.Parse(config_file.c_str(), &config_);
       }
 
-      Server_o* getServerObject(std::string config_file) {
+      void getServerObject(std::string config_file) {
         parser_.Parse(config_file.c_str(), &config_);
-        return config_.GetServerObject();
+        config_.GetServerObject();
       }
 
-      Server_o* getServerObject_fromString(std::string config_string) {
+      void getServerObject_fromString(std::string config_string) {
         parser_.Parse(config_string.c_str(), &config_);
-        return config_.GetServerObject();
+        config_.GetServerObject();
       }
 };
 
@@ -150,35 +151,33 @@ TEST_F(NginxConfigTest, ObjectConstruction) {
   NginxConfigParser configparser_test;
   
   EXPECT_TRUE(configparser_test.Parse("../tests/echo_server_config", &config_test));
-  Server_o* server_config = config_test.GetServerObject();
-  EXPECT_EQ(server_config->port, 80);
+  config_test.GetServerObject();
+  EXPECT_EQ(ServerObject::port, 80);
 }
 
 // single block server test
 TEST_F(NginxConfigTest, SingleServerBlockTest) {
   EXPECT_TRUE(parseFile("../tests/single_server_config"));
-  Server_o* server_config = config_.GetServerObject();
-  EXPECT_EQ(server_config->port, 80);
+  config_.GetServerObject();
+  EXPECT_EQ(ServerObject::port, 80);
 }
 
 // check valid port number
 TEST_F(NginxConfigTest, PortTest1) {
   EXPECT_TRUE(parseFile("../tests/echo_server_config"));
-  Server_o* server_config = config_.GetServerObject();
-  EXPECT_EQ(server_config->port, 80);
+  config_.GetServerObject();
+  EXPECT_EQ(ServerObject::port, 80);
 }
 
 TEST_F(NginxConfigTest, PortTest2) {
   EXPECT_TRUE(parseFile("../tests/prac_request"));
-  Server_o* server_config = config_.GetServerObject();
-  EXPECT_EQ(server_config, nullptr);
-
-  EXPECT_EQ(getServerObject_fromString("http { server { foo abc; } }"), nullptr);
+  config_.GetServerObject();
+  EXPECT_EQ(ServerObject::port, 0);
 }
 
 // check no port specified
 TEST_F(NginxConfigTest, PortTest3) {
   EXPECT_TRUE(parseFile("../tests/no_port_config"));
-  Server_o* server_config = config_.GetServerObject();
-  EXPECT_EQ(server_config->port, 0);
+  config_.GetServerObject();
+  EXPECT_EQ(ServerObject::port, 0);
 }

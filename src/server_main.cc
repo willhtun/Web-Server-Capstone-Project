@@ -73,11 +73,11 @@ int main(int argc, char* argv[])
 
     if (argc != 2)
     {
-      std::cerr << "Usage: async_tcp_echo_server <port>\n";
-      BOOST_LOG_TRIVIAL(fatal) << "Usage: async_tcp_echo_server <port>\n";
+      std::cerr << "Usage: async_tcp_echo_server <config>\n";
+      BOOST_LOG_TRIVIAL(fatal) << "Usage: async_tcp_echo_server <config>\n";
       return 1;
     }
-
+    
     BOOST_LOG_TRIVIAL(trace) << "Parsing config file...";
     NginxConfigParser config_parser; // Import necessary classes to parse config file
     NginxConfig config;
@@ -92,28 +92,21 @@ int main(int argc, char* argv[])
     boost::asio::io_service io_service;
     using namespace std; // For atoi.
 
-    Server_o* server_config = config.GetServerObject();
-    //config.ToString(); // This will popualate the Server_o struct
-    if (!server_config) { // Exit with error if server block cannot be read
-      BOOST_LOG_TRIVIAL(fatal) << "Bad config...";
-      std::cerr << "Bad config\n";
-      return 1;
-    }
+    config.GetServerObject();
 
-    if (server_config->port == 0) { // Exit with error if port is unspecified
+    if (ServerObject::port == 0) { // Exit with error if port is unspecified
       BOOST_LOG_TRIVIAL(fatal) << "No port specified...";
       std::cerr << "No port specified\n";
       return 1;
     } 
-    if (server_config->static_directory == "") { // Do we want to exit or use root folder if location is not specified
-      std::cerr << "No static directory specified\n";
-      return 1;
-    } 
-    ServerObject::port = server_config->port;
-    ServerObject::staticfile_dir = server_config->static_directory;
 
-    BOOST_LOG_TRIVIAL(info) << "Starting server on port " << server_config->port << "...";
-    server s(io_service, server_config->port);
+  /*
+    for (int i = 0; i < ServerObject::staticfile_dir.size(); i++)
+      std::cout << std::to_string(ServerObject::port ) << " " << ServerObject::staticfile_dir[i] << " " << ServerObject::staticfile_url[i] << std::endl;
+  */
+
+    BOOST_LOG_TRIVIAL(info) << "Starting server on port " << ServerObject::port << "...";
+    server s(io_service, ServerObject::port);
     io_service.run();
   }
   catch (std::exception& e)

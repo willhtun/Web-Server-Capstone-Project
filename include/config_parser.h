@@ -12,6 +12,7 @@ class NginxConfig;
 struct Server_o {
   int port = 0;
   std::string static_directory = "";
+  std::string static_url = "";
 };
 
 // The parsed representation of a single config statement.
@@ -26,8 +27,8 @@ class NginxConfigStatement {
 class NginxConfig {
  public:
   std::string ToString(int depth = 0);
-  Server_o* GetServerObject();
-  Server_o* LoadServerObject(std::string config_string);
+  void GetServerObject();
+  void LoadServerObject(std::string config_string);
   std::vector<std::shared_ptr<NginxConfigStatement>> statements_;
 };
 

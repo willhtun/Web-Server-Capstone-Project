@@ -7,6 +7,7 @@
 #include "response.h"
 #include "echo_handler.h"
 #include "static_handler.h"
+#include "server_object.h"
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/system/system_error.hpp>
@@ -80,9 +81,17 @@ void session::handle_read(const boost::system::error_code& error,
       {
           //httpresponse = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " + std::to_string(bytes_transferred) + "\r\n\r\n"; //The default response if request is complete
           //The default response if request is complete
-          
-         if ((req->uri_path()).substr(1, 6) == "static") {
-            StaticHandler handler;
+
+         std::string full_uri = req->uri_path();
+         int uri_length = 1;
+         while (uri_length < full_uri.length() && full_uri[uri_length] != '/') {
+             uri_length++;
+         }
+         std::string uri_type = full_uri.substr(1, uri_length - 1);
+
+         int dir_id = ServerObject::findStaticDir(uri_type);
+         if (dir_id != -1) {
+            StaticHandler handler(ServerObject::staticfile_dir[dir_id]);
             handler.HandleRequest(*req, response_); 
             httpresponse = response_.Output();
          }
