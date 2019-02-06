@@ -11,7 +11,6 @@ class StaticHandlerTest : public ::testing::Test {
     boost::asio::io_service io_service_;
 
     void read_request_file(std::string request_file_str) {
-        std::cout << "HEHEHEHEHEH" << std::endl;
         const char* a_request = file_to_string(request_file_str);
         session* s = new session(io_service_);
         Sesh sesh;
@@ -27,8 +26,6 @@ class StaticHandlerTest : public ::testing::Test {
                 str << (char) stream.get();
             }
             stream.close();
-            std::cout << str.str() << std::endl;
-            std::cout << str.str().c_str() << std::endl;
             return str.str().c_str();
         }
     }
