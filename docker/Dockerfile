@@ -27,4 +27,4 @@ FROM ubuntu:latest as deploy
  CMD ["./echo_server_config"]
 
  # Copy static files directory
- COPY --from=builder /usr/src/project/static_files ./usr/src/project/
+ COPY --from=builder /usr/src/project/static_files .
