@@ -25,10 +25,11 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     std::ifstream ifs(".." + ServerObject::staticfile_dir + "/" + filename, std::ios::in | std::ios::binary);
    
    //if fail, give 404 error
-   if (!ifs)
+   if (!ifs.is_open())
   {
     response.SetStatus(Response::NOT_FOUND);
     response.SetHeader("Content-Type", "text/plain");
+    response.SetHeader("Content-Length", std::to_string(19));
     response.SetBody("404: File not found");
     return RequestHandler::NOT_FOUND;
   }
@@ -80,6 +81,7 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     {
         response.SetStatus(Response::UNSUPPORTED_MEDIA_TYPE);
         response.SetHeader("Content-Type", "text/plain");
+        response.SetHeader("Content-Length", std::to_string(27));
         response.SetBody("415: UNSUPPORTED_MEDIA_TYPE");
         return RequestHandler::UNSUPPORTED_MEDIA_TYPE;
     }
