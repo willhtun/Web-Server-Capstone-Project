@@ -73,7 +73,7 @@ void session::handle_read(const boost::system::error_code& error,
       }
 
       //Writes back the response code and content type to the client
-      char* httpresponse;
+      std::string httpresponse;
       Response response_;
       
       if (!COMPLETE_ERROR)
@@ -108,7 +108,7 @@ void session::handle_read(const boost::system::error_code& error,
       //httpresponse = httpresponse + std::string(data_);
       
       boost::asio::async_write(socket_,
-          boost::asio::buffer(httpresponse, response_.Size()),
+          boost::asio::buffer(httpresponse.c_str(), httpresponse.length()),
           boost::bind(&session::handle_write, this,
             boost::asio::placeholders::error));
         
