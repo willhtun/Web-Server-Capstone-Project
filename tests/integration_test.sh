@@ -21,7 +21,7 @@ echo "http {
 #echo $PROCESS_ID
 #send server a request
 echo "SENDING SERVER REQUEST"
-curl -i http://35.233.235.101 > ./tests/integration/integration_test_response
+curl -i http://35.233.235.101/echo > ./tests/integration/integration_test_response
 #curl -i -s GET / HTTP/1.1> /usr/src/projects/git-r-done/tests/integration_test_response
 echo "CHECKING REQUEST FOR CORRECTNESS"
 #check response of correctness
