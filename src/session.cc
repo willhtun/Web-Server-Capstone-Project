@@ -72,10 +72,8 @@ void session::handle_read(const boost::system::error_code& error,
           COMPLETE_ERROR = false;
       }
 
-      //Writes back the response code and content type to the client
+      //Writes back the response code and content type to the client      
       std::string httpresponse;
-      Response response_;
-      
       if (!COMPLETE_ERROR)
       {
           // determine uri path
@@ -94,16 +92,34 @@ void session::handle_read(const boost::system::error_code& error,
           if (dir_id != -1)
           {
              // create server object with corresponding static file directory
+             Response* response_ = new Response();
+             std::string httpresponse_;
              StaticHandler handler(ServerObject::staticfile_dir[dir_id]);
-             handler.HandleRequest(*req, response_); 
-             httpresponse = response_.Output();
+             handler.HandleRequest(*req, *response_); 
+             httpresponse_ = response_->Output();
+
+            boost::asio::async_write(socket_,
+                boost::asio::buffer(httpresponse_.c_str(), httpresponse_.length()),
+                boost::bind(&session::handle_write, this,
+                   boost::asio::placeholders::error));
+
+            delete response_;
           }
           else if ((req->uri_path()).substr(1, 4) == "echo")
           {
              // simply send request to echo handler
+             Response* response_ = new Response();
+             std::string httpresponse_;
              EchoHandler handler;
-             handler.HandleRequest(*req, response_); 
-             httpresponse = response_.Output();
+             handler.HandleRequest(*req, *response_); 
+             httpresponse_ = response_->Output();
+
+            boost::asio::async_write(socket_,
+                boost::asio::buffer(httpresponse_.c_str(), httpresponse_.length()),
+                boost::bind(&session::handle_write, this,
+                    boost::asio::placeholders::error));
+
+            delete response_;
           }
       }
       else
