@@ -20,6 +20,11 @@ void Response::SetHeader(const std::string& header_name, const std::string& head
     const std::string CRLF = "\r\n";
     header_ += header_name + ": " + header_value + CRLF; 
 }
+void Response::ReSetHeader(const std::string& header_name, const std::string& header_value)
+{
+    const std::string CRLF = "\r\n";
+    header_ = header_name + ": " + header_value + CRLF; 
+}
 void Response::SetBody(std::string body_value)
 {
     body_ = body_value;

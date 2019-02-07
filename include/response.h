@@ -33,6 +33,8 @@ public:
 
     void SetHeader(const std::string& header_name, const std::string& header_value);
 
+    void ReSetHeader(const std::string& header_name, const std::string& header_value);
+
     void SetBody(std::string body_value);
 
     std::string Output();

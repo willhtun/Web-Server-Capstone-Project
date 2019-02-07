@@ -29,11 +29,11 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
    
    //if fail, give 404 error
-   if (!ifs.is_open())
+   if (!ifs.is_open() || filename.length() == 0)
   {
     std::string error_msg = "404: File not found on path: usr/src/project";
     response.SetStatus(Response::NOT_FOUND);
-    response.SetHeader("Content-Type", "text/plain");
+    response.ReSetHeader("Content-Type", "text/plain");
     response.SetHeader("Content-Length", std::to_string(error_msg.length()));
     response.SetBody(error_msg + filedir_ + "/" + filename);
     return RequestHandler::NOT_FOUND;
@@ -85,7 +85,7 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     else
     {
         response.SetStatus(Response::UNSUPPORTED_MEDIA_TYPE);
-        response.SetHeader("Content-Type", "text/plain");
+        response.ReSetHeader("Content-Type", "text/plain");
         response.SetHeader("Content-Length", std::to_string(27));
         response.SetBody("415: UNSUPPORTED_MEDIA_TYPE");
         return RequestHandler::UNSUPPORTED_MEDIA_TYPE;
@@ -93,7 +93,7 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
 
     //send a correct response 
     response.SetStatus(Response::OK);
-    response.SetHeader("Content-Type", contenttype);
+    response.ReSetHeader("Content-Type", contenttype);
     response.SetHeader("Content-Length", std::to_string(image.length()));
     response.SetBody(image);
     BOOST_LOG_TRIVIAL(trace) << "Response built by static handler...";
