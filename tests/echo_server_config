@@ -1,6 +1,6 @@
 http {
   server {
-    listen 80;
+    listen 8080;
     directory {
       location /static_files1;
       url static1;

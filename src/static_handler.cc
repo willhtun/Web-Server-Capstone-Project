@@ -96,6 +96,7 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     response.SetHeader("Content-Type", contenttype);
     response.SetHeader("Content-Length", std::to_string(image.length()));
     response.SetBody(image);
+    BOOST_LOG_TRIVIAL(trace) << "Response built by static handler...";
     
     return RequestHandler::OK;
 };
