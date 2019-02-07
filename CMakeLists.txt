@@ -43,6 +43,7 @@ add_library(session src/session.cc)
 add_library(config_parser src/config_parser.cc)
 add_library(response src/response.cc)
 add_library(echo_handler src/echo_handler.cc)
+add_library(error_handler src/error_handler.cc)
 add_library(static_handler src/static_handler.cc)
 add_library(server_object src/server_object.cc)
 
@@ -51,7 +52,7 @@ add_library(server_object src/server_object.cc)
 # target_link_libraries(example_server example_lib Boost::system)
 
 add_executable(server_main src/server_main.cc)
-target_link_libraries(server_main server session echo_handler static_handler request config_parser response server_object Boost::system Boost::log_setup Boost::log)
+target_link_libraries(server_main server session echo_handler error_handler static_handler request config_parser response server_object Boost::system Boost::log_setup Boost::log)
 
 # Update test executable name, srcs, and deps
 # add_executable(example_lib_test tests/example_lib_test.cc)
@@ -67,13 +68,13 @@ add_executable(echo_test tests/echo_test.cc)
 target_link_libraries(echo_test server session request config_parser server_object gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(server_test tests/server_test.cc)
-target_link_libraries(server_test server session request config_parser response echo_handler static_handler server_object gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(server_test server session request config_parser response error_handler echo_handler static_handler server_object gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(session_test tests/session_test.cc)
-target_link_libraries(session_test server session request config_parser response echo_handler static_handler server_object gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(session_test server session request config_parser response error_handler echo_handler static_handler server_object gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(static_handler_test tests/static_handler_test.cc)
-target_link_libraries(static_handler_test server session request config_parser response echo_handler static_handler server_object  gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(static_handler_test server session request config_parser response error_handler echo_handler static_handler server_object  gtest_main Boost::system Boost::log_setup Boost::log)
 
 # Update with test binary
 # gtest_discover_tests(example_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)

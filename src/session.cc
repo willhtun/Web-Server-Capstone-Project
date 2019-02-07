@@ -6,6 +6,7 @@
 #include "request.h"
 #include "response.h"
 #include "echo_handler.h"
+#include "error_handler.h"
 #include "static_handler.h"
 #include "server_object.h"
 #include <boost/log/core.hpp>
@@ -111,6 +112,22 @@ void session::handle_read(const boost::system::error_code& error,
              Response* response_ = new Response();
              std::string httpresponse_;
              EchoHandler handler;
+             handler.HandleRequest(*req, *response_); 
+             httpresponse_ = response_->Output();
+
+            boost::asio::async_write(socket_,
+                boost::asio::buffer(httpresponse_.c_str(), httpresponse_.length()),
+                boost::bind(&session::handle_write, this,
+                    boost::asio::placeholders::error));
+
+            delete response_;
+          }
+          else
+          {
+             // simply send request to error handler
+             Response* response_ = new Response();
+             std::string httpresponse_;
+             ErrorHandler handler;
              handler.HandleRequest(*req, *response_); 
              httpresponse_ = response_->Output();
 

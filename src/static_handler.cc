@@ -31,11 +31,11 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
    //if fail, give 404 error
    if (!ifs.is_open() || filename.length() == 0)
   {
-    std::string error_msg = "404: File not found on path: usr/src/project";
+    std::string error_msg = "404: File not found on path. Please provide correct path.";
     response.SetStatus(Response::NOT_FOUND);
     response.ReSetHeader("Content-Type", "text/plain");
     response.SetHeader("Content-Length", std::to_string(error_msg.length()));
-    response.SetBody(error_msg + filedir_ + "/" + filename);
+    response.SetBody(error_msg);
     return RequestHandler::NOT_FOUND;
   }
     char buf[512];
@@ -84,11 +84,12 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
 
     else
     {
-        response.SetStatus(Response::UNSUPPORTED_MEDIA_TYPE);
+        std::string error_msg = "404: File not found on path. Please provide correct path.";
+        response.SetStatus(Response::NOT_FOUND);
         response.ReSetHeader("Content-Type", "text/plain");
-        response.SetHeader("Content-Length", std::to_string(27));
-        response.SetBody("415: UNSUPPORTED_MEDIA_TYPE");
-        return RequestHandler::UNSUPPORTED_MEDIA_TYPE;
+        response.SetHeader("Content-Length", std::to_string(error_msg.length()));
+        response.SetBody(error_msg);
+        return RequestHandler::NOT_FOUND;
     }
 
     //send a correct response 
