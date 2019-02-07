@@ -13,19 +13,19 @@ echo "http {
     listen 80;
     server_name 127.0.0.1;
   }
-}" > ./tests/integration_test_config
+}" > ./tests/integration/integration_test_config
 
 #build the server with the config file
-./build/bin/server_main ./tests/integration_test_config & 
+./build/bin/server_main ./tests/integration/integration_test_config & 
 #PROCESS_ID = $!
 #echo $PROCESS_ID
 #send server a request
 echo "SENDING SERVER REQUEST"
-curl -i http://35.233.235.101 > ./tests/integration_test_response
+curl -i http://35.233.235.101 > ./tests/integration/integration_test_response
 #curl -i -s GET / HTTP/1.1> /usr/src/projects/git-r-done/tests/integration_test_response
 echo "CHECKING REQUEST FOR CORRECTNESS"
 #check response of correctness
-DIFF=$(diff -w -B ./tests/integration_expected_response ./tests/integration_test_response)
+DIFF=$(diff -w -B ./tests/integration/integration_expected_response ./tests/integration/integration_test_response)
 EXIT_STATUS=$? 
 
 if [ "$EXIT_STATUS" -eq 0 ]
@@ -40,7 +40,7 @@ echo "SHUTTING DOWN"
 # Shutdown the webserver 
 pkill server_main
 
-rm -f ./tests/integration_test_response
+rm -f ./tests/integration/integration_test_response
 
 # success (0) or failure (1)
 exit "$EXIT_STATUS"

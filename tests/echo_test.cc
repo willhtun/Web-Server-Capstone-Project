@@ -17,7 +17,7 @@ class EchoConfigParserTest : public ::testing::Test {
 
 // test given example
 TEST_F(EchoConfigParserTest, ExampleConfig) {
-  EXPECT_TRUE(parseFile("../tests/example_config"));
+  EXPECT_TRUE(parseFile("../tests/configs/example_config"));
   // out_config should have indicated port
   out_config_.GetServerObject();
   EXPECT_EQ(ServerObject::port, 80);
@@ -25,14 +25,14 @@ TEST_F(EchoConfigParserTest, ExampleConfig) {
 
 // check big example
 TEST_F(EchoConfigParserTest, FullConfig) {
-  EXPECT_TRUE(parseFile("../tests/full_config"));
+  EXPECT_TRUE(parseFile("../tests/configs/full_config"));
   out_config_.GetServerObject();
   EXPECT_EQ(ServerObject::port, 80);
 }
 
 // check on separate large example for depth of validity
 TEST_F(EchoConfigParserTest, FullConfig2) {
-  EXPECT_TRUE(parseFile("../tests/full_config2"));
+  EXPECT_TRUE(parseFile("../tests/configs/full_config2"));
   out_config_.GetServerObject();
   EXPECT_EQ(ServerObject::port, 80);
 }

@@ -47,7 +47,7 @@ class NginxConfigTest : public ::testing::Test {
 
 // test given example
 TEST_F(NginxConfigParserTest, ExampleConfig) {
-  EXPECT_TRUE(parseFile("../tests/example_config"));
+  EXPECT_TRUE(parseFile("../tests/configs/example_config"));
 }
 
 // test invalid input
@@ -131,18 +131,18 @@ TEST_F(NginxConfigParserTest, ToStringTest) {
 
 // check big example
 TEST_F(NginxConfigParserTest, FullConfig1) {
-  EXPECT_TRUE(parseFile("../tests/full_config"));
+  EXPECT_TRUE(parseFile("../tests/configs/full_config"));
 }
 
 // check on separate large example for depth of validity
 TEST_F(NginxConfigParserTest, FullConfig2) {
-  EXPECT_TRUE(parseFile("../tests/full_config2"));
+  EXPECT_TRUE(parseFile("../tests/configs/full_config2"));
 }
 
 
 // check bad example with no port
 TEST_F(NginxConfigParserTest, BadConfig) {
-  EXPECT_FALSE(parseFile("../tests/bad_config"));
+  EXPECT_FALSE(parseFile("../tests/configs/bad_config"));
 
 }
 // check object construction
@@ -150,27 +150,27 @@ TEST_F(NginxConfigTest, ObjectConstruction) {
   NginxConfig config_test;
   NginxConfigParser configparser_test;
   
-  EXPECT_TRUE(configparser_test.Parse("../tests/echo_server_config", &config_test));
+  EXPECT_TRUE(configparser_test.Parse("../tests/configs/echo_server_config", &config_test));
   config_test.GetServerObject();
   EXPECT_EQ(ServerObject::port, 80);
 }
 
 // check valid port number
 TEST_F(NginxConfigTest, PortTest1) {
-  EXPECT_TRUE(parseFile("../tests/echo_server_config"));
+  EXPECT_TRUE(parseFile("../tests/configs/echo_server_config"));
   config_.GetServerObject();
   EXPECT_EQ(ServerObject::port, 80);
 }
 
 TEST_F(NginxConfigTest, PortTest2) {
-  EXPECT_TRUE(parseFile("../tests/prac_request"));
+  EXPECT_TRUE(parseFile("../tests/prac_requests/prac_request"));
   config_.GetServerObject();
   EXPECT_EQ(ServerObject::port, 0);
 }
 
 // check no port specified
 TEST_F(NginxConfigTest, PortTest3) {
-  EXPECT_TRUE(parseFile("../tests/no_port_config"));
+  EXPECT_TRUE(parseFile("../tests/configs/no_port_config"));
   config_.GetServerObject();
   EXPECT_EQ(ServerObject::port, 0);
 }
