@@ -76,9 +76,35 @@ void NginxConfig::LoadServerObject(std::string config_string) {
     }
   }
 
+  // Echo directory
+  int echo_dir_index = config_string.find("echo_directory {");
+  if (echo_dir_index != std::string::npos) {
+    int echo_dir_length = echo_dir_index;
+    while (config_string[echo_dir_length] != '}')
+      echo_dir_length++;
+    std::string echo_dir_block = config_string.substr(echo_dir_index, echo_dir_length);
+    
+    int echo_index = echo_dir_block.find("url");
+    if (echo_index != std::string::npos) {
+      int ending_pos = 0;
+      while (echo_dir_block[echo_index + 3 + ending_pos] != ';') {
+        if ((echo_index + 3 + ending_pos) >= echo_dir_block.length())
+          return;
+        ending_pos++;
+      }
+      try {
+        if (echo_index + 3 >= ending_pos) // 8 to move to end of location
+          ServerObject::echo_dir = echo_dir_block.substr(echo_index + 4, ending_pos - 1); // start reading the value 1 space after location
+      }
+      catch (std::exception& e) {
+        return;
+      }
+    }
+  }
+
   // Static files directory
   for (int i = 0; i < 10; i++) { 
-    int dir_index = config_string.find("directory {");
+    int dir_index = config_string.find("static_directory {");
     if (dir_index == std::string::npos) {
       break;
     }

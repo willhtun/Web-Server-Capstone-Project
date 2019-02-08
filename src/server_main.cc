@@ -100,11 +100,6 @@ int main(int argc, char* argv[])
       return 1;
     } 
 
-  /*
-    for (int i = 0; i < ServerObject::staticfile_dir.size(); i++)
-      std::cout << std::to_string(ServerObject::port ) << " " << ServerObject::staticfile_dir[i] << " " << ServerObject::staticfile_url[i] << std::endl;
-  */
-
     BOOST_LOG_TRIVIAL(info) << "Starting server on port " << ServerObject::port << "...";
     server s(io_service, ServerObject::port);
     io_service.run();

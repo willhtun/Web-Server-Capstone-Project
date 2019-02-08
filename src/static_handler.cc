@@ -27,17 +27,19 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     //read in file
     std::string image;
     std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+     // local path
+     //std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
    
-   //if fail, give 404 error
-   if (!ifs.is_open() || filename.length() == 0)
-  {
-    std::string error_msg = "404: File not found on path. Please provide correct path.";
-    response.SetStatus(Response::NOT_FOUND);
-    response.ReSetHeader("Content-Type", "text/plain");
-    response.SetHeader("Content-Length", std::to_string(error_msg.length()));
-    response.SetBody(error_msg);
-    return RequestHandler::NOT_FOUND;
-  }
+    //if fail, give 404 error
+    if (!ifs.is_open() || filename.length() == 0)
+    {
+        std::string error_msg = "404: File not found on path. Please provide correct path.";
+        response.SetStatus(Response::NOT_FOUND);
+        response.ReSetHeader("Content-Type", "text/plain");
+        response.SetHeader("Content-Length", std::to_string(error_msg.length()));
+        response.SetBody(error_msg);
+        return RequestHandler::NOT_FOUND;
+    }
     char buf[512];
     while (ifs.read(buf, sizeof(buf)).gcount() > 0) {
         image.append(buf, ifs.gcount());

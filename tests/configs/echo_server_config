@@ -1,13 +1,17 @@
 http {
   server {
     listen 80;
-    directory {
+    echo_directory {
+      url echo;
+    }
+    static_directory {
       location /static_files1;
       url static1;
     }
-    directory {
+    static_directory {
       location /static_files2;
       url static2;
     }
+
   }
 }
