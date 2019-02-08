@@ -28,7 +28,7 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     std::string image;
     std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
      // local path
-     //std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
    
     //if fail, give 404 error
     if (!ifs.is_open() || filename.length() == 0)

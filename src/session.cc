@@ -106,8 +106,7 @@ void session::handle_read(const boost::system::error_code& error,
 
             delete response_;
           }
-          else if ((req->uri_path()).find(ServerObject::echo_dir) != std::string::npos &&
-                    ServerObject::echo_dir != "")
+          else if (req->uri_path() == '/' + ServerObject::echo_dir || req->uri_path() == '/' + ServerObject::echo_dir + '/')
           {
              // simply send request to echo handler
              Response* response_ = new Response();
