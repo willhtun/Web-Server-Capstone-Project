@@ -11,6 +11,9 @@ class Response;
 class RequestHandler
 {
 public: 
+    /*
+        Major TODO: get rid of status code and add the following functions
+    */
     enum statuscode
     {
         OK = 200,
@@ -32,4 +35,10 @@ public:
         SERVICE_UNAVAILABLE = 503
     };
     virtual statuscode HandleRequest(Request request, Response& response) = 0;
+    // Response gather_response(Request request);
+/*
+private:
+    Response dispatch(std::string uri_type); // this function will allow us to create specialized request handling objects
+    std::string parse_uri(std::string uri_path);
+*/
 };

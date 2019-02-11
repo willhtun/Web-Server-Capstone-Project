@@ -77,6 +77,10 @@ void session::handle_read(const boost::system::error_code& error,
         std::string httpresponse;
         if (!COMPLETE_ERROR)
         {
+            /*
+                Major TODO: move uri_path handling and specialized handler object creation
+                to RequestHandler's private functions parse_uri() and dispatch()
+            */
             // determine uri path
             std::string full_uri = req->uri_path();
             int uri_length = 1;
