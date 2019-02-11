@@ -17,5 +17,4 @@ RequestHandler::statuscode ErrorHandler::HandleRequest(Request request, Response
     BOOST_LOG_TRIVIAL(trace) << "Response built by error handler...";
 
     return RequestHandler::NOT_FOUND;
-
 };

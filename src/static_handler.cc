@@ -31,6 +31,7 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     //std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
    
     //if fail, give 404 error
+    //TODO: replace with error_handler
     if (!ifs.is_open() || filename.length() == 0)
     {
         std::string error_msg = "404: File not found on path. Please provide correct path.";
@@ -46,6 +47,7 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     }
     ifs.close();
     
+    //TODO: Covert MIME handling to map
     //text file MIMES
     if (fileextension == "html")
         contenttype = "text/html";
@@ -85,7 +87,8 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
         contenttype = "application/msword";
 
     else
-    {
+    //TODO: Replace with error_handler
+    { 
         std::string error_msg = "404: File not found on path. Please provide correct path.";
         response.SetStatus(Response::NOT_FOUND);
         response.ReSetHeader("Content-Type", "text/plain");
