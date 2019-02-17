@@ -14,7 +14,7 @@ public:
 
   // function to handle the creation and parsing
   static std::unique_ptr<Request> request_handler(std::string raw_req);  
-  std::string getReqRaw();
+  std::string getReqRaw() const;
 
   // get methods
   std::string method();

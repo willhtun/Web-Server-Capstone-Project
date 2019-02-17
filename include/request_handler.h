@@ -4,6 +4,7 @@
 #include <vector>
 #include "request.h"
 #include "response.h"
+#include "config_parser.h"
 
 class Request;
 class Response;
@@ -11,9 +12,7 @@ class Response;
 class RequestHandler
 {
 public: 
-    /*
-        Major TODO: get rid of status code and add the following functions
-    */
+    /* Commented out as we refactor. Delete as necessary
     enum statuscode
     {
         OK = 200,
@@ -34,7 +33,27 @@ public:
         BAD_GATEWAY = 502,
         SERVICE_UNAVAILABLE = 503
     };
-    virtual statuscode HandleRequest(Request request, Response& response) = 0;
+    */
+
+    static RequestHandler* create(const NginxConfig& config, const std::string& path);
+
+    virtual  std::unique_ptr<Response> HandleRequest(const Request& request);
+
+    protected: 
+
+    //what do we actually need here?
+    std::string path_;
+    NginxConfig config_;
+
+    Request req;
+    Response response;
+
+
+
+
+
+
+    //virtual statuscode HandleRequest(Request request, Response& response) = 0;
     // Response gather_response(Request request);
 /*
 private:

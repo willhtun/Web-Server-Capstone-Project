@@ -25,7 +25,7 @@ std::unique_ptr<Request> Request::request_handler(std::string raw_req)
     }
 }
 
-std::string Request::getReqRaw() {
+std::string Request::getReqRaw() const{
     return req_;
 }
 
