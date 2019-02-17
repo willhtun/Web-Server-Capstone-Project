@@ -4,13 +4,13 @@
 #include <boost/log/trivial.hpp>
 #include "error_handler.h"
 
-static RequestHandler::RequestHandler*  create(const NginxConfig& config, const std::string& path)
+static RequestHandler::RequestHandler* create(const NginxConfig& config, const std::string& path)
 {
-
     //create an instance of error
+    
 };
 
-std::unique_ptr<Response> HandleRequest(const Request& request)
+std::unique_ptr<Response> ErrorHandler::HandleRequest(const Request& request)
 {
     BOOST_LOG_TRIVIAL(trace) << "Error handler building response for request...";
 

@@ -45,6 +45,7 @@ public:
     std::string path_;
     NginxConfig config_;
 
+
     Request req;
     Response response;
 

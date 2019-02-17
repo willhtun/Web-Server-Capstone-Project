@@ -5,13 +5,13 @@
 #include "echo_handler.h"
 
 
-static RequestHandler*  create(const NginxConfig& config, const std::string& path)
+static RequestHandler* create(const NginxConfig& config, const std::string& path)
 {
-    //create an instance of the handler 
+    //create an instance of echo
 };
 
 
-std::unique_ptr<Response> HandleRequest(const Request& request)
+std::unique_ptr<Response> EchoHandler::HandleRequest(const Request& request)
 {
     BOOST_LOG_TRIVIAL(trace) << "Echo handler building response for request...";
 

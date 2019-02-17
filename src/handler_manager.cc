@@ -6,12 +6,16 @@ std::unique_ptr<RequestHandler> createByName(const std::string& name, const Ngin
     {
         return std::unique_ptr<RequestHandler>(EchoHandler::create(config,path));
     }
-    else if (name =="static")
+    if (name =="static")
     {
         return std::unique_ptr<RequestHandler>(StaticHandler::create(config,path));
     }
-    else if (name =="error")
+    if (name =="error")
     {
         return std::unique_ptr<RequestHandler>(ErrorHandler::create(config,path));
+    }
+    if (name =="status")
+    {
+        return std::unique_ptr<RequestHandler>(StatusHandler::create(config,path));
     }
 };
