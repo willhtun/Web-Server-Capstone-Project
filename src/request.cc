@@ -29,17 +29,17 @@ std::string Request::getReqRaw() const{
     return req_;
 }
 
-std::string Request::method()
+std::string Request::method() const
 {
     return method_;
 }
 
-std::string Request::uri_path()
+std::string Request::uri_path() const
 {
     return uri_path_;
 }
 
-std::string Request::http_version()
+std::string Request::http_version() const
 {
     return http_version_;
 }

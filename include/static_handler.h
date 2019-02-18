@@ -9,10 +9,13 @@
 class StaticHandler : public RequestHandler
 {
 public:
-    // this is still fine to keep
-    StaticHandler(std::string filedir);
-    // change handling request function to return a Response object
-    virtual RequestHandler::statuscode HandleRequest(Request request, Response& response);
+    //create an instance of the handler
+    static RequestHandler* create(const NginxConfig& config, const std::string& path);
+
+    //Handles the request and generates a response
+    std::unique_ptr<Response> HandleRequest(const Request& request);
+    
 private:
+    std::string parse_uri(std::string path);
     std::string filedir_;
 };

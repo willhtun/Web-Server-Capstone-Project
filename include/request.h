@@ -17,9 +17,9 @@ public:
   std::string getReqRaw() const;
 
   // get methods
-  std::string method();
-  std::string uri_path();
-  std::string http_version();
+  std::string method() const;
+  std::string uri_path() const;
+  std::string http_version() const;
 
 private:
   bool parse_request();

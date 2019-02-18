@@ -8,11 +8,32 @@
 #include "server_object.h"
 #include <iostream>
 
-StaticHandler::StaticHandler(std::string filedir) {
-    filedir_ = filedir;
+
+static RequestHandler* create(const NginxConfig& config, const std::string& uri_path)
+{
+    // leave blank for now
 }
 
-RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Response& response)
+std::string StaticHandler::parse_uri(std::string uri_path)
+{
+    // we have no access to a request object, we only have the uri_path which is helpful. I'm guessing uri_path is uri_path
+    int uri_length = 1;
+    while (uri_length < uri_path.length() && uri_path[uri_length] != '/') 
+    {
+        uri_length++;
+    }
+    
+    // set uri_type
+    std::string uri_type = uri_path.substr(1, uri_length - 1);
+
+    // determine static directory
+    int dir_id = ServerObject::findStaticDir(uri_type);
+    assert(dir_id != -1);
+
+    return ServerObject::staticfile_dir[dir_id];
+}
+
+std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
 {
     // uri: /static/somefile.html
     BOOST_LOG_TRIVIAL(trace) << "Static Handler building response for request...";
@@ -24,22 +45,25 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     if (dot_index != std::string::npos)
         fileextension = filename.substr(dot_index + 1, filename.length() - dot_index - 1);
 
+    // determine file directory
+    std::string filedir_ = parse_uri(request.uri_path());
+
     //read in file
     std::string image;
     std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
-     // local path
+     // local uri_path
     //std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
    
     //if fail, give 404 error
+    std::unique_ptr<Response> response(new Response());
     //TODO: replace with error_handler
     if (!ifs.is_open() || filename.length() == 0)
     {
-        std::string error_msg = "404: File not found on path. Please provide correct path.";
-        response.SetStatus(Response::NOT_FOUND);
-        response.ReSetHeader("Content-Type", "text/plain");
-        response.SetHeader("Content-Length", std::to_string(error_msg.length()));
-        response.SetBody(error_msg);
-        return RequestHandler::NOT_FOUND;
+        std::string error_msg = "404: File not found on uri_path. Please provide correct uri_path.";
+        response->SetStatus(Response::NOT_FOUND);
+        response->ReSetHeader("Content-Type", "text/plain");
+        response->SetHeader("Content-Length", std::to_string(error_msg.length()));
+        response->SetBody(error_msg);
     }
     char buf[512];
     while (ifs.read(buf, sizeof(buf)).gcount() > 0) {
@@ -89,20 +113,20 @@ RequestHandler::statuscode StaticHandler::HandleRequest(Request request, Respons
     else
     //TODO: Replace with error_handler
     { 
-        std::string error_msg = "404: File not found on path. Please provide correct path.";
-        response.SetStatus(Response::NOT_FOUND);
-        response.ReSetHeader("Content-Type", "text/plain");
-        response.SetHeader("Content-Length", std::to_string(error_msg.length()));
-        response.SetBody(error_msg);
-        return RequestHandler::NOT_FOUND;
+        std::string error_msg = "404: File not found on uri_path. Please provide correct uri_path.";
+        response->SetStatus(Response::NOT_FOUND);
+        response->ReSetHeader("Content-Type", "text/plain");
+        response->SetHeader("Content-Length", std::to_string(error_msg.length()));
+        response->SetBody(error_msg);
+        return response;
     }
 
     //send a correct response 
-    response.SetStatus(Response::OK);
-    response.SetHeader("Content-Type", contenttype);
-    response.SetHeader("Content-Length", std::to_string(image.length()));
-    response.SetBody(image);
+    response->SetStatus(Response::OK);
+    response->SetHeader("Content-Type", contenttype);
+    response->SetHeader("Content-Length", std::to_string(image.length()));
+    response->SetBody(image);
     BOOST_LOG_TRIVIAL(trace) << "Response built by static handler...";
     
-    return RequestHandler::OK;
+    return response;
 };
