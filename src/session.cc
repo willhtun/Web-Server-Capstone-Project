@@ -16,15 +16,8 @@
 void session::start()
 {
     BOOST_LOG_TRIVIAL(trace) << "Session has started...";
-
-    // try-catch to help pass basic session->start() case
-    try
-    {
-        BOOST_LOG_TRIVIAL(info) << "New connection from IP: " << socket_.remote_endpoint().address().to_string();
-    }
-    catch(boost::system::system_error const& e) {
-        std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n";
-    }
+    try { BOOST_LOG_TRIVIAL(info) << "New connection from IP: " << socket_.remote_endpoint().address().to_string(); }
+    catch(boost::system::system_error const& e) { std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n"; }
 
     socket_.async_read_some(boost::asio::buffer(data_, max_length),
         boost::bind(&session::handle_read, this,
@@ -32,62 +25,44 @@ void session::start()
             boost::asio::placeholders::bytes_transferred));
 }
 
-// Ex GET request? GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: close\r\n\r\n
-//TODO: Refactor the uri parsing into request
 void session::handle_read(const boost::system::error_code& error,
     size_t bytes_transferred)
 {
     if (error == boost::asio::error::eof)
     {
         BOOST_LOG_TRIVIAL(trace) << "EOF received...";
-        // try-catch for passing test case
-        try
-        {
-            BOOST_LOG_TRIVIAL(info) << "Dropped connection from IP: " << socket_.remote_endpoint().address().to_string() << "...";
-        }
-        catch(boost::system::system_error const& e)
-        {
-            std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n";
-        }
-        
+        try { BOOST_LOG_TRIVIAL(info) << "Dropped connection from IP: " << socket_.remote_endpoint().address().to_string() << "..."; }
+        catch(boost::system::system_error const& e) { std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n"; }
+
         return;
     }
     if (!error)
-    {
-        // print original data
-        std::cout << "My input: " <<  data_ << std::endl;
-        
-        // send data
-        bool COMPLETE_ERROR = true;
+    {    
+        std::string httpresponse;
         
         BOOST_LOG_TRIVIAL(trace) << "Sending data to request handler...";
         std::unique_ptr<Request> req = Request::request_handler(data_);
         if (req != nullptr)
         {
-            // view data members
+            // view data members of request
             BOOST_LOG_TRIVIAL(trace) << "Info about request{ "
                                     << "Method: " << req->method()
                                     << ", URI Path: " << req->uri_path()
                                     << ", HTTP Version: " << req->http_version()
                                     << " }";
-            COMPLETE_ERROR = false;
-        }
 
-        //Writes back the response code and content type to the client      
-        std::string httpresponse;
-        if (!COMPLETE_ERROR)
-        {            
+            // construct dispatcher and handle incoming request
             BOOST_LOG_TRIVIAL(info) << "Constructing dispatcher...";
             Dispatcher dispatcher(config_);
             dispatcher.dispatch(req.get());
         }
         else
-        //Used only with desktop testing
-        { 
+        {
             std::string inc_req = "Incomplete request!\r\n\r\n";
             httpresponse = inc_req.c_str();
         }
-        //TODO: May be dead code with our current design
+
+        // write response to client
         boost::asio::async_write(socket_,
             boost::asio::buffer(httpresponse.c_str(), httpresponse.length()),
             boost::bind(&session::handle_write, this,
@@ -105,16 +80,10 @@ void session::handle_write(const boost::system::error_code& error)
 {
     if (!error)
     {
-        try
-        {
-            BOOST_LOG_TRIVIAL(info) << "Writing response to IP: " << socket_.remote_endpoint().address().to_string() << "...";
-        }
-        catch(boost::system::system_error const& e)
-        {
-            std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n";
-        }
+        try { BOOST_LOG_TRIVIAL(info) << "Writing response to IP: " << socket_.remote_endpoint().address().to_string() << "..."; }
+        catch(boost::system::system_error const& e) { std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n"; }
         
-        // write data out to given IP
+        // write response to client
         socket_.async_read_some(boost::asio::buffer(data_, max_length),
             boost::bind(&session::handle_read, this,
                 boost::asio::placeholders::error,
