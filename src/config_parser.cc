@@ -14,8 +14,6 @@
 #include <stack>
 #include <string>
 #include <vector>
-
-#include "server_object.h"
 #include "config_parser.h"
 
 std::string NginxConfig::ToString(int depth) {
@@ -26,131 +24,69 @@ std::string NginxConfig::ToString(int depth) {
   return serialized_config;
 }
 
-// test review
-void NginxConfig::GetServerObject() {
+void NginxConfig::ParseString(int depth, std::map<std::string, NginxConfig*> &configTable_, std::map<std::string, std::string> &handlerTable_) {
+  std::string serialized_config;
   for (const auto& statement : statements_) {
-    if (statement->ToString(0).substr(0,6) == "http {") {
-      std::size_t index = statement->ToString(0).find("server {");
-      if (index != std::string::npos) {
-        int i = 0;
-        std::string temp_str = statement->ToString(0);
-        int opened_brackets = 1;
-        int count = 0;
-        while (count < temp_str.length()) {
-          if (temp_str[index + i] == '}' && opened_brackets == 1) {
-            i++;
-            break;
-          }
-          if (temp_str[index + i] == '{')
-            opened_brackets++;
-          if (temp_str[index + i] == '}')
-            opened_brackets--;
-          i++;
-          count++;
-        }
-        this->LoadServerObject(temp_str.substr(index, index+i)); // Pass in the server {...} block to extract the parameters
-      }
+    if (statement->child_block_.get() != nullptr) {
+      statement->child_block_->ParseString(depth + 1, configTable_, handlerTable_);
+    }
+    if (statement->tokens_[0] == "handler") {
+      configTable_.insert(std::pair <std::string, NginxConfig*> (PeekURL(statement->child_block_->ToString()), (statement->child_block_).get()));
+      handlerTable_.insert(std::pair <std::string, std::string> (PeekURL(statement->child_block_->ToString()), statement->tokens_[1]));
     }
   }
 }
 
-void NginxConfig::LoadServerObject(std::string config_string) {
-  // Only loads port number for now
-  NginxConfigParser parser;
-  Server_o* output = new Server_o;
+std::string NginxConfig::PeekURL(std::string s) {
+  int i = s.find("url");
+  if (i != std::string::npos) {
+    i += 3;
+    int j = 0;
+    while (s[i+j] != ';' && j < s.length())
+      j++;
+    return s.substr(i+1,j-1);
+  }
+  return "";
+}
 
-  // Port
+int NginxConfig::GetPort() {
+  std::string config_string = statements_[0]->ToString(0);
   std::size_t index = config_string.find("listen");
   if (index != std::string::npos) {
     int ending_pos = 0;
     while (config_string[index + 6 + ending_pos] != ';') {
       if ((index + 6 + ending_pos) >= config_string.length()) // 6 to move to end of listen
-        return;
+        return 0;
       ending_pos++;
     }
     try {
-      ServerObject::port = std::atoi(config_string.substr(index + 7, ending_pos).c_str()); // start reading the value 1 space after listen
+      int port = std::atoi(config_string.substr(index + 7, ending_pos).c_str()); // start reading the value 1 space after listen
+      return port;
     }
     catch (std::exception& e) {
-      return;
+      return 0;
     }
   }
-
-  // Echo directory
-  int echo_dir_index = config_string.find("echo_directory {");
-  if (echo_dir_index != std::string::npos) {
-    int echo_dir_length = echo_dir_index;
-    while (config_string[echo_dir_length] != '}')
-      echo_dir_length++;
-    std::string echo_dir_block = config_string.substr(echo_dir_index, echo_dir_length);
-    
-    int echo_index = echo_dir_block.find("url");
-    if (echo_index != std::string::npos) {
-      int ending_pos = 0;
-      while (echo_dir_block[echo_index + 3 + ending_pos] != ';') {
-        if ((echo_index + 3 + ending_pos) >= echo_dir_block.length())
-          return;
-        ending_pos++;
-      }
-      try {
-        if (echo_index + 3 >= ending_pos) // 8 to move to end of location
-          ServerObject::echo_dir = echo_dir_block.substr(echo_index + 4, ending_pos - 1); // start reading the value 1 space after location
-      }
-      catch (std::exception& e) {
-        return;
-      }
-    }
-  }
-
-  // Static files directory
-  for (int i = 0; i < 10; i++) { 
-    int dir_index = config_string.find("static_directory {");
-    if (dir_index == std::string::npos) {
-      break;
-    }
-    int dir_length = dir_index;
-    while (config_string[dir_length] != '}')
-      dir_length++;
-    std::string dir_block = config_string.substr(dir_index, dir_length);
-
-    index = dir_block.find("location");
-    if (index != std::string::npos) {
-      int ending_pos = 0;
-      while (dir_block[index + 8 + ending_pos] != ';') {
-        if ((index + 8 + ending_pos) >= dir_block.length())
-          return;
-        ending_pos++;
-      }
-      try {
-        if (index + 8 >= ending_pos) // 8 to move to end of location
-          ServerObject::staticfile_dir.push_back(dir_block.substr(index + 9, ending_pos - 1)); // start reading the value 1 space after location
-      }
-      catch (std::exception& e) {
-        return;
-      }
-    }
-
-    index = dir_block.find("url");
-    if (index != std::string::npos) {
-      int ending_pos = 0;
-      while (dir_block[index + 3 + ending_pos] != ';') {
-        if ((index + 3 + ending_pos) >= dir_block.length())
-          return;
-        ending_pos++;
-      }
-      try {
-        if (index + 3 >= ending_pos) // 8 to move to end of location
-          ServerObject::staticfile_url.push_back(dir_block.substr(index + 4, ending_pos - 1)); // start reading the value 1 space after location
-      }
-      catch (std::exception& e) {
-        return;
-      }
-    }
-    config_string = config_string.substr(dir_index + 10, config_string.length() - dir_index + 10);
-  }
-  return;
 }
 
+std::string NginxConfig::GetRoot() {
+  std::string config_string = statements_[0]->ToString(0);
+  std::size_t index = config_string.find("root");
+  if (index != std::string::npos) {
+    int ending_pos = 0;
+    while (config_string[index + 4 + ending_pos] != ';') {
+      if ((index + 4 + ending_pos) >= config_string.length()) // 6 to move to end of listen
+        return "";
+      ending_pos++;
+    }
+    try {
+      return config_string.substr(index + 5, ending_pos).c_str(); // start reading the value 1 space after listen
+    }
+    catch (std::exception& e) {
+      return "";
+    }
+  }
+}
 
 std::string NginxConfigStatement::ToString(int depth) {
   std::string serialized_statement;
@@ -284,6 +220,7 @@ bool NginxConfigParser::Parse(std::istream* config_file, NginxConfig* config) {
   while (true) {
     std::string token;
     token_type = ParseToken(config_file, &token);
+  
     //printf ("%s: %s\n", TokenTypeAsString(token_type), token.c_str());
     if (token_type == TOKEN_TYPE_ERROR) {
       break;

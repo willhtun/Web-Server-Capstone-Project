@@ -5,7 +5,6 @@
 #include <boost/log/trivial.hpp>
 #include <sstream> 
 #include "static_handler.h"
-#include "server_object.h"
 #include <iostream>
 
 

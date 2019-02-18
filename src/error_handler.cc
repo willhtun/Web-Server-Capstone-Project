@@ -4,7 +4,7 @@
 #include <boost/log/trivial.hpp>
 #include "error_handler.h"
 
-static RequestHandler::RequestHandler* create(const NginxConfig& config, const std::string& path)
+static RequestHandler* create(const NginxConfig& config, const std::string& path)
 {
     //create an instance of error
     

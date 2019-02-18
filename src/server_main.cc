@@ -28,7 +28,8 @@
 #include "config_parser.h"
 #include "server.h"
 #include "response.h"
-#include "server_object.h"
+
+#include <map>
 
 using boost::asio::ip::tcp;
 
@@ -86,22 +87,20 @@ int main(int argc, char* argv[])
       std::cerr << "Bad config file\n";
       return 1;
     }
-
     BOOST_LOG_TRIVIAL(info) << "Config parsing success...";
-
+    
     boost::asio::io_service io_service;
     using namespace std; // For atoi.
 
-    config.GetServerObject();
-
-    if (ServerObject::port == 0) { // Exit with error if port is unspecified
+    int port = config.GetPort();
+    if (port == 0) { // Exit with error if port is unspecified
       BOOST_LOG_TRIVIAL(fatal) << "No port specified...";
       std::cerr << "No port specified\n";
       return 1;
     } 
 
-    BOOST_LOG_TRIVIAL(info) << "Starting server on port " << ServerObject::port << "...";
-    server s(io_service, ServerObject::port);
+    BOOST_LOG_TRIVIAL(info) << "Starting server on port " << port << "...";
+    server s(io_service, port, &config);
     io_service.run();
   }
   catch (std::exception& e)

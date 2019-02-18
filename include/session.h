@@ -4,13 +4,18 @@
 #include <iostream>
 #include <string>
 
+#include "config_parser.h"
+
 using boost::asio::ip::tcp;
 
 class session
 {
 public:
-  session(boost::asio::io_service& io_service)
-    : socket_(io_service) {}
+  session(boost::asio::io_service& io_service, NginxConfig* config)
+    : socket_(io_service) 
+  {
+    config_ = config;
+  }
 
   tcp::socket& socket() 
   {
@@ -29,6 +34,7 @@ private:
   tcp::socket socket_;
   enum { max_length = 1024 };
   char data_[max_length];
+  NginxConfig* config_;
 };
 
 

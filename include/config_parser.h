@@ -5,15 +5,9 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <map>
 
 class NginxConfig;
-
-// A struct containing all the parameters for the server
-struct Server_o {
-  int port = 0;
-  std::string static_directory = "";
-  std::string static_url = "";
-};
 
 // The parsed representation of a single config statement.
 class NginxConfigStatement {
@@ -27,9 +21,12 @@ class NginxConfigStatement {
 class NginxConfig {
  public:
   std::string ToString(int depth = 0);
-  void GetServerObject();
-  void LoadServerObject(std::string config_string);
+  void ParseString(int depth, std::map<std::string, NginxConfig*> &configTable_, std::map<std::string, std::string> &handlerTable_);
+  int GetPort();
+  std::string GetRoot();
   std::vector<std::shared_ptr<NginxConfigStatement>> statements_;
+ private:
+  std::string PeekURL(std::string s);
 };
 
 // The driver that parses a config file and generates an NginxConfig.

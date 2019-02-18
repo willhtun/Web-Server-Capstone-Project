@@ -8,7 +8,7 @@
 #include "echo_handler.h"
 #include "error_handler.h"
 #include "static_handler.h"
-#include "server_object.h"
+#include "dispatcher.h"
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/system/system_error.hpp>
@@ -76,72 +76,10 @@ void session::handle_read(const boost::system::error_code& error,
         //Writes back the response code and content type to the client      
         std::string httpresponse;
         if (!COMPLETE_ERROR)
-        {
-            /*
-                Major TODO: move uri_path handling and specialized handler object creation
-                to RequestHandler's private functions parse_uri() and dispatch()
-            */
-            // determine uri path
-            std::string full_uri = req->uri_path();
-            int uri_length = 1;
-            while (uri_length < full_uri.length() && full_uri[uri_length] != '/') 
-            {
-                uri_length++;
-            }
-
-            // set uri_type
-            std::string uri_type = full_uri.substr(1, uri_length - 1);
-
-            // determine static directory
-            int dir_id = ServerObject::findStaticDir(uri_type);
-            if (dir_id != -1)
-            {
-                // static handler
-                Response* response_ = new Response();
-                std::string httpresponse_;
-                StaticHandler handler(ServerObject::staticfile_dir[dir_id]);
-                handler.HandleRequest(*req, *response_); 
-                httpresponse_ = response_->Output();
-
-                boost::asio::async_write(socket_,
-                    boost::asio::buffer(httpresponse_.c_str(), httpresponse_.length()),
-                    boost::bind(&session::handle_write, this,
-                        boost::asio::placeholders::error));
-
-            delete response_;
-            }
-            else if (req->uri_path() == '/' + ServerObject::echo_dir || req->uri_path() == '/' + ServerObject::echo_dir + '/')
-            {
-                // echo handler
-                Response* response_ = new Response();
-                std::string httpresponse_;
-                EchoHandler handler;
-                handler.HandleRequest(*req, *response_); 
-                httpresponse_ = response_->Output();
-
-                boost::asio::async_write(socket_,
-                    boost::asio::buffer(httpresponse_.c_str(), httpresponse_.length()),
-                    boost::bind(&session::handle_write, this,
-                        boost::asio::placeholders::error));
-
-            delete response_;
-            }
-            else
-            {
-                // error handler
-                Response* response_ = new Response();
-                std::string httpresponse_;
-                ErrorHandler handler;
-                handler.HandleRequest(*req, *response_); 
-                httpresponse_ = response_->Output();
-
-                boost::asio::async_write(socket_,
-                    boost::asio::buffer(httpresponse_.c_str(), httpresponse_.length()),
-                    boost::bind(&session::handle_write, this,
-                        boost::asio::placeholders::error));
-
-            delete response_;
-            }
+        {            
+            BOOST_LOG_TRIVIAL(info) << "Constructing dispatcher...";
+            Dispatcher dispatcher(config_);
+            dispatcher.dispatch(req.get());
         }
         else
         //Used only with desktop testing

@@ -4,16 +4,18 @@
 #include <iostream>
 
 #include "session.h"
+#include "config_parser.h"
 
 using boost::asio::ip::tcp;
 
 class server
 {
 public:
-  server(boost::asio::io_service& io_service, short port)
+  server(boost::asio::io_service& io_service, short port, NginxConfig* config)
     : io_service_(io_service),
       acceptor_(io_service, tcp::endpoint(tcp::v4(), port))
   {
+    config_ = config;
     start_accept();
   }
 
@@ -26,6 +28,7 @@ private:
   
   boost::asio::io_service& io_service_;
   tcp::acceptor acceptor_;
+  NginxConfig* config_;
 };
 
 
