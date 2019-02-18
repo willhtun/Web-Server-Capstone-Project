@@ -9,7 +9,7 @@
 
 class StatusHandler : public RequestHandler
 {
-public:     
+public:   
 
     static RequestHandler*  create(const NginxConfig& config, const std::string& path);
     

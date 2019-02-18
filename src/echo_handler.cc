@@ -5,7 +5,7 @@
 #include "echo_handler.h"
 
 
-static RequestHandler* create(const NginxConfig& config, const std::string& path)
+RequestHandler* EchoHandler::create(const NginxConfig& config, const std::string& path)
 {
     //create an instance of echo
 };

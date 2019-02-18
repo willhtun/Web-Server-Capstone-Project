@@ -19,14 +19,15 @@ class NginxConfigStatement {
 
 // The parsed representation of the entire config.
 class NginxConfig {
-  public:
-    std::string ToString(int depth = 0);
-    void ParseString(int depth, std::map<std::string, NginxConfig*> &configTable_, std::map<std::string, std::string> &handlerTable_);
-    int GetPort();
-    std::string GetRoot();
-    std::vector<std::shared_ptr<NginxConfigStatement>> statements_;
-  private:
-    std::string PeekURL(std::string s);
+    public:
+        std::string ToString(int depth = 0);
+        void ParseString(int depth, std::map<std::string, NginxConfig*> &configTable_, std::map<std::string, std::string> &handlerTable_);
+        int GetPort();
+        std::string GetRoot();
+        std::string GetAttribute(std::string attr) const;
+        std::vector<std::shared_ptr<NginxConfigStatement>> statements_;
+    private:
+        std::string PeekURL(std::string s);
 };
 
 // The driver that parses a config file and generates an NginxConfig.

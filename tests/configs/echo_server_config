@@ -1,14 +1,15 @@
 http {
   server {
-    listen 80;
-    echo_directory {
+    listen 8080;
+    root /usr/src/project;
+    handler echo {
       url echo;
     }
-    static_directory {
+    handler static {
       location /static_files1;
       url static1;
     }
-    static_directory {
+    handler static {
       location /static_files2;
       url static2;
     }

@@ -1,6 +1,10 @@
 #include "dispatcher.h" 
-#include "handle_manager.h"
+#include "handler_manager.h"
 #include "request_handler.h"
+#include "echo_handler.h"
+#include "static_handler.h"
+#include "status_handler.h"
+#include "error_handler.h"
 
 Dispatcher::Dispatcher (NginxConfig* config)
 {
@@ -16,9 +20,8 @@ void Dispatcher::dispatch(Request *req)
     */
     HandlerManager handlermanager_;
     std::string name;
-    NginxConfig* nginxconfig;
+    NginxConfig* nginxconfig = nullptr;
     std::string path = root_;
-
     // read full url
     std::string full_url = req->uri_path();
     int i = 1;
@@ -27,7 +30,6 @@ void Dispatcher::dispatch(Request *req)
         if (full_url[i] == '/')
         break;
     }
-
     // extract uri 
     std::string uri = full_url.substr(1,i-1);
 
@@ -35,7 +37,7 @@ void Dispatcher::dispatch(Request *req)
     std::map<std::string,std::string>::iterator it = handlerTable_.find(uri);
     if (it != handlerTable_.end())
     {
-        // assign name
+        // assign 
         name = handlerTable_.find(uri)->second;
         nginxconfig = configTable_.find(uri)->second;
     }

@@ -13,7 +13,7 @@ class RequestHandler
 {
   public: 
     static RequestHandler* create(const NginxConfig& config, const std::string& path);
-    virtual  std::unique_ptr<Response> HandleRequest(const Request& request);
+    virtual std::unique_ptr<Response> HandleRequest(const Request& request) = 0;
 
   protected: 
     std::string path_;

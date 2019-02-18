@@ -1,6 +1,6 @@
-#include "handle_manager.h"
+#include "handler_manager.h"
 
-std::unique_ptr<RequestHandler> createByName(const std::string& name, const NginxConfig& config, const std::string& path)
+std::unique_ptr<RequestHandler> HandlerManager::createByName(const std::string& name, const NginxConfig& config, const std::string& path)
 {
     if (name =="echo")
     {
@@ -18,4 +18,5 @@ std::unique_ptr<RequestHandler> createByName(const std::string& name, const Ngin
     {
         return std::unique_ptr<RequestHandler>(StatusHandler::create(config,path));
     }
+    return nullptr;
 };

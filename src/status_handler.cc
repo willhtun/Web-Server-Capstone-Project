@@ -4,7 +4,7 @@
 #include <boost/log/trivial.hpp>
 #include "status_handler.h"
 
-static RequestHandler::RequestHandler*  create(const NginxConfig& config, const std::string& path)
+RequestHandler* StatusHandler::create(const NginxConfig& config, const std::string& path)
 {
     //creates an instance of status   
 };

@@ -5,36 +5,22 @@
 #include <boost/log/trivial.hpp>
 #include <sstream> 
 #include "static_handler.h"
+#include "config_parser.h"
 #include <iostream>
 
 
-static RequestHandler* create(const NginxConfig& config, const std::string& uri_path)
+RequestHandler* StaticHandler::create(const NginxConfig& config, const std::string& path)
 {
-    // leave blank for now
-}
-
-std::string StaticHandler::parse_uri(std::string uri_path)
-{
-    // we have no access to a request object, we only have the uri_path which is helpful. I'm guessing uri_path is uri_path
-    int uri_length = 1;
-    while (uri_length < uri_path.length() && uri_path[uri_length] != '/') 
-    {
-        uri_length++;
-    }
-    
-    // set uri_type
-    std::string uri_type = uri_path.substr(1, uri_length - 1);
-
-    // determine static directory
-    int dir_id = ServerObject::findStaticDir(uri_type);
-    assert(dir_id != -1);
-
-    return ServerObject::staticfile_dir[dir_id];
+    StaticHandler* sh = new StaticHandler();
+    sh->filedir_ = config.GetAttribute("location");
+    sh->root_ = path;
+    return sh;
 }
 
 std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
 {
     // uri: /static/somefile.html
+    std::cout << "Static Handler building response for request...\n";
     BOOST_LOG_TRIVIAL(trace) << "Static Handler building response for request...";
     std::string filename = (request.uri_path()).substr(8, request.uri_path().length());
     std::string fileextension;
@@ -45,7 +31,8 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
         fileextension = filename.substr(dot_index + 1, filename.length() - dot_index - 1);
 
     // determine file directory
-    std::string filedir_ = parse_uri(request.uri_path());
+    // should be already populated when object is created. Delete as necessary
+    // std::string filedir_ = parse_uri(request.uri_path());
 
     //read in file
     std::string image;
