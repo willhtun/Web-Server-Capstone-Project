@@ -89,9 +89,6 @@ bool Request::parse_request()
         CRLF_FLAG = false;   
     }
     
-    // get only part of the request which contains header, method, etc. info
-    //std::string req_info = req_.substr(0, field_index);
-
     // split request content into vector of its lines
     if (CRLF_FLAG)
     {

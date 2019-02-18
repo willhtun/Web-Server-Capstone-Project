@@ -10,10 +10,6 @@
 class ErrorHandler : public RequestHandler
 {
 public:     
-    static RequestHandler*  create(const NginxConfig& config, const std::string& path);
-
-    //RequestHandler::statuscode HandleRequest(Request request, Response& response);
-    
+    static RequestHandler*  create(const NginxConfig& config, const std::string& path);  
     std::unique_ptr<Response> HandleRequest(const Request& request);
-
 };

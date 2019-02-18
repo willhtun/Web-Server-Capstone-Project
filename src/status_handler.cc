@@ -6,8 +6,7 @@
 
 static RequestHandler::RequestHandler*  create(const NginxConfig& config, const std::string& path)
 {
-//creates an instance of status 
-    
+    //creates an instance of status   
 };
 
 std::unique_ptr<Response> StatusHandler::HandleRequest(const Request& request)
@@ -32,6 +31,4 @@ std::string StatusHandler::CreateBody()
 {
     //some method to generate the full status report from the ServerStatus object 
     //probably want to http or many CRLF format it so that it doesn't come out in a huge blog. 
-
-
 };

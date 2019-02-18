@@ -9,7 +9,5 @@
 class HandlerManager
 {
 public: 
-    
     std::unique_ptr<RequestHandler> createByName(const std::string& name, const NginxConfig& config, const std::string& path);
-
 };

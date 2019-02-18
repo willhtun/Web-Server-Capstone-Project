@@ -74,29 +74,31 @@ int main(int argc, char* argv[])
 
     if (argc != 2)
     {
-      std::cerr << "Usage: async_tcp_echo_server <config>\n";
-      BOOST_LOG_TRIVIAL(fatal) << "Usage: async_tcp_echo_server <config>\n";
-      return 1;
+        std::cerr << "Usage: async_tcp_echo_server <config>\n";
+        BOOST_LOG_TRIVIAL(fatal) << "Usage: async_tcp_echo_server <config>\n";
+        return 1;
     }
-    
+        
     BOOST_LOG_TRIVIAL(trace) << "Parsing config file...";
     NginxConfigParser config_parser; // Import necessary classes to parse config file
     NginxConfig config;
-    if (!config_parser.Parse(argv[1], &config)) {
-      BOOST_LOG_TRIVIAL(fatal) << "Bad config file...";
-      std::cerr << "Bad config file\n";
-      return 1;
+    if (!config_parser.Parse(argv[1], &config))
+    {
+        BOOST_LOG_TRIVIAL(fatal) << "Bad config file...";
+        std::cerr << "Bad config file\n";
+        return 1;
     }
     BOOST_LOG_TRIVIAL(info) << "Config parsing success...";
-    
+        
     boost::asio::io_service io_service;
     using namespace std; // For atoi.
 
     int port = config.GetPort();
-    if (port == 0) { // Exit with error if port is unspecified
-      BOOST_LOG_TRIVIAL(fatal) << "No port specified...";
-      std::cerr << "No port specified\n";
-      return 1;
+    if (port == 0)
+    { // Exit with error if port is unspecified
+        BOOST_LOG_TRIVIAL(fatal) << "No port specified...";
+        std::cerr << "No port specified\n";
+        return 1;
     } 
 
     BOOST_LOG_TRIVIAL(info) << "Starting server on port " << port << "...";
@@ -108,6 +110,6 @@ int main(int argc, char* argv[])
     BOOST_LOG_TRIVIAL(fatal) << "Exception: " << e.what();
     std::cerr << "Exception: " << e.what() << "\n";
   }
-
+  
   return 0;
 }
