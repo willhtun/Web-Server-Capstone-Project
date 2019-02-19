@@ -6,8 +6,10 @@
 
 RequestHandler* ErrorHandler::create(const NginxConfig& config, const std::string& path)
 {
-    //create an instance of error
-    
+    ErrorHandler* eh = new ErrorHandler();
+    eh->root_ = path;
+    eh->uri_ = config.GetAttribute("url");
+    return eh;
 };
 
 std::unique_ptr<Response> ErrorHandler::HandleRequest(const Request& request)

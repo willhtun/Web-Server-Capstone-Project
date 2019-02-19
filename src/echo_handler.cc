@@ -7,7 +7,10 @@
 
 RequestHandler* EchoHandler::create(const NginxConfig& config, const std::string& path)
 {
-    //create an instance of echo
+    EchoHandler* eh = new EchoHandler();
+    eh->root_ = path;
+    eh->uri_ = config.GetAttribute("url");
+    return eh;
 };
 
 

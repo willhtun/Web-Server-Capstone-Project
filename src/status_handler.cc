@@ -6,7 +6,10 @@
 
 RequestHandler* StatusHandler::create(const NginxConfig& config, const std::string& path)
 {
-    //creates an instance of status   
+    StatusHandler* sh = new StatusHandler();
+    sh->root_ = path;
+    sh->uri_ = config.GetAttribute("url");
+    return sh;
 };
 
 std::unique_ptr<Response> StatusHandler::HandleRequest(const Request& request)

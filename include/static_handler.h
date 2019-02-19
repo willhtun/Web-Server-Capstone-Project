@@ -17,5 +17,6 @@ public:
 
 private:
     std::string root_;
+    std::string uri_;
     std::string filedir_;
 };

@@ -7,7 +7,7 @@
 class Dispatcher {
   public:
     Dispatcher (NginxConfig* config);
-    void dispatch(Request* req);
+    std::unique_ptr<Response> generateResponse(Request* req);
     Request* getRequest();
     Response* getResponse();
   private:

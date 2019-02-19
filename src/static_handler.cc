@@ -12,6 +12,7 @@
 RequestHandler* StaticHandler::create(const NginxConfig& config, const std::string& path)
 {
     StaticHandler* sh = new StaticHandler();
+    sh->uri_ = config.GetAttribute("url");
     sh->filedir_ = config.GetAttribute("location");
     sh->root_ = path;
     return sh;
@@ -20,9 +21,10 @@ RequestHandler* StaticHandler::create(const NginxConfig& config, const std::stri
 std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
 {
     // uri: /static/somefile.html
-    std::cout << "Static Handler building response for request...\n";
     BOOST_LOG_TRIVIAL(trace) << "Static Handler building response for request...";
-    std::string filename = (request.uri_path()).substr(8, request.uri_path().length());
+
+    std::string full_url = request.uri_path();
+    std::string filename = full_url.substr(uri_.length() + 1, full_url.length());
     std::string fileextension;
     std::string contenttype;
 
@@ -30,15 +32,16 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
     if (dot_index != std::string::npos)
         fileextension = filename.substr(dot_index + 1, filename.length() - dot_index - 1);
 
+
     // determine file directory
     // should be already populated when object is created. Delete as necessary
     // std::string filedir_ = parse_uri(request.uri_path());
 
     //read in file
     std::string image;
-    std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+   // std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
      // local uri_path
-    //std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+    std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
    
     //if fail, give 404 error
     std::unique_ptr<Response> response(new Response());

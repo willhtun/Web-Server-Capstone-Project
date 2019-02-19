@@ -127,7 +127,10 @@ std::string NginxConfig::GetRoot()
 
 std::string NginxConfig::GetAttribute(std::string attr) const
 {
-    std::string config_string = statements_[0]->ToString(0);
+    std::string config_string;
+    for (int i = 0; i < statements_.size(); i++) {
+        config_string += statements_[i]->ToString(0);
+    }
     int string_length = attr.length();
     std::size_t index = config_string.find(attr);
     if (index != std::string::npos) 
@@ -141,7 +144,7 @@ std::string NginxConfig::GetAttribute(std::string attr) const
         }
         try 
         {
-            return config_string.substr(index + string_length + 1, ending_pos).c_str(); // start reading the value 1 space after listen
+            return config_string.substr(index + string_length + 1, ending_pos - 1).c_str(); // start reading the value 1 space after listen
         }
         catch (std::exception& e) 
         {

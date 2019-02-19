@@ -17,4 +17,7 @@ public:
     
     std::string CreateBody();
 
+private:
+    std::string root_;
+    std::string uri_;
 };

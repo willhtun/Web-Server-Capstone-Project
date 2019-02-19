@@ -55,12 +55,15 @@ void session::handle_read(const boost::system::error_code& error,
             // construct dispatcher and handle incoming request
             BOOST_LOG_TRIVIAL(info) << "Constructing dispatcher...";
             Dispatcher dispatcher(config_);
-            dispatcher.dispatch(req.get());
-
-            // add data to status database
-            Response* resp = dispatcher.getResponse();
-            config_->getStatusObject()
-                .addStatusEntry(req->uri_path(), std::to_string(resp->getStatusCode()));
+            if (dispatcher.generateResponse(req.get())) {
+                httpresponse = dispatcher.generateResponse(req.get())->Output();
+                // add data to status database
+                Response* resp = dispatcher.getResponse();
+                config_->getStatusObject()
+                    .addStatusEntry(req->uri_path(), std::to_string(resp->getStatusCode()));
+            }
+            else
+                httpresponse = "";
         }
         else
         {
@@ -79,7 +82,6 @@ void session::handle_read(const boost::system::error_code& error,
         BOOST_LOG_TRIVIAL(error) << "async_read_some failed...";
         delete this;
     }
-    
 }
 
 void session::handle_write(const boost::system::error_code& error)
