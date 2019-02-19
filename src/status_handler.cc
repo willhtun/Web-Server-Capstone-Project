@@ -11,24 +11,45 @@ RequestHandler* StatusHandler::create(const NginxConfig& config, const std::stri
 
 std::unique_ptr<Response> StatusHandler::HandleRequest(const Request& request)
 {
+    // create fresh response obj
     BOOST_LOG_TRIVIAL(trace) << "Status handler building response for request...";
-
     std::unique_ptr<Response> response(new Response());
 
-    std::string status_body = StatusHandler::CreateBody();
+    std::string body = CreateBody();
 
+    // set response data
     response->SetStatus(Response::OK);
-    response->ReSetHeader("Content-Type", "text/plain");
-    response->SetHeader("Content-Length", std::to_string(status_body.length()));
-    response->SetBody(status_body);
-    
-    BOOST_LOG_TRIVIAL(trace) << "Response built by status handler...";
+    response->ReSetHeader("Content-Type","text/plain");
+    response->SetHeader("Content-Length", std::to_string(body.length()));
+    response->SetBody(body);
+    BOOST_LOG_TRIVIAL(trace) << "Response built by Status Handler...";
 
     return response;
 };
 
 std::string StatusHandler::CreateBody()
 {
-    //some method to generate the full status report from the ServerStatus object 
-    //probably want to http or many CRLF format it so that it doesn't come out in a huge blog. 
+    // get status entry database
+    std::vector<std::pair<std::string,std::string>> status_entries = config_.getStatusObject().getStatusEntries();
+
+    // build body string
+    std::string body = "";
+
+    // bring in request url and response code pairs
+    for (std::vector<std::pair<std::string,std::string>>::const_iterator it = status_entries.begin();
+         it != status_entries.end(); it++)
+    {
+        body += "Request Url: " + it->first + " | Response Code: " + it->second + "\n";
+    }
+
+    // bring in handler details
+    body += "\nRequest Handlers which Exist:\n";
+    std::vector<std::string> myReqHandlers = config_.getReqHandlers();
+    for (std::vector<std::string>::const_iterator it = myReqHandlers.cbegin(); it != myReqHandlers.cend(); it++)
+    {
+        // TODO: specify handler and corresponding prefix
+        body += *it + "\n";
+    }
+
+    return body;    
 };

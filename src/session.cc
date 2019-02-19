@@ -8,6 +8,7 @@
 #include "echo_handler.h"
 #include "error_handler.h"
 #include "static_handler.h"
+#include "status_obj.h"
 #include "dispatcher.h"
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
@@ -37,7 +38,7 @@ void session::handle_read(const boost::system::error_code& error,
         return;
     }
     if (!error)
-    {    
+    {
         std::string httpresponse;
         
         BOOST_LOG_TRIVIAL(trace) << "Sending data to request handler...";
@@ -55,6 +56,11 @@ void session::handle_read(const boost::system::error_code& error,
             BOOST_LOG_TRIVIAL(info) << "Constructing dispatcher...";
             Dispatcher dispatcher(config_);
             dispatcher.dispatch(req.get());
+
+            // add data to status database
+            Response* resp = dispatcher.getResponse();
+            config_->getStatusObject()
+                .addStatusEntry(req->uri_path(), std::to_string(resp->getStatusCode()));
         }
         else
         {

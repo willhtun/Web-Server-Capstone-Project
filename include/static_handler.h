@@ -9,7 +9,6 @@
 class StaticHandler : public RequestHandler
 {
 public:
-
     //create an instance of the handler
     static RequestHandler* create(const NginxConfig& config, const std::string& path);
 

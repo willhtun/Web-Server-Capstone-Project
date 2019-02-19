@@ -6,7 +6,7 @@
 #include "status_handler.h"
 #include "error_handler.h"
 
-Dispatcher::Dispatcher (NginxConfig* config)
+Dispatcher::Dispatcher (NginxConfig* config) : req_(new Request("")), resp_(new Response())
 {
     root_ = config->GetRoot();
     config->ParseString(0, configTable_, handlerTable_);
@@ -49,5 +49,17 @@ void Dispatcher::dispatch(Request *req)
     }
 
     std::unique_ptr<RequestHandler> handler = handlermanager_.createByName(name, *nginxconfig, path);
-    handler->HandleRequest(*req);
+    req_ = req;
+    std::unique_ptr<Response> resp =  handler->HandleRequest(*req);
+    resp_ = resp.release();
+}
+
+Request* Dispatcher::getRequest()
+{
+    return req_;
+}
+
+Response* Dispatcher::getResponse()
+{
+    return resp_;
 }

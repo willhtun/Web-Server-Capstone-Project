@@ -43,6 +43,19 @@ void NginxConfig::ParseString(int depth, std::map<std::string, NginxConfig*> &co
     }
 }
 
+std::vector<std::string> NginxConfig::getReqHandlers()
+{
+    std::vector<std::string> reqHandlers;
+    for (const auto& statement : statements_)
+    {
+        if (statement->tokens_[0] == "handler") 
+        {
+            reqHandlers.push_back(PeekURL(statement->child_block_->ToString()));
+        }
+    }
+    return reqHandlers;
+}
+
 std::string NginxConfig::PeekURL(std::string s) 
 {
     int i = s.find("url");
@@ -55,6 +68,11 @@ std::string NginxConfig::PeekURL(std::string s)
         return s.substr(i+1,j-1);
     }
     return "";
+}
+
+StatusObject NginxConfig::getStatusObject()
+{
+    return status_obj_;
 }
 
 int NginxConfig::GetPort() 

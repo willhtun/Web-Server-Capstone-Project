@@ -48,13 +48,14 @@ add_library(static_handler src/static_handler.cc)
 add_library(status_handler src/status_handler.cc)
 add_library(dispatcher src/dispatcher.cc)
 add_library(handler_manager src/handler_manager.cc)
+add_library(status_obj src/status_obj.cc)
 
 # Update executable name, srcs, and deps
 # add_executable(example_server src/example_server_main.cc)
 # target_link_libraries(example_server example_lib Boost::system)
 
 add_executable(server_main src/server_main.cc)
-target_link_libraries(server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler request config_parser response Boost::system Boost::log_setup Boost::log)
+target_link_libraries(server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler request config_parser response status_obj Boost::system Boost::log_setup Boost::log)
 
 # Update test executable name, srcs, and deps
 # add_executable(example_lib_test tests/example_lib_test.cc)

@@ -30,6 +30,11 @@ void Response::SetBody(std::string body_value)
     body_ = body_value;
 }
 
+Response::statuscode Response::getStatusCode()
+{
+    return status_code_;
+}
+
 std::string Response::Output()
 {   
     const std::string CRLF = "\r\n";
