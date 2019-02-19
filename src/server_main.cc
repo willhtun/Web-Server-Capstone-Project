@@ -74,8 +74,8 @@ int main(int argc, char* argv[])
 
     if (argc != 2)
     {
-        std::cerr << "Usage: async_tcp_echo_server <config>\n";
-        BOOST_LOG_TRIVIAL(fatal) << "Usage: async_tcp_echo_server <config>\n";
+        std::cerr << "Usage: server_main <config>\n";
+        BOOST_LOG_TRIVIAL(fatal) << "Usage: server_main <config>\n";
         return 1;
     }
         

@@ -1,0 +1,101 @@
+*******************************************************************************
+***********    Welcome to git-r-done's Web Server API    **********************
+*******************************************************************************
+
+-----------------
+Original Authors: Konner Macias, Victor Fu, Will Htun, Jason Wittmuss
+-----------------
+
+------------------------
+How our code is laid out
+------------------------
+Important folders:
+    - src/
+        Contains all implementation (.cc) files for our server.
+    
+    - include/
+        Contains all header files for our server, useful for understanding 
+        how objects interface.
+
+    - tests/
+        All test or example request files, including integration test files.
+
+        configs/
+            Example configuration files
+        
+        integration/
+            # SHOULD WE WRITE THIS OUT?
+
+------------------------------------
+How to build, test, and run the code
+------------------------------------
+Here we assume you are in git-r-done/
+
+Build
+-----------
+$ cd build
+$ cmake ..
+$ make
+
+Test
+----------
+$ cd build
+$ cmake ..
+$ make
+$ make test
+
+For further info on tests:
+$ tests/
+
+Run the code
+------------
+** Build and test code first!
+
+$ ./build/bin/server_main [config file]
+
+
+*------------------------------*
+* How to add a request handler *
+*------------------------------*
+
+To make it easier to know how to contribute, we think showing by example is 
+fitting here.
+
+E.g: Let's examine our Static Handler.
+-----------------***------------------
+Inherits from: RequestHandler
+
+Public:
+
+    static RequestHandler* create(const NginxConfig& config,
+                                    const std::string& path);
+    
+        All handlers must have a static create function! This returns an 
+        instance of a RequestHandler object capable of handling a request.
+
+    std::unique_ptr<Response> HandleRequest(const Request& request);
+
+        RequestHandler has a virtual method called HandleRequest, this must be 
+        implemented by your new handler.
+
+        For StaticHandler, this reads in a file stream of data and builds an 
+        appropriate response object to send back.
+
+Private:
+    std::string root_;
+
+        Variable holds root path for server.
+
+    std::string filedir_;
+    
+        Variable holds which directory we are in. (e.g: static_files1/)
+
+
+
+By this point, we know what StaticHandler does at a high level, but next comes
+learning what's involved with a standard Request and Response object.
+
+Request
+--------------------------
+
+
