@@ -24,7 +24,7 @@ Important folders:
             Example configuration files
         
         integration/
-            # SHOULD WE WRITE THIS OUT?
+            References for the integration tests to confirm correctness.
 
 ------------------------------------
 How to build, test, and run the code
@@ -193,14 +193,45 @@ response->SetHeader("Content-Type", contenttype);
 response->SetHeader("Content-Length", std::to_string(image.length()));
 response->SetBody(image);
 
+By this point, you should have been able to implement a new handler. 
+Now we must integrate it into rest of the code base. 
+
+handler_manager.cc
+--------------------------
+handler_manger is the responsible for the creation of instances of handlers.
+Inside handler_manager you will notice blocks of if statements that allow the create of several handler types. 
+To add yours, simply create an if block and add to the file. e.i.: 
+
+if (name =="NEWHANDLER")
+    {
+        return std::unique_ptr<RequestHandler>(NEWHANDLER::create(config,path));
+    }
+
+dispatcher.cc
+--------------------------
+Dispacher is responsible for controling incoming requests and dispatching the correct handlers.
+Simply add a include block at the top so that it can recognize your handler. 
+
+#include "NEWHANDLER_handler.h"
+
 How to add a handler summarized
 -------------------------------
 
 - Your handler must have the methods create, and HandleRequest.
 
+-Your create method should be simple should use the same format as the exisiting handlers. 
+    See them for reference. 
+
 - For HandleRequest, here is where you use request information to build an
     appropriate response object.
 
+-Add an if block to the handle_manger.cc with your new handler. 
+
+-#include your new handler in dispatcher.cc
+
+
+Notes
+-------------------------------
 We currently have the following handlers:
     - EchoHandler
     - StaticHandler
