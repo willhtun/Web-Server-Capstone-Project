@@ -4,7 +4,6 @@
 
 void server::start_accept()
 {
-    // pass in StatusObject here
     session* new_session = new session(io_service_, config_);
     BOOST_LOG_TRIVIAL(trace) << "Server accepting connections...";
     acceptor_.async_accept(new_session->socket(),

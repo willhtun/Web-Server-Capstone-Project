@@ -6,25 +6,29 @@
 Original Authors: Konner Macias, Victor Fu, Will Htun, Jason Wittmuss
 -----------------
 
-------------------------
-How our code is laid out
-------------------------
-Important folders:
-    - src/
-        Contains all implementation (.cc) files for our server.
-    
-    - include/
-        Contains all header files for our server, useful for understanding 
-        how objects interface.
+---------------
+Important Files
+--------------
+- server_main.cc : Takes in config file, calls config parser, and starts server
+- config_parser.cc : Parses config file and assigns data members
+- server.cc : Listens for new connections
+- session.cc : receives a request and builds an appropriate request handler to 
+                send back a response
+- request.cc : class for a standard HTTP request
+- response.cc : class for a standard HTTP response
+- request_handler.h : simple interface for all specific request handlers to hit
+- dispatcher.cc : takes in request and creates a handler manager object
+- handler_manager.cc : returns an appropriate request handler for a given
+                        request
+- echo_handler.cc : inherits from request_handler and echos request back as 
+                     response
+- static_handler.cc : inherits from request_handler and serves a static file 
+                        from a directory on server
+- error_handler.cc : inherits from request_handler and reurns a 404 response
+- status_handler.cc : inherits from request_handler and displays info on 
+                        the status of the web server
+- status_obj.cc : class to work with status entry database
 
-    - tests/
-        All test or example request files, including integration test files.
-
-        configs/
-            Example configuration files
-        
-        integration/
-            References for the integration tests to confirm correctness.
 
 ------------------------------------
 How to build, test, and run the code
@@ -53,16 +57,17 @@ Run the code
 
 $ .build/bin/server_main [config file]
 
+Use your browser to view the page: http://localhost:8080/
 
-*------------------------------*
-* How to add a request handler *
-*------------------------------*
+------------------------------
+ How to add a request handler 
+------------------------------
 
 To make it easier to know how to contribute, we think showing by example is 
 fitting here.
 
 E.g: Let's examine our Static Handler.
------------------***------------------
+--------------------------------------
 Inherits from: RequestHandler
 
 Public:
@@ -168,8 +173,13 @@ Public:
     Setters:
 
         void SetStatus(const statuscode status_code);
-        void SetHeader(const std::string& header_name, const std::string& header_value);
-        void ReSetHeader(const std::string& header_name, const std::string& header_value);
+
+        void SetHeader(const std::string& header_name, 
+                        const std::string& header_value);
+
+        void ReSetHeader(const std::string& header_name, 
+                          const std::string& header_value);
+
         void SetBody(std::string body_value);    
 
     std::string Output();
@@ -185,13 +195,14 @@ Private:
         int headersize_;
         int bodysize_;
 
-Awesome! Let's look an example at how this would be used in a .cc
-
-std::unique_ptr<Response> response(new Response());
-response->SetStatus(Response::OK);
-response->SetHeader("Content-Type", contenttype);
-response->SetHeader("Content-Length", std::to_string(image.length()));
-response->SetBody(image);
+Awesome! Let's look an example at how this would be used in a .cc:
+--
+    std::unique_ptr<Response> response(new Response());
+    response->SetStatus(Response::OK);
+    response->SetHeader("Content-Type", contenttype);
+    response->SetHeader("Content-Length", std::to_string(image.length()));
+    response->SetBody(image);
+--
 
 By this point, you should have been able to implement a new handler. 
 Now we must integrate it into rest of the code base. 
@@ -199,17 +210,22 @@ Now we must integrate it into rest of the code base.
 handler_manager.cc
 --------------------------
 handler_manger is the responsible for the creation of instances of handlers.
-Inside handler_manager you will notice blocks of if statements that allow the create of several handler types. 
+
+Inside handler_manager you will notice blocks of if statements that allow the 
+create of several handler types.
+
 To add yours, simply create an if block and add to the file. e.i.: 
 
 if (name =="NEWHANDLER")
-    {
-        return std::unique_ptr<RequestHandler>(NEWHANDLER::create(config,path));
-    }
+{
+    return std::unique_ptr<RequestHandler>(NEWHANDLER::create(config,path));
+}
 
 dispatcher.cc
 --------------------------
-Dispacher is responsible for controling incoming requests and dispatching the correct handlers.
+Dispacher is responsible for controling incoming requests and dispatching 
+the correct handlers.
+
 Simply add a include block at the top so that it can recognize your handler. 
 
 #include "NEWHANDLER_handler.h"
@@ -219,8 +235,8 @@ How to add a handler summarized
 
 - Your handler must have the methods create, and HandleRequest.
 
--Your create method should be simple should use the same format as the exisiting handlers. 
-    See them for reference. 
+-Your create method should be simple should use the same format as the 
+    exisiting handlers. See them for reference. 
 
 - For HandleRequest, here is where you use request information to build an
     appropriate response object.
@@ -238,5 +254,12 @@ We currently have the following handlers:
     - StatusHandler
     - ErrorHandler
 
+We currently have the following paths configured:
+    - /echo : our echo server which spits back the request
+    - /static1/ : one directory path for static handler
+    - /static2/ : another directory path for serving static files
+    - /status : status page for displaying server info
+
     Check these out if you need more implementation assistance.
     Feel free to expand upon these by adding in new handlers!
+

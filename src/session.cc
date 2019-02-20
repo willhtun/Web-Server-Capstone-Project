@@ -55,15 +55,24 @@ void session::handle_read(const boost::system::error_code& error,
             // construct dispatcher and handle incoming request
             BOOST_LOG_TRIVIAL(info) << "Constructing dispatcher...";
             Dispatcher dispatcher(config_);
-            if (dispatcher.generateResponse(req.get())) {
-                httpresponse = dispatcher.generateResponse(req.get())->Output();
+
+            // check if dispatch returns a valid response pointer
+            if (dispatcher.generateResponse(req.get()))
+            {
+                // get resp object and set httpresponse string
+                BOOST_LOG_TRIVIAL(info) << "Dispatcher generating appropriate response...";
+                std::unique_ptr<Response> resp = dispatcher.generateResponse(req.get());
+                httpresponse = resp->Output();
+                
                 // add data to status database
-                Response* resp = dispatcher.getResponse();
+                BOOST_LOG_TRIVIAL(trace) << "Adding url and response code into Status Database...";
                 config_->getStatusObject()
                     .addStatusEntry(req->uri_path(), std::to_string(resp->getStatusCode()));
             }
             else
+            {
                 httpresponse = "";
+            }
         }
         else
         {

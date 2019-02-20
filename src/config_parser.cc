@@ -45,6 +45,9 @@ void NginxConfig::ParseString(int depth, std::map<std::string, NginxConfig*> &co
 
 std::vector<std::string> NginxConfig::getReqHandlers()
 {
+    /*
+        Author: Konner Macias
+    */
     std::vector<std::string> reqHandlers;
     for (const auto& statement : statements_)
     {
