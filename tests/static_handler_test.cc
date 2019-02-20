@@ -5,14 +5,18 @@
 #include "gtest/gtest_prod.h"
 #include "session.h"
 #include "response.h"
+#include "dispatcher.h"
+#include "status_obj.h"
+#include "handler_manager.h"
 
 class StaticHandlerTest : public ::testing::Test {
   protected:
     boost::asio::io_service io_service_;
+    NginxConfig out_config_;
 
     void read_request_file(std::string request_file_str) {
         const char* a_request = file_to_string(request_file_str);
-        session* s = new session(io_service_);
+        session* s = new session(io_service_, &out_config_);
         Sesh sesh;
         boost::system::error_code ec;
         sesh.assign_data_and_call_read(s, ec, 100, a_request);

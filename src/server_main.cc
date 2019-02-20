@@ -101,6 +101,8 @@ int main(int argc, char* argv[])
         return 1;
     } 
 
+    std::cout << "PORT: " << std::to_string(port) << std::endl;
+
     BOOST_LOG_TRIVIAL(info) << "Starting server on port " << port << "...";
     server s(io_service, port, &config);
     io_service.run();

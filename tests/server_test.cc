@@ -4,9 +4,11 @@
 #include "echo_handler.h"
 #include "static_handler.h"
 #include "config_parser.h"
-#include "server_object.h"
 #include "server.h"
 #include "response.h"
+#include "dispatcher.h"
+#include "status_obj.h"
+#include "handler_manager.h"
 
 class ServerTest : public ::testing::Test {
   protected:
@@ -21,7 +23,7 @@ class ServerTest : public ::testing::Test {
 
 TEST_F(ServerTest, HandleAcceptTest) {
     boost::asio::io_service io_service_;
-    server s(io_service_, 8080);
+    server s(io_service_, 8080, &out_config_);
     // test simplying to catch an error
     EXPECT_EQ(1,1);
 }
@@ -59,7 +61,7 @@ TEST_F(ServerTest, ToStringTest) {
 // Test start accept
 TEST_F(ServerTest, TestStartAccept) {
   boost::asio::io_service io_service_;
-  server* serv = new server(io_service_, 8080);
+  server* serv = new server(io_service_, 8080, &out_config_);
   Serv serv_friend;
   serv_friend.call_start_accept(serv);
   EXPECT_EQ(1,1);
@@ -68,8 +70,8 @@ TEST_F(ServerTest, TestStartAccept) {
 // Test handle accept
 TEST_F(ServerTest, TestHandleAccept) {
   boost::asio::io_service io_service_;
-  server* serv = new server(io_service_, 8080);
-  session* s = new session(io_service_);
+  server* serv = new server(io_service_, 8080, &out_config_);
+  session* s = new session(io_service_, &out_config_);
   Serv serv_friend;
   boost::system::error_code ec;
   serv_friend.call_handle_accept(serv, s, ec);
@@ -79,8 +81,8 @@ TEST_F(ServerTest, TestHandleAccept) {
 // Test handle accept w/error
 TEST_F(ServerTest, TestHandleBadAccept) {
   boost::asio::io_service io_service_;
-  server* serv = new server(io_service_, 8080);
-  session* s = new session(io_service_);
+  server* serv = new server(io_service_, 8080, &out_config_);
+  session* s = new session(io_service_, &out_config_);
   Serv serv_friend;
   serv_friend.call_handle_accept(serv, s, boost::asio::error::eof);
   EXPECT_EQ(1,1);

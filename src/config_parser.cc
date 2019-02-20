@@ -80,7 +80,10 @@ StatusObject NginxConfig::getStatusObject()
 
 int NginxConfig::GetPort() 
 {
-    std::string config_string = statements_[0]->ToString(0);
+    std::string config_string;
+    for (int i = 0; i < statements_.size(); i++) {
+        config_string += statements_[i]->ToString(0);
+    }
     std::size_t index = config_string.find("listen");
     if (index != std::string::npos) 
     {
@@ -101,6 +104,7 @@ int NginxConfig::GetPort()
             return 0;
         }
     }
+    return 0;
 }
 
 std::string NginxConfig::GetRoot() 

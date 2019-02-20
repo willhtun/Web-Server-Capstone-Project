@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "config_parser.h"
-#include "server_object.h"
 
 // define fixture
 class NginxConfigParserTest : public ::testing::Test {
@@ -31,19 +30,7 @@ class NginxConfigTest : public ::testing::Test {
       bool parseFile(std::string config_file) {
         return parser_.Parse(config_file.c_str(), &config_);
       }
-
-      void getServerObject(std::string config_file) {
-        parser_.Parse(config_file.c_str(), &config_);
-        config_.GetServerObject();
-      }
-
-      void getServerObject_fromString(std::string config_string) {
-        parser_.Parse(config_string.c_str(), &config_);
-        config_.GetServerObject();
-      }
 };
-
-
 
 // test given example
 TEST_F(NginxConfigParserTest, ExampleConfig) {
@@ -150,27 +137,22 @@ TEST_F(NginxConfigTest, ObjectConstruction) {
   NginxConfig config_test;
   NginxConfigParser configparser_test;
   
-  EXPECT_TRUE(configparser_test.Parse("../tests/configs/echo_server_config", &config_test));
-  config_test.GetServerObject();
-  EXPECT_EQ(ServerObject::port, 80);
+  EXPECT_TRUE(configparser_test.Parse("../tests/configs/example_config", &config_test));
 }
 
 // check valid port number
 TEST_F(NginxConfigTest, PortTest1) {
-  EXPECT_TRUE(parseFile("../tests/configs/echo_server_config"));
-  config_.GetServerObject();
-  EXPECT_EQ(ServerObject::port, 80);
+  EXPECT_TRUE(parseFile("../tests/configs/example_config"));
+  EXPECT_EQ(config_.GetPort(), 80);
 }
 
 TEST_F(NginxConfigTest, PortTest2) {
   EXPECT_TRUE(parseFile("../tests/prac_requests/prac_request"));
-  config_.GetServerObject();
-  EXPECT_EQ(ServerObject::port, 0);
+  EXPECT_EQ(config_.GetPort(), 0);
 }
 
 // check no port specified
 TEST_F(NginxConfigTest, PortTest3) {
   EXPECT_TRUE(parseFile("../tests/configs/no_port_config"));
-  config_.GetServerObject();
-  EXPECT_EQ(ServerObject::port, 0);
+  EXPECT_EQ(config_.GetPort(), 0);
 }
