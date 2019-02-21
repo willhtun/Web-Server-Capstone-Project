@@ -46,6 +46,7 @@ add_library(echo_handler src/echo_handler.cc)
 add_library(error_handler src/error_handler.cc)
 add_library(static_handler src/static_handler.cc)
 add_library(status_handler src/status_handler.cc)
+add_library(proxy_handler src/proxy_handler.cc)
 add_library(dispatcher src/dispatcher.cc)
 add_library(handler_manager src/handler_manager.cc)
 add_library(status_obj src/status_obj.cc)
@@ -55,7 +56,7 @@ add_library(status_obj src/status_obj.cc)
 # target_link_libraries(example_server example_lib Boost::system)
 
 add_executable(server_main src/server_main.cc)
-target_link_libraries(server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler request config_parser response status_obj Boost::system Boost::log_setup Boost::log)
+target_link_libraries(server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler proxy_handler request config_parser response status_obj Boost::system Boost::log_setup Boost::log)
 
 # Update test executable name, srcs, and deps
 # add_executable(example_lib_test tests/example_lib_test.cc)
@@ -65,7 +66,7 @@ add_executable(config_parser_test tests/config_parser_test.cc)
 target_link_libraries(config_parser_test config_parser status_obj gtest_main Boost::log_setup Boost::log)
 
 add_executable(dispatcher_test tests/dispatcher_test.cc)
-target_link_libraries(dispatcher_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(dispatcher_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler proxy_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(echo_handler_test tests/echo_handler_test.cc)
 target_link_libraries(echo_handler_test server session request config_parser status_obj gtest_main Boost::system Boost::log_setup Boost::log)
@@ -74,7 +75,7 @@ add_executable(error_handler_test tests/error_handler_test.cc)
 target_link_libraries(error_handler_test server session request config_parser gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(handler_manager_test tests/handler_manager_test.cc)
-target_link_libraries(handler_manager_test server session dispatcher handler_manager echo_handler error_handler static_handler status_handler request config_parser response status_obj gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(handler_manager_test server session dispatcher handler_manager echo_handler error_handler static_handler status_handler proxy_handler request config_parser response status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(request_test tests/request_test.cc)
 target_link_libraries(request_test server session request config_parser response gtest_main Boost::log_setup Boost::log)
@@ -83,19 +84,19 @@ add_executable(response_test tests/response_test.cc)
 target_link_libraries(response_test server session request config_parser response gtest_main Boost::log_setup Boost::log)
 
 add_executable(server_test tests/server_test.cc)
-target_link_libraries(server_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(server_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler proxy_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(session_test tests/session_test.cc)
-target_link_libraries(session_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(session_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler proxy_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(static_handler_test tests/static_handler_test.cc)
-target_link_libraries(static_handler_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(static_handler_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler proxy_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(status_handler_test tests/status_handler_test.cc)
-target_link_libraries(status_handler_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(status_handler_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler proxy_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(status_obj_test tests/status_obj_test.cc)
-target_link_libraries(status_obj_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(status_obj_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler proxy_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
 # Update with test binary
 # gtest_discover_tests(example_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
@@ -117,7 +118,7 @@ gtest_discover_tests(status_obj_test /usr/src/projects/git-r-done build/googlete
 #generate_coverage_report(TARGETS example_server example_lib TESTS example_lib_test)
 
 include(cmake/CodeCoverageReportConfig.cmake)
-generate_coverage_report(TARGETS server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler request config_parser response status_obj TESTS config_parser_test dispatcher_test echo_handler_test error_handler_test handler_manager_test request_test response_test server_test session_test static_handler_test status_handler_test status_obj_test)
+generate_coverage_report(TARGETS server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler proxy_handler request config_parser response status_obj TESTS config_parser_test dispatcher_test echo_handler_test error_handler_test handler_manager_test request_test response_test server_test session_test static_handler_test status_handler_test status_obj_test)
 
 #Add integration test to cmake 
 add_test(NAME Integration COMMAND bash integration_test.sh WORKING_DIRECTORY /usr/src/project/tests)
