@@ -38,7 +38,7 @@ TEST_F(DispatcherTest, DispatchFunctionTest1)
 {
     EXPECT_TRUE(InitiateDispatcher("../tests/configs/echo_server_config"));
     Request req("GET / HTTP/1.1\r\n\r\n");
-    EXPECT_EQ(dispatcher_->generateResponse(&req), nullptr);
+    EXPECT_NE(dispatcher_->generateResponse(&req), nullptr);
 }
 
 TEST_F(DispatcherTest, DispatchFunctionTest2) 
