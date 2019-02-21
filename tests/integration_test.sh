@@ -11,6 +11,9 @@ echo "BUILD COMPLETE"
 echo "http {
   server {
     listen 80;
+    handler echo {
+      url /echo;
+    }
     server_name 127.0.0.1;
   }
 }" > ./tests/integration/integration_test_config
