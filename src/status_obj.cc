@@ -1,22 +1,39 @@
 #include "status_obj.h"
 
+
 void StatusObject::addStatusEntry(std::string request_url, std::string resp_code)
 {
-    /*
-        Adds a request url and response code to our "Status Database"
+   
+   std::tuple<int,std::string,std::string> status_entry(1, request_url, resp_code);
 
-        Author: Konner Macias
-    */
-   std::pair<std::string,std::string> status_entry(request_url, resp_code);
-   status_entries_.push_back(status_entry);
+   for (unsigned int i = 0; i < status_entries_.size(); i++)
+   {
+       if ((std::get<1>(status_entries_[i]) == request_url) && (std::get<2>(status_entries_[i])== resp_code))
+       {
+            (std::get<0>(status_entries_[i])) += 1;
+       }
+       else
+       {
+            status_entries_.push_back(status_entry);
+       }
+   }
 }
 
-std::vector<std::pair<std::string,std::string>> StatusObject::getStatusEntries()
+std::vector<std::tuple<int,std::string,std::string>> StatusObject::getStatusEntries()
 {
-    /*
-        Author: Konner Macias
-    */
+  
    return status_entries_;
 }
 
-std::vector<std::pair<std::string,std::string>> StatusObject::status_entries_;
+int StatusObject::getStatusCalls()
+{
+   unsigned int count = 0;
+   for (unsigned int i = 0; i < status_entries_.size(); i++)
+   {
+      count += (std::get<0>(status_entries_[i]));    
+   }
+
+   return count;
+}
+
+std::vector<std::tuple<int,std::string,std::string>> StatusObject::status_entries_;

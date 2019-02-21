@@ -10,6 +10,9 @@ RequestHandler* EchoHandler::create(const NginxConfig& config, const std::string
     EchoHandler* eh = new EchoHandler();
     eh->root_ = path;
     eh->uri_ = config.GetAttribute("url");
+
+    BOOST_LOG_TRIVIAL(trace) << "Echo handler created";
+
     return eh;
 };
 

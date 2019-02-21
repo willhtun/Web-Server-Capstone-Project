@@ -15,6 +15,9 @@ RequestHandler* StaticHandler::create(const NginxConfig& config, const std::stri
     sh->uri_ = config.GetAttribute("url");
     sh->filedir_ = config.GetAttribute("location");
     sh->root_ = path;
+
+    BOOST_LOG_TRIVIAL(trace) << "Static handler created";
+
     return sh;
 }
 

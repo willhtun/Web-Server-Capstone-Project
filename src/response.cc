@@ -41,15 +41,6 @@ std::string Response::Output()
 
     //Build the full response message from pieces
     std::string status_line = "HTTP/1.1 " + std::to_string(status_code_) + CRLF; 
-    
-    /*
-    std::stringstream full_response;
-    full_response << status_line ;
-    full_response << header_ ;
-    full_response << CRLF ;
-    full_response << body_; ;
-    return full_response.str();
-    */
 
     return status_line + header_ + CRLF + body_;
 };
