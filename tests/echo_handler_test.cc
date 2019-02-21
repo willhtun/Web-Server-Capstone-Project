@@ -24,7 +24,6 @@ TEST_F(EchoConfigParserTest, ExampleConfig) {
 // check big example
 TEST_F(EchoConfigParserTest, FullConfig) {
   EXPECT_TRUE(parseFile("../tests/configs/full_config"));
-  std::cout << "PORTPORTPORT: " << std::to_string(out_config_.GetPort()) << std::endl;
   EXPECT_EQ(out_config_.GetPort(), 80);
 }
 
@@ -33,6 +32,3 @@ TEST_F(EchoConfigParserTest, FullConfig2) {
   EXPECT_TRUE(parseFile("../tests/configs/full_config2"));
   EXPECT_EQ(out_config_.GetPort(), 80);
 }
-
-
-

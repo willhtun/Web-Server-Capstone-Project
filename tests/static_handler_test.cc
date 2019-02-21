@@ -5,16 +5,22 @@
 #include "gtest/gtest_prod.h"
 #include "session.h"
 #include "response.h"
+#include "request.h"
 #include "dispatcher.h"
 #include "status_obj.h"
 #include "handler_manager.h"
+#include "static_handler.h"
 
-class StaticHandlerTest : public ::testing::Test {
+class StaticHandlerTest : public ::testing::Test 
+{
   protected:
     boost::asio::io_service io_service_;
     NginxConfig out_config_;
+    NginxConfigParser parser_;
+    RequestHandler* handler_;
 
-    void read_request_file(std::string request_file_str) {
+    void read_request_file(std::string request_file_str) 
+    {
         const char* a_request = file_to_string(request_file_str);
         session* s = new session(io_service_, &out_config_);
         Sesh sesh;
@@ -22,32 +28,90 @@ class StaticHandlerTest : public ::testing::Test {
         sesh.assign_data_and_call_read(s, ec, 100, a_request);
     }
 
-    const char* file_to_string(std::string request_file_str) {
+    const char* file_to_string(std::string request_file_str) 
+    {
         std::stringstream str;
         std::ifstream stream(request_file_str);
-        if (stream.is_open()) {
-            while(stream.peek() != EOF) {
+        if (stream.is_open()) 
+        {
+            while(stream.peek() != EOF)
                 str << (char) stream.get();
-            }
             stream.close();
             return str.str().c_str();
         }
+    }
+    
+    std::string get_req_string(std::string request_file_str) 
+    {
+        std::stringstream str;
+        std::ifstream stream(request_file_str);
+        if (stream.is_open()) 
+        {
+            while(stream.peek() != EOF)
+                str << (char) stream.get();
+            stream.close();
+            return str.str();
+        }
+    }
+
+    void InitiateStaticHandler(std::string config_file) {
+        parser_.Parse(config_file.c_str(), &out_config_);
+        handler_ = StaticHandler::create(out_config_, "/usr/src/project");
+    }
+
+    std::unique_ptr<Request> make_request(std::string raw_req)
+    {
+        return Request::request_handler(raw_req);
     }
 };
 
 
 TEST_F(StaticHandlerTest, JpgRequest) {
-    read_request_file("../tests/static_handler_tests/jpg_request");
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/jpg_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(1,1);
 }
 
 TEST_F(StaticHandlerTest, JpegRequest) {
-    read_request_file("../tests/static_handler_tests/jpeg_request");
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/jpeg_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(1,1);
 }
 
 TEST_F(StaticHandlerTest, PngRequest) {
-    read_request_file("../tests/static_handler_tests/png_request");
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/png_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, HtmRequest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/htm_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, HtmlRequest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/html_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, GifRequest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/gif_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, InvalidRequest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/invalid_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(1,1);
 }
 
@@ -57,21 +121,29 @@ TEST_F(StaticHandlerTest, PdfRequest) {
 }
 
 TEST_F(StaticHandlerTest, TiffRequest) {
-    read_request_file("../tests/static_handler_tests/tiff_request");
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/tiff_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(1,1);
 }
 
 TEST_F(StaticHandlerTest, DocRequest) {
-    read_request_file("../tests/static_handler_tests/doc_request");
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/doc_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(1,1);
 }
 
 TEST_F(StaticHandlerTest, TxtRequest) {
-    read_request_file("../tests/static_handler_tests/txt_request");
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/txt_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(1,1);
 }
 
 TEST_F(StaticHandlerTest, CsvRequest) {
-    read_request_file("../tests/static_handler_tests/csv_request");
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/csv_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(1,1);
 }

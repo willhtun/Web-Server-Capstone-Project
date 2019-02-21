@@ -1,4 +1,4 @@
-GET /static/Book1.csv HTTP/1.1
+GET /static1/Book1.csv HTTP/1.1
 Host: localhost:8080
 Connection: keep-alive
 Upgrade-Insecure-Requests: 1

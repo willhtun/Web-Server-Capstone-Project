@@ -1,4 +1,4 @@
-GET /static/photo2.jpg HTTP/1.1
+GET /static2/photo1.jpg HTTP/1.1
 Host: localhost:8080
 Connection: keep-alive
 Upgrade-Insecure-Requests: 1

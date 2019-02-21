@@ -66,8 +66,9 @@ void session::handle_read(const boost::system::error_code& error,
                 
                 // add data to status database
                 BOOST_LOG_TRIVIAL(trace) << "Adding url and response code into Status Database...";
-                config_->getStatusObject()
-                    .addStatusEntry(req->uri_path(), std::to_string(resp->getStatusCode()));
+                std::pair<std::string,std::string> status_entry(req->uri_path(), std::to_string(resp->getStatusCode()));
+                config_->addStatusEntry(status_entry);
+                BOOST_LOG_TRIVIAL(trace) << "New status added...";
             }
             else
             {

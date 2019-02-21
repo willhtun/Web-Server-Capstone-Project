@@ -74,7 +74,7 @@ add_executable(error_handler_test tests/error_handler_test.cc)
 target_link_libraries(error_handler_test server session request config_parser gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(handler_manager_test tests/handler_manager_test.cc)
-target_link_libraries(handler_manager_test server session request config_parser gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(handler_manager_test server session dispatcher handler_manager echo_handler error_handler static_handler status_handler request config_parser response status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(request_test tests/request_test.cc)
 target_link_libraries(request_test server session request config_parser response gtest_main Boost::log_setup Boost::log)
@@ -117,7 +117,7 @@ gtest_discover_tests(status_obj_test /usr/src/projects/git-r-done build/googlete
 #generate_coverage_report(TARGETS example_server example_lib TESTS example_lib_test)
 
 include(cmake/CodeCoverageReportConfig.cmake)
-generate_coverage_report(TARGETS server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler request config_parser response status_obj TESTS config_parser_test dispatcher_test echo_handler_test error_handler_test handler_manager_test request_test response_test server_test server_test static_handler_test status_handler_test status_obj_test)
+generate_coverage_report(TARGETS server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler request config_parser response status_obj TESTS config_parser_test dispatcher_test echo_handler_test error_handler_test handler_manager_test request_test response_test server_test session_test static_handler_test status_handler_test status_obj_test)
 
 #Add integration test to cmake 
 #add_test(NAME Integration COMMAND bash integration_test.sh WORKING_DIRECTORY /usr/src/project/tests)

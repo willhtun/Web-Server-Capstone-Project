@@ -33,11 +33,11 @@ std::unique_ptr<Response> StatusHandler::HandleRequest(const Request& request)
 std::string StatusHandler::CreateBody()
 {
     // get status entry database
-    std::vector<std::pair<std::string,std::string>> status_entries = config_.getStatusObject().getStatusEntries();
-
+    std::vector<std::pair<std::string,std::string>> status_entries = config_.getStatusEntries();
     // build body string
     std::string body = "";
 
+    std::cout << "Size of status entries: " << status_entries.size() << std::endl;
     // bring in request url and response code pairs
     for (std::vector<std::pair<std::string,std::string>>::const_iterator it = status_entries.begin();
          it != status_entries.end(); it++)

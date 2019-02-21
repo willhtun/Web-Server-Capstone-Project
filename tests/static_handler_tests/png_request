@@ -1,4 +1,4 @@
-GET /static/photo2.png HTTP/1.1
+GET /static1/photo2.png HTTP/1.1
 Host: localhost:8080
 Connection: keep-alive
 Cache-Control: max-age=0

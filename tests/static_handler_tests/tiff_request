@@ -1,4 +1,4 @@
-GET /static/welcome.tiff HTTP/1.1
+GET /static1/welcome.tiff HTTP/1.1
 Host: localhost:8080
 Connection: keep-alive
 Upgrade-Insecure-Requests: 1

@@ -73,10 +73,28 @@ std::string NginxConfig::PeekURL(std::string s)
     return "";
 }
 
-StatusObject NginxConfig::getStatusObject()
+void NginxConfig::addStatusEntry(std::pair<std::string,std::string> entry)
+{
+    /*
+        Author: Konner Macias
+    */
+   status_entries_.push_back(entry);
+}
+
+std::vector<std::pair<std::string,std::string>> NginxConfig::getStatusEntries()
+{
+    /*
+        Author: Konner Macias
+    */
+   return status_entries_;
+}
+
+/*
+StatusObject* NginxConfig::getStatusObject()
 {
     return status_obj_;
 }
+*/
 
 int NginxConfig::GetPort() 
 {
