@@ -18,3 +18,5 @@ std::vector<std::pair<std::string,std::string>> StatusObject::getStatusEntries()
     */
    return status_entries_;
 }
+
+std::vector<std::pair<std::string,std::string>> StatusObject::status_entries_;

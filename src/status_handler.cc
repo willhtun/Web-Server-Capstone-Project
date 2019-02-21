@@ -33,7 +33,7 @@ std::unique_ptr<Response> StatusHandler::HandleRequest(const Request& request)
 std::string StatusHandler::CreateBody()
 {
     // get status entry database
-    std::vector<std::pair<std::string,std::string>> status_entries = config_.getStatusEntries();
+    std::vector<std::pair<std::string,std::string>> status_entries = StatusObject::getStatusEntries();
     // build body string
     std::string body = "";
 
