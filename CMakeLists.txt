@@ -62,13 +62,13 @@ target_link_libraries(server_main server session dispatcher handler_manager echo
 # target_link_libraries(example_lib_test example_lib gtest_main)
 
 add_executable(config_parser_test tests/config_parser_test.cc)
-target_link_libraries(config_parser_test config_parser gtest_main Boost::log_setup Boost::log)
+target_link_libraries(config_parser_test config_parser status_obj gtest_main Boost::log_setup Boost::log)
 
 add_executable(dispatcher_test tests/dispatcher_test.cc)
 target_link_libraries(dispatcher_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(echo_handler_test tests/echo_handler_test.cc)
-target_link_libraries(echo_handler_test server session request config_parser gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(echo_handler_test server session request config_parser status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(error_handler_test tests/error_handler_test.cc)
 target_link_libraries(error_handler_test server session request config_parser gtest_main Boost::system Boost::log_setup Boost::log)

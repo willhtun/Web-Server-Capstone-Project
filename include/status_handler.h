@@ -6,6 +6,7 @@
 #include "response.h"
 #include "request_handler.h"
 #include "config_parser.h"
+#include "status_obj.h"
 
 class StatusHandler : public RequestHandler
 {

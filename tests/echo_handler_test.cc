@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "config_parser.h"
 #include "server.h"
+#include "status_obj.h"
 
 // define fixture
 class EchoConfigParserTest : public ::testing::Test {

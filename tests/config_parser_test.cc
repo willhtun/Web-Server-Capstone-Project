@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "config_parser.h"
+#include "status_obj.h"
 
 // define fixture
 class NginxConfigParserTest : public ::testing::Test {

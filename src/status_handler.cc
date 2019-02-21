@@ -30,14 +30,15 @@ std::unique_ptr<Response> StatusHandler::HandleRequest(const Request& request)
 
     // bring in handler details
     body += "\nRequest Handlers That Exist and Their Corresponding URL Prefixes:\n";
-    std::vector<std::string> myReqHandlers = config_.getReqHandlers();
-    for (std::vector<std::string>::const_iterator it = myReqHandlers.cbegin(); it != myReqHandlers.cend(); it++)
+
+    for(std::map<std::string, std::string>::const_iterator it = StatusObject::url_handlers_map_.begin();
+        it != StatusObject::url_handlers_map_.end(); ++it)
     {
-        // TODO: specify handler and corresponding prefix
-        body += *it + "\n";
+        body += "Handler Type: " + it->second + " | URL Prefix: " + it->first + "\n";
     }
 
-    std::cout << "Size of status entries: " << status_entries.size() << std::endl;
+    body += "\n";
+
     //Get the total number of requests made
     int totalcalls = StatusObject::getStatusCalls();
     body += "Total Requests Made To git-r-done Server: " +std::to_string(totalcalls) + "\n";

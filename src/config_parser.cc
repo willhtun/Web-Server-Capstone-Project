@@ -39,6 +39,7 @@ void NginxConfig::ParseString(int depth, std::map<std::string, NginxConfig*> &co
         {
             configTable_.insert(std::pair <std::string, NginxConfig*> (PeekURL(statement->child_block_->ToString()), (statement->child_block_).get()));
             handlerTable_.insert(std::pair <std::string, std::string> (PeekURL(statement->child_block_->ToString()), statement->tokens_[1]));
+            StatusObject::url_handlers_map_.insert(std::pair <std::string, std::string> (PeekURL(statement->child_block_->ToString()), statement->tokens_[1]));
         }
     }
 }
