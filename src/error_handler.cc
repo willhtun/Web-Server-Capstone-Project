@@ -8,7 +8,6 @@ RequestHandler* ErrorHandler::create(const NginxConfig& config, const std::strin
 {
     ErrorHandler* eh = new ErrorHandler();
     eh->root_ = path;
-    eh->uri_ = config.GetAttribute("url");
 
     BOOST_LOG_TRIVIAL(trace) << "Error handler created";
 

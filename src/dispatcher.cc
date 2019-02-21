@@ -55,8 +55,24 @@ std::unique_ptr<Response> Dispatcher::generateResponse(Request *req)
         resp_ = resp.get();
         return resp;
     }
+    else 
+    {
+        // assign 
+        HandlerManager handlermanager_;
+        std::string path = root_;
+        NginxConfig emptyconfig;
 
-    return nullptr;
+        // now create appropriate request handler
+        BOOST_LOG_TRIVIAL(trace) << "Building appropriate request handler...";
+        std::unique_ptr<RequestHandler> handler = handlermanager_.createByName("error", emptyconfig, path);
+        BOOST_LOG_TRIVIAL(info) << "Handling request...";
+        std::unique_ptr<Response> resp =  handler->HandleRequest(*req);
+
+        // assign req_ and resp_ objects TODO: delete?
+        req_ = req;
+        resp_ = resp.get();
+        return resp;
+    }
 }
 
 Request* Dispatcher::getRequest()

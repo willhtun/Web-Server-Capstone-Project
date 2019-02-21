@@ -12,7 +12,6 @@ class EchoConfigParserTest : public ::testing::Test {
     bool parseFile(std::string config_file) {
       return parser_.Parse(config_file.c_str(), &out_config_);
     }
-
 };
 
 // test given example
