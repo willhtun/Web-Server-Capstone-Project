@@ -10,13 +10,9 @@ std::unique_ptr<RequestHandler> HandlerManager::createByName(const std::string& 
     {
         return std::unique_ptr<RequestHandler>(StaticHandler::create(config,path));
     }
-    if (name =="error")
-    {
-        return std::unique_ptr<RequestHandler>(ErrorHandler::create(config,path));
-    }
     if (name =="status")
     {
         return std::unique_ptr<RequestHandler>(StatusHandler::create(config,path));
     }
-    return nullptr;
+    return std::unique_ptr<RequestHandler>(ErrorHandler::create(config,path));
 };
