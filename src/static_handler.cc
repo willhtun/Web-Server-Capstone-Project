@@ -42,9 +42,9 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
 
     //read in file
     std::string image;
-   // std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+    std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
      // local uri_path
-    std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
    
     //if fail, give 404 error
     std::unique_ptr<Response> response(new Response());
