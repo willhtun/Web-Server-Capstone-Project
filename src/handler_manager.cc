@@ -18,5 +18,9 @@ std::unique_ptr<RequestHandler> HandlerManager::createByName(const std::string& 
     {
         return std::unique_ptr<RequestHandler>(StatusHandler::create(config,path));
     }
+    if (name =="proxy")
+    {
+        return std::unique_ptr<RequestHandler>(ProxyHandler::create(config,path));   
+    }    
     return nullptr;
 };
