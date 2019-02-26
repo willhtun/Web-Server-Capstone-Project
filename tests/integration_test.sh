@@ -46,20 +46,20 @@ else
     echo $DIFF
 fi 
 
-echo "TESTING PROXY HANDLER"
-echo "SENDING SERVER REQUEST"
-curl -L localhost:8080/proxy1 > ./tests/integration/integration_test_proxy_response
-#check response of correctness
-DIFF=$(diff -w -B ./tests/integration/integration_expected_proxy_response ./tests/integration/integration_test_proxy_response)
-EXIT_STATUS=$? 
+# echo "TESTING PROXY HANDLER"
+# echo "SENDING SERVER REQUEST"
+# curl -L localhost:8080/proxy1 > ./tests/integration/integration_test_proxy_response
+# #check response of correctness
+# DIFF=$(diff -w -B ./tests/integration/integration_expected_proxy_response ./tests/integration/integration_test_proxy_response)
+# EXIT_STATUS=$? 
 
-if [ "$EXIT_STATUS" -eq 0 ]
-then
-    echo "SUCCESS: Proxy handler integration test passed"
-else
-    echo "FAILED: Proxy handler integration test failed"
-    echo $DIFF
-fi 
+# if [ "$EXIT_STATUS" -eq 0 ]
+# then
+#     echo "SUCCESS: Proxy handler integration test passed"
+# else
+#     echo "FAILED: Proxy handler integration test failed"
+#     echo $DIFF
+# fi 
 
 echo "SHUTTING DOWN"
 # Shutdown the webserver 
