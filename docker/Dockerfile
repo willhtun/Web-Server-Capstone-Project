@@ -12,20 +12,21 @@ RUN ctest --output-on_failure
 FROM ubuntu:latest as deploy
 
 # TODO(!): Copy server output binary to "."
- COPY --from=builder /usr/src/project/build/bin/server_main .
+COPY --from=builder /usr/src/project/build/bin/server_main .
+
+ # Copy static files directory
+COPY --from=builder /usr/src/project/static_files1/* ./static/static_files1/
+COPY --from=builder /usr/src/project/static_files2/* ./static/static_files2/
 
 # TODO(!): Expose some port(s)
- EXPOSE 80
+EXPOSE 80
 
 # Use ENTRYPOINT to specify the binary name
 # TODO(!): Update with real server name
- ENTRYPOINT ["./server_main"]
+ENTRYPOINT ["./server_main"]
 
 # Use CMD to specify arguments to ENTRYPOINT
 # TODO(!): Update with real server args
- COPY --from=builder /usr/src/project/tests/configs/echo_server_config .
- CMD ["./echo_server_config"]
+COPY --from=builder /usr/src/project/tests/configs/echo_server_config .
+CMD ["./echo_server_config"]
 
- # Copy static files directory
- COPY --from=builder /usr/src/project/static_files1/* ./static/static_files1/
- COPY --from=builder /usr/src/project/static_files2/* ./static/static_files2/

@@ -101,6 +101,7 @@ target_link_libraries(status_obj_test server session dispatcher handler_manager 
 add_executable(proxy_handler_test tests/proxy_handler_test.cc)
 target_link_libraries(proxy_handler_test proxy_handler request config_parser response status_obj gtest_main gmock_main Boost::system Boost::log_setup Boost::log)
 
+add_test(NAME Integration COMMAND bash ../tests/integration_2.sh)
 # Update with test binary
 # gtest_discover_tests(example_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 gtest_discover_tests(config_parser_test /usr/src/projects/git-r-done build/googletest)
