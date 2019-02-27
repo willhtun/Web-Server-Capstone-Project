@@ -4,6 +4,12 @@
 #include <iostream>
 #include <string>
 
+#include <boost/asio.hpp>
+#include <boost/array.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
+
 #include "config_parser.h"
 
 using boost::asio::ip::tcp;
@@ -12,7 +18,8 @@ class session
 {
   public:
     session(boost::asio::io_service& io_service, NginxConfig* config)
-      : socket_(io_service) 
+      : socket_(io_service),
+        strand_(io_service)
     {
       config_ = config;
     }
@@ -31,11 +38,15 @@ class session
         size_t bytes_transferred);
     void handle_write(const boost::system::error_code& error);
 
+    //From example
+    boost::asio::io_service::strand strand_;
+
     tcp::socket socket_;
     enum { max_length = 1024 };
     char data_[max_length];
     NginxConfig* config_;
 };
+
 
 
 class Sesh {

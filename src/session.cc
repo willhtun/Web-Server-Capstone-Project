@@ -14,16 +14,30 @@
 #include <boost/log/trivial.hpp>
 #include <boost/system/system_error.hpp>
 
+#include <vector>
+#include <boost/bind.hpp>
+
 void session::start()
 {
     BOOST_LOG_TRIVIAL(trace) << "Session has started...";
     try { BOOST_LOG_TRIVIAL(info) << "New connection from IP: " << socket_.remote_endpoint().address().to_string(); }
     catch(boost::system::system_error const& e) { std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n"; }
 
+    /*
     socket_.async_read_some(boost::asio::buffer(data_, max_length),
         boost::bind(&session::handle_read, this,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
+    */
+   
+    //Multithreaded
+    socket_.async_read_some(boost::asio::buffer(data_, max_length),
+    strand_.wrap(
+    boost::bind(&session::handle_read, this, 
+        boost::asio::placeholders::error,
+        boost::asio::placeholders::bytes_transferred)));
+
+
 }
 
 void session::handle_read(const boost::system::error_code& error,
@@ -81,10 +95,21 @@ void session::handle_read(const boost::system::error_code& error,
         }
 
         // write response to client
+        /*
         boost::asio::async_write(socket_,
             boost::asio::buffer(httpresponse.c_str(), httpresponse.length()),
             boost::bind(&session::handle_write, this,
             boost::asio::placeholders::error));
+        */
+
+        //Multithreaded
+        boost::asio::async_write(socket_,
+            boost::asio::buffer(httpresponse.c_str(), httpresponse.length()),
+            strand_.wrap(
+                boost::bind(&session::handle_write, this,
+                boost::asio::placeholders::error)));
+
+
     }
     else
     {
@@ -101,13 +126,32 @@ void session::handle_write(const boost::system::error_code& error)
         catch(boost::system::system_error const& e) { std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n"; }
         
         // write response to client
+        /*
+        ORIGINAL
         socket_.async_read_some(boost::asio::buffer(data_, max_length),
             boost::bind(&session::handle_read, this,
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
+        */
+
+        /*
+        //Multithreaded.... TODO: Do we need this?
+        socket_.async_read_some(boost::asio::buffer(data_, max_length),
+            boost::bind(&session::handle_read, this,
+                strand_.wrap(
+                    boost::asio::placeholders::error,
+                    boost::asio::placeholders::bytes_transferred)));
+        */
+
+       //From example - the example does not use the commented out block above 
+        boost::system::error_code ignored_ec;
+        socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+
     }
+    /*
     else
     {
       delete this;
     }
+    */
 }
