@@ -19,7 +19,7 @@ class server
     server(boost::asio::io_service& io_service, short port, NginxConfig* config)
         : io_service_(io_service),
           signals_(io_service),
-          acceptor_(io_service, tcp::endpoint(tcp::v4(), port)),
+          acceptor_(io_service),
           //new_connection_();
           thread_pool_size_(10)
         
@@ -39,6 +39,7 @@ class server
         acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
         acceptor_.bind(endpoint);
         acceptor_.listen();
+
         
         config_ = config;
         start_accept();
