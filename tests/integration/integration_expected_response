@@ -3,6 +3,7 @@ Content-Type: text/plain
 Content-Length: 82
 
 GET /echo HTTP/1.1
-Host: 35.233.235.101
+Host: localhost:8070
 User-Agent: curl/7.58.0
 Accept: */*
+
