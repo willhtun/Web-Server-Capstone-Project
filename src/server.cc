@@ -34,19 +34,15 @@ void server::start_accept()
         boost::bind(&server::handle_accept, this, new_session,
           boost::asio::placeholders::error));
           */
+    session::pointer new_session = session::create(io_service_, config_);
 
-    for(;;) {
-      session* new_session = new session(io_service_, config_);
-      boost::system::error_code err;
-      acceptor_.accept(new_session->socket());
-      std::thread(&server::handle_accept, this, new_session, err).detach();
-        // boost::bind(&server::handle_accept, this, new_session,
-          // boost::asio::placeholders::error);
-    }
+    acceptor_.async_accept(new_session->socket(),
+        boost::bind(&server::handle_accept, this, new_session,
+          boost::asio::placeholders::error));
     
 }
 
-void server::handle_accept(session* new_session,
+void server::handle_accept(session::pointer new_session,
     const boost::system::error_code& error)
 {
     if (!error)
@@ -57,8 +53,9 @@ void server::handle_accept(session* new_session,
     else
     {
         BOOST_LOG_TRIVIAL(error) << "Error! Session did not start...";
-        delete new_session;
+        //delete new_session;
     }
+    start_accept();
 }
 
 void server::handle_stop()

@@ -103,9 +103,9 @@ int main(int argc, char* argv[])
 
     BOOST_LOG_TRIVIAL(info) << "Starting server on port " << port << "...";
     server s(io_service, port, &config);
-    s.run();
+    //s.run();
 
-    //io_service.run();
+    io_service.run();
     
   }
   catch (std::exception& e)

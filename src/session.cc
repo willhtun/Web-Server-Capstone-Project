@@ -29,12 +29,11 @@ void session::start()
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
             */
-    boost::system::error_code ec;
-    socket_.read_some(boost::asio::buffer(data_, max_length), ec);
 
-    size_t bt;
-    handle_read(ec, bt);
-
+    socket_.async_read_some(boost::asio::buffer(data_, max_length),
+        boost::bind(&session::handle_read, shared_from_this(),
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
 
 
     
@@ -110,11 +109,12 @@ void session::handle_read(const boost::system::error_code& error,
             boost::bind(&session::handle_write, this,
             boost::asio::placeholders::error));
             */
-        boost::system::error_code ec;
-        boost::asio::write(socket_, boost::asio::buffer(httpresponse.c_str(), httpresponse.length()), ec);
 
 
-        handle_write(ec);
+        boost::asio::async_write(socket_,
+            boost::asio::buffer(httpresponse.c_str(), httpresponse.length()),
+            boost::bind(&session::handle_write, shared_from_this(),
+            boost::asio::placeholders::error));
 
         
 /*
@@ -149,6 +149,11 @@ void session::handle_write(const boost::system::error_code& error)
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
 */
+
+        socket_.async_read_some(boost::asio::buffer(data_, max_length),
+            boost::bind(&session::handle_read, shared_from_this(),
+                boost::asio::placeholders::error,
+                boost::asio::placeholders::bytes_transferred));
 
         /*
         //Multithreaded.... TODO: Do we need this?

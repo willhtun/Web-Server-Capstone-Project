@@ -19,17 +19,15 @@ class server
     server(boost::asio::io_service& io_service, short port, NginxConfig* config)
         : io_service_(io_service),
           signals_(io_service),
-          acceptor_(io_service),
-          //new_connection_();
-          thread_pool_size_(10)
-        
-    {
+          acceptor_(io_service, tcp::endpoint(tcp::v4(), port))
+    {/*
         signals_.add(SIGINT);
         signals_.add(SIGTERM);
         #if defined(SIGQUIT)
         signals_.add(SIGQUIT);
         #endif // defined(SIGQUIT)
         signals_.async_wait(boost::bind(&server::handle_stop, this));
+
 
         // Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
         boost::asio::ip::tcp::resolver resolver(io_service_);
@@ -40,7 +38,7 @@ class server
         acceptor_.bind(endpoint);
         acceptor_.listen();
 
-        
+        */
         config_ = config;
         start_accept();
     }
@@ -51,7 +49,7 @@ class server
 
   private:
     void start_accept();
-    void handle_accept(session* new_session,
+    void handle_accept(session::pointer new_session,
         const boost::system::error_code& error);
     void handle_stop();
     
@@ -70,6 +68,6 @@ class Serv {
       serv->start_accept();
     }
     void call_handle_accept(server* serv, session* new_session, const boost::system::error_code& error) {
-      serv->handle_accept(new_session, error);
+      //serv->handle_accept(new_session, error);
     }
 };

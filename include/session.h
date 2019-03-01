@@ -14,12 +14,18 @@
 
 using boost::asio::ip::tcp;
 
-class session
+class session : public boost::enable_shared_from_this<session>
 {
   public:
+    typedef boost::shared_ptr<session> pointer;
+
+    static pointer create(boost::asio::io_service& io_service, NginxConfig* config)
+    {
+      return pointer(new session(io_service, config));
+    }
+
     session(boost::asio::io_service& io_service, NginxConfig* config)
-      : socket_(io_service),
-        strand_(io_service)
+      : socket_(io_service)
     {
       config_ = config;
     }
@@ -37,9 +43,6 @@ class session
     void handle_read(const boost::system::error_code& error,
         size_t bytes_transferred);
     void handle_write(const boost::system::error_code& error);
-
-    //From example
-    boost::asio::io_service::strand strand_;
 
     tcp::socket socket_;
     enum { max_length = 1024 };
