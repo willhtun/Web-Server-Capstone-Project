@@ -23,13 +23,22 @@ void session::start()
     try { BOOST_LOG_TRIVIAL(info) << "New connection from IP: " << socket_.remote_endpoint().address().to_string(); }
     catch(boost::system::system_error const& e) { std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n"; }
 
-    /*
+/* Original
     socket_.async_read_some(boost::asio::buffer(data_, max_length),
         boost::bind(&session::handle_read, this,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
-    */
-   
+            */
+    boost::system::error_code ec;
+    socket_.read_some(boost::asio::buffer(data_, max_length), ec);
+
+    size_t bt;
+    handle_read(ec, bt);
+
+
+
+    
+   /*
     //Multithreaded
     socket_.async_read_some(boost::asio::buffer(data_, max_length),
     strand_.wrap(
@@ -37,7 +46,7 @@ void session::start()
         boost::asio::placeholders::error,
         boost::asio::placeholders::bytes_transferred)));
 
-
+*/
 }
 
 void session::handle_read(const boost::system::error_code& error,
@@ -94,21 +103,28 @@ void session::handle_read(const boost::system::error_code& error,
             httpresponse = inc_req.c_str();
         }
 
+/* original
         // write response to client
-        /*
         boost::asio::async_write(socket_,
             boost::asio::buffer(httpresponse.c_str(), httpresponse.length()),
             boost::bind(&session::handle_write, this,
             boost::asio::placeholders::error));
-        */
+            */
+        boost::system::error_code ec;
+        boost::asio::write(socket_, boost::asio::buffer(httpresponse.c_str(), httpresponse.length()), ec);
 
+
+        handle_write(ec);
+
+        
+/*
         //Multithreaded
         boost::asio::async_write(socket_,
             boost::asio::buffer(httpresponse.c_str(), httpresponse.length()),
             strand_.wrap(
                 boost::bind(&session::handle_write, this,
                 boost::asio::placeholders::error)));
-
+*/
 
     }
     else
@@ -126,13 +142,13 @@ void session::handle_write(const boost::system::error_code& error)
         catch(boost::system::system_error const& e) { std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n"; }
         
         // write response to client
-        /*
-        ORIGINAL
+        
+        /* original 
         socket_.async_read_some(boost::asio::buffer(data_, max_length),
             boost::bind(&session::handle_read, this,
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
-        */
+*/
 
         /*
         //Multithreaded.... TODO: Do we need this?
@@ -148,10 +164,8 @@ void session::handle_write(const boost::system::error_code& error)
         socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
 
     }
-    /*
     else
     {
       delete this;
     }
-    */
 }
