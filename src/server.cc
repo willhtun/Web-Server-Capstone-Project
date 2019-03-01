@@ -6,11 +6,12 @@
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <vector>
-
+#include <thread>
 
 void server::run()
 {
   // Create a pool of threads to run all of the io_services.
+  std::cout << "RUN\n";
   std::vector<boost::shared_ptr<boost::thread> > threads;
   for (std::size_t i = 0; i < thread_pool_size_; ++i)
   {
@@ -26,11 +27,24 @@ void server::run()
 
 void server::start_accept()
 {
+  /*
     session* new_session = new session(io_service_, config_);
     BOOST_LOG_TRIVIAL(trace) << "Server accepting connections...";
     acceptor_.async_accept(new_session->socket(),
         boost::bind(&server::handle_accept, this, new_session,
           boost::asio::placeholders::error));
+          */
+
+    while (true) {
+      session* new_session = new session(io_service_, config_);
+      boost::system::error_code err;
+      BOOST_LOG_TRIVIAL(trace) << "Server accepting connections...";
+      acceptor_.accept(new_session->socket());
+      std::thread session_thread(&server::handle_accept, this, new_session, err);
+      session_thread.detach();
+        // boost::bind(&server::handle_accept, this, new_session,
+          // boost::asio::placeholders::error);
+    }
 }
 
 void server::handle_accept(session* new_session,
@@ -47,7 +61,7 @@ void server::handle_accept(session* new_session,
         delete new_session;
     }
 
-    start_accept();
+   // start_accept();
 }
 
 void server::handle_stop()

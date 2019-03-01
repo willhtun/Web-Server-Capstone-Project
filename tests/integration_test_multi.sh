@@ -64,6 +64,8 @@ fi
 echo "CHECKING SECOND HALF OF ECHO"
 echo -e ".1\r\nhost: localhost\r\nConnection: close\r\n\r\n" >&3
 
+GET /echo HTTP/1.1\r\nhost: localhost\r\nConnection: open\r\n\r\n
+
 cat <&3 > ../tests/integration/integration_test_response3
 
 #check response of correctness
