@@ -17,6 +17,7 @@
 #include <vector>
 #include <boost/bind.hpp>
 
+
 void session::start()
 {
     BOOST_LOG_TRIVIAL(trace) << "Session has started...";
@@ -29,11 +30,17 @@ void session::start()
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
             */
-
-    socket_.async_read_some(boost::asio::buffer(data_, max_length),
+    /*
+    socket_.async_read_some(boost::asio::buffer(data_),
         boost::bind(&session::handle_read, shared_from_this(),
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
+    */
+
+    boost::asio::async_read_until(socket_, buffer_, "\r\n\r\n",
+                                boost::bind(&session::handle_read, shared_from_this(),
+                                            boost::asio::placeholders::error,
+                                            boost::asio::placeholders::bytes_transferred));
 
 
     
@@ -62,6 +69,9 @@ void session::handle_read(const boost::system::error_code& error,
     if (!error)
     {
         std::string httpresponse;
+        std::ostringstream oss;
+        oss << &buffer_;
+        std::string data_ = oss.str();
         
         BOOST_LOG_TRIVIAL(trace) << "Sending data to request handler...";
         std::unique_ptr<Request> req = Request::request_handler(data_);
@@ -77,14 +87,15 @@ void session::handle_read(const boost::system::error_code& error,
             // construct dispatcher and handle incoming request
             BOOST_LOG_TRIVIAL(info) << "Constructing dispatcher...";
             Dispatcher dispatcher(config_);
-
+            std::unique_ptr<Response> resp = dispatcher.generateResponse(req.get());
             // check if dispatch returns a valid response pointer
-            if (dispatcher.generateResponse(req.get()))
+            if (resp)
             {
                 // get resp object and set httpresponse string
                 BOOST_LOG_TRIVIAL(info) << "Dispatcher generating appropriate response...";
-                std::unique_ptr<Response> resp = dispatcher.generateResponse(req.get());
+                //std::unique_ptr<Response> resp = dispatcher.generateResponse(req.get());
                 httpresponse = resp->Output();
+                
                 
                 // add data to status database
                 BOOST_LOG_TRIVIAL(trace) << "Adding url and response code into Status Database...";
@@ -110,7 +121,7 @@ void session::handle_read(const boost::system::error_code& error,
             boost::asio::placeholders::error));
             */
 
-
+        
         boost::asio::async_write(socket_,
             boost::asio::buffer(httpresponse.c_str(), httpresponse.length()),
             boost::bind(&session::handle_write, shared_from_this(),
@@ -149,12 +160,12 @@ void session::handle_write(const boost::system::error_code& error)
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
 */
-
+        /*
         socket_.async_read_some(boost::asio::buffer(data_, max_length),
             boost::bind(&session::handle_read, shared_from_this(),
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
-
+        
         /*
         //Multithreaded.... TODO: Do we need this?
         socket_.async_read_some(boost::asio::buffer(data_, max_length),

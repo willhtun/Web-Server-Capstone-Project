@@ -48,6 +48,9 @@ class session : public boost::enable_shared_from_this<session>
     enum { max_length = 1024 };
     char data_[max_length];
     NginxConfig* config_;
+     boost::asio::streambuf buffer_;
+
+    
 };
 
 

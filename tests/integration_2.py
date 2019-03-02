@@ -27,8 +27,8 @@ echo_expected_response = (
 )
 
 
-# static request
-request = 'curl -i localhost:8080/static1/text.txt'
+# missing request
+request = 'curl -i localhost:8080/missing'
 curl_proc = subprocess.Popen(request, stdout=subprocess.PIPE, shell=True)
 static_response = curl_proc.stdout.read().decode('utf-8')
 
@@ -113,9 +113,9 @@ else:
 print('**')
 
 # check static
-if static_response != static_expected_response:
+if static_response != multi_miss_expected_response :
     ec = 1
-    print('Static output does not match')
+    print('Error output does not match')
     print('Expected:\n' + static_expected_response)
     print('Response:\n' + static_response)
 else:
