@@ -30,8 +30,8 @@ TEST_F(SessionTest, StartTest) {
     std::string filename = "../tests/configs/echo_server_config";
     parser_.Parse(filename.c_str(), &out_config_);
 
-    session s(io_service_, &out_config_);
-    s.start();
+    session::pointer new_session = session::create(io_service_, &out_config_);
+    new_session->start();
     EXPECT_EQ(1,1);
 }
 
@@ -40,19 +40,9 @@ TEST_F(SessionTest, HandleReadEOFTest) {
     std::string filename = "../tests/configs/echo_server_config";
     parser_.Parse(filename.c_str(), &out_config_);
 
-    session* s = new session(io_service_, &out_config_);
+    session::pointer new_session = session::create(io_service_, &out_config_);
     Sesh sesh;
-    sesh.call_handle_read(s,boost::asio::error::eof, 100);
-    EXPECT_EQ(1,1);
-}
-
-TEST_F(SessionTest, HandleReadNotFoundTest) {
-    std::string filename = "../tests/configs/echo_server_config";
-    parser_.Parse(filename.c_str(), &out_config_);
-
-    session* s = new session(io_service_, &out_config_);
-    Sesh sesh;
-    sesh.call_handle_read(s,boost::asio::error::not_found,100);
+    sesh.call_handle_read(new_session.get(),boost::asio::error::eof, 100);
     EXPECT_EQ(1,1);
 }
 
@@ -60,10 +50,10 @@ TEST_F(SessionTest, HandleReadRegularTest) {
     std::string filename = "../tests/configs/echo_server_config";
     parser_.Parse(filename.c_str(), &out_config_);
 
-    session* s = new session(io_service_, &out_config_);
+    session::pointer new_session = session::create(io_service_, &out_config_);
     Sesh sesh;
     boost::system::error_code ec;
-    sesh.call_handle_read(s, ec, 100);
+    sesh.call_handle_read(new_session.get(), ec, 100);
     EXPECT_EQ(1,1);
 }
 
@@ -72,10 +62,10 @@ TEST_F(SessionTest, HandleReadDataTest) {
     std::string filename = "../tests/configs/echo_server_config";
     parser_.Parse(filename.c_str(), &out_config_);
 
-    session* s = new session(io_service_, &out_config_);
+    session::pointer new_session = session::create(io_service_, &out_config_);
     Sesh sesh;
     boost::system::error_code ec;
-    sesh.assign_data_and_call_read(s, ec, 100, "GET / HTTP/1.1\r\n\r\n");
+    sesh.assign_data_and_call_read(new_session.get(), ec, 100, "GET / HTTP/1.1\r\n\r\n");
     EXPECT_EQ(1,1);
 }
 
@@ -83,10 +73,10 @@ TEST_F(SessionTest, HandleReadDataEchoTest) {
     std::string filename = "../tests/configs/echo_server_config";
     parser_.Parse(filename.c_str(), &out_config_);
 
-    session* s = new session(io_service_, &out_config_);
+    session::pointer new_session = session::create(io_service_, &out_config_);
     Sesh sesh;
     boost::system::error_code ec;
-    sesh.assign_data_and_call_read(s, ec, 100, "GET /echo HTTP/1.1\r\n\r\n");
+    sesh.assign_data_and_call_read(new_session.get(), ec, 100, "GET /echo HTTP/1.1\r\n\r\n");
     EXPECT_EQ(1,1);
 }
 
@@ -94,10 +84,10 @@ TEST_F(SessionTest, HandleReadDataStaticFAILTest) {
     std::string filename = "../tests/configs/echo_server_config";
     parser_.Parse(filename.c_str(), &out_config_);
 
-    session* s = new session(io_service_, &out_config_);
+    session::pointer new_session = session::create(io_service_, &out_config_);
     Sesh sesh;
     boost::system::error_code ec;
-    sesh.assign_data_and_call_read(s, ec, 100, "GET /static/ HTTP/1.1\r\n\r\n");
+    sesh.assign_data_and_call_read(new_session.get(), ec, 100, "GET /static/ HTTP/1.1\r\n\r\n");
     EXPECT_EQ(1,1);
 }
 
@@ -105,10 +95,10 @@ TEST_F(SessionTest, HandleReadDataStaticPASSTest) {
     std::string filename = "../tests/configs/echo_server_config";
     parser_.Parse(filename.c_str(), &out_config_);
 
-    session* s = new session(io_service_, &out_config_);
+    session::pointer new_session = session::create(io_service_, &out_config_);
     Sesh sesh;
     boost::system::error_code ec;
-    sesh.assign_data_and_call_read(s, ec, 100, "GET /static/file HTTP/1.1\r\n\r\n");
+    sesh.assign_data_and_call_read(new_session.get(), ec, 100, "GET /static/file HTTP/1.1\r\n\r\n");
     EXPECT_EQ(1,1);
 }
 
@@ -116,18 +106,8 @@ TEST_F(SessionTest, HandleWriteNonErrorTest) {
     std::string filename = "../tests/configs/echo_server_config";
     parser_.Parse(filename.c_str(), &out_config_);
 
-    session* s = new session(io_service_, &out_config_);
+    session::pointer new_session = session::create(io_service_, &out_config_);
     Sesh sesh;
     boost::system::error_code ec;
-    sesh.call_handle_write(s, ec);
-}
-
-TEST_F(SessionTest, HandleWriteTest) {
-    std::string filename = "../tests/configs/echo_server_config";
-    parser_.Parse(filename.c_str(), &out_config_);
-
-    session* s = new session(io_service_, &out_config_);
-    Sesh sesh;
-    sesh.call_handle_write(s,boost::asio::error::eof);
-    EXPECT_EQ(1,1);
+    sesh.call_handle_write(new_session.get(), ec);
 }

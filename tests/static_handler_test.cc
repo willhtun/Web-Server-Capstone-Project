@@ -116,12 +116,14 @@ TEST_F(StaticHandlerTest, InvalidRequest) {
 }
 
 TEST_F(StaticHandlerTest, PdfRequest) {
-    read_request_file("../tests/static_handler_tests/pdf_request");
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/invalid_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(1,1);
 }
 
 TEST_F(StaticHandlerTest, TiffRequest) {
-    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/tiff_request"));
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/pdf_request"));
     InitiateStaticHandler("../tests/configs/echo_server_config");
     handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(1,1);

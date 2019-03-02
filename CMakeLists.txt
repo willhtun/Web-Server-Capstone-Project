@@ -90,7 +90,7 @@ add_executable(session_test tests/session_test.cc)
 target_link_libraries(session_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler proxy_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(static_handler_test tests/static_handler_test.cc)
-target_link_libraries(static_handler_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler proxy_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
+target_link_libraries(static_handler_test server session dispatcher handler_manager request config_parser error_handler echo_handler static_handler status_handler proxy_handler response status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
 add_executable(status_handler_test tests/status_handler_test.cc)
 target_link_libraries(status_handler_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler status_obj gtest_main Boost::system Boost::log_setup Boost::log)
@@ -125,7 +125,7 @@ include(cmake/CodeCoverageReportConfig.cmake)
 generate_coverage_report(TARGETS server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler proxy_handler request config_parser response status_obj TESTS config_parser_test dispatcher_test echo_handler_test error_handler_test handler_manager_test request_test response_test server_test session_test static_handler_test status_handler_test status_obj_test proxy_handler_test)
 
 #Add integration test to cmake 
-add_test(NAME Integration COMMAND bash integration_test.sh WORKING_DIRECTORY /usr/src/project/tests)
-add_test(NAME Multithread COMMAND python multithread_test.py WORKING_DIRECTORY /usr/src/project)
+add_test(NAME Integration COMMAND bash /tests/integration_test.sh)
+add_test(NAME Multithread COMMAND python /tests/multithread_test.py)
 # TODO (!): Add coolcoders test
 #add_test(NAME Integration COMMAND bash integration_test.sh WORKING_DIRECTORY /usr/src/project/tests)
