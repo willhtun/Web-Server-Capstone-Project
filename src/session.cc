@@ -24,35 +24,11 @@ void session::start()
     try { BOOST_LOG_TRIVIAL(info) << "New connection from IP: " << socket_.remote_endpoint().address().to_string(); }
     catch(boost::system::system_error const& e) { std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n"; }
 
-/* Original
-    socket_.async_read_some(boost::asio::buffer(data_, max_length),
-        boost::bind(&session::handle_read, this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
-            */
-    /*
-    socket_.async_read_some(boost::asio::buffer(data_),
+    //Listen in for requests
+    boost::asio::async_read_until(socket_, buffer_, "\r\n\r\n",
         boost::bind(&session::handle_read, shared_from_this(),
             boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
-    */
-
-    boost::asio::async_read_until(socket_, buffer_, "\r\n\r\n",
-                                boost::bind(&session::handle_read, shared_from_this(),
-                                            boost::asio::placeholders::error,
-                                            boost::asio::placeholders::bytes_transferred));
-
-
-    
-   /*
-    //Multithreaded
-    socket_.async_read_some(boost::asio::buffer(data_, max_length),
-    strand_.wrap(
-    boost::bind(&session::handle_read, this, 
-        boost::asio::placeholders::error,
-        boost::asio::placeholders::bytes_transferred)));
-
-*/
+                boost::asio::placeholders::bytes_transferred));
 }
 
 void session::handle_read(const boost::system::error_code& error,
@@ -67,8 +43,9 @@ void session::handle_read(const boost::system::error_code& error,
         return;
     }
     if (!error)
-    {
+    {   
         std::string httpresponse;
+
         std::ostringstream oss;
         oss << &buffer_;
         std::string data_ = oss.str();
@@ -79,33 +56,34 @@ void session::handle_read(const boost::system::error_code& error,
         {
             // view data members of request
             BOOST_LOG_TRIVIAL(trace) << "Info about request{ "
-                                    << "Method: " << req->method()
-                                    << ", URI Path: " << req->uri_path()
-                                    << ", HTTP Version: " << req->http_version()
-                                    << " }";
+                                     << "Method: " << req->method()
+                                     << ", URI Path: " << req->uri_path()
+                                     << ", HTTP Version: " << req->http_version()
+                                     << " }";
 
             // construct dispatcher and handle incoming request
             BOOST_LOG_TRIVIAL(info) << "Constructing dispatcher...";
             Dispatcher dispatcher(config_);
             std::unique_ptr<Response> resp = dispatcher.generateResponse(req.get());
+
             // check if dispatch returns a valid response pointer
             if (resp)
             {
                 // get resp object and set httpresponse string
                 BOOST_LOG_TRIVIAL(info) << "Dispatcher generating appropriate response...";
-                //std::unique_ptr<Response> resp = dispatcher.generateResponse(req.get());
                 httpresponse = resp->Output();
-                
                 
                 // add data to status database
                 BOOST_LOG_TRIVIAL(trace) << "Adding url and response code into Status Database...";
                 StatusObject::addStatusEntry(req->uri_path(), std::to_string(resp->getStatusCode()));
                 BOOST_LOG_TRIVIAL(trace) << "New status added...";
             }
+            
             else
             {
                 httpresponse = "";
             }
+            
         }
         else
         {
@@ -113,29 +91,11 @@ void session::handle_read(const boost::system::error_code& error,
             httpresponse = inc_req.c_str();
         }
 
-/* original
-        // write response to client
-        boost::asio::async_write(socket_,
-            boost::asio::buffer(httpresponse.c_str(), httpresponse.length()),
-            boost::bind(&session::handle_write, this,
-            boost::asio::placeholders::error));
-            */
-
-        
+        //Write response to client
         boost::asio::async_write(socket_,
             boost::asio::buffer(httpresponse.c_str(), httpresponse.length()),
             boost::bind(&session::handle_write, shared_from_this(),
             boost::asio::placeholders::error));
-
-        
-/*
-        //Multithreaded
-        boost::asio::async_write(socket_,
-            boost::asio::buffer(httpresponse.c_str(), httpresponse.length()),
-            strand_.wrap(
-                boost::bind(&session::handle_write, this,
-                boost::asio::placeholders::error)));
-*/
 
     }
     else
@@ -152,30 +112,7 @@ void session::handle_write(const boost::system::error_code& error)
         try { BOOST_LOG_TRIVIAL(info) << "Writing response to IP: " << socket_.remote_endpoint().address().to_string() << "..."; }
         catch(boost::system::system_error const& e) { std::cout << e.what() << ": " << e.code() << " - " << e.code().message() << "\n"; }
         
-        // write response to client
-        
-        /* original 
-        socket_.async_read_some(boost::asio::buffer(data_, max_length),
-            boost::bind(&session::handle_read, this,
-                boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred));
-*/
-        /*
-        socket_.async_read_some(boost::asio::buffer(data_, max_length),
-            boost::bind(&session::handle_read, shared_from_this(),
-                boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred));
-        
-        /*
-        //Multithreaded.... TODO: Do we need this?
-        socket_.async_read_some(boost::asio::buffer(data_, max_length),
-            boost::bind(&session::handle_read, this,
-                strand_.wrap(
-                    boost::asio::placeholders::error,
-                    boost::asio::placeholders::bytes_transferred)));
-        */
-
-       //From example - the example does not use the commented out block above 
+        //If there's an error shutdown the communications
         boost::system::error_code ignored_ec;
         socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
 

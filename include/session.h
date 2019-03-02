@@ -32,28 +32,21 @@ class session : public boost::enable_shared_from_this<session>
 
     tcp::socket& socket() 
     {
-        return socket_;
+      return socket_;
     }
-
     void start();
 
     friend class Sesh;
 
   private:
-    void handle_read(const boost::system::error_code& error,
-        size_t bytes_transferred);
+    void handle_read(const boost::system::error_code& error, size_t bytes_transferred);
     void handle_write(const boost::system::error_code& error);
-
-    tcp::socket socket_;
     enum { max_length = 1024 };
     char data_[max_length];
     NginxConfig* config_;
-     boost::asio::streambuf buffer_;
-
-    
+    boost::asio::streambuf buffer_;
+    tcp::socket socket_;
 };
-
-
 
 class Sesh {
   public:

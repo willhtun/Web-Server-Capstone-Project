@@ -82,6 +82,7 @@ int main(int argc, char* argv[])
     BOOST_LOG_TRIVIAL(trace) << "Parsing config file...";
     NginxConfigParser config_parser; // Import necessary classes to parse config file
     NginxConfig config;
+    
     if (!config_parser.Parse(argv[1], &config))
     {
         BOOST_LOG_TRIVIAL(fatal) << "Bad config file...";
@@ -102,9 +103,9 @@ int main(int argc, char* argv[])
     } 
 
     BOOST_LOG_TRIVIAL(info) << "Starting server on port " << port << "...";
-    server s(io_service, port, &config);
-    //s.run();
 
+    //Start the server
+    server s(io_service, port, &config);
     io_service.run();
     
   }

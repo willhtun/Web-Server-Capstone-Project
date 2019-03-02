@@ -29,12 +29,6 @@ void Response::SetBody(std::string body_value)
 {
     body_ = body_value;
 }
-/*
-void Response::BodySize()
-{
-    size_t size = strlen(body_);
-}
-*/
 Response::statuscode Response::getStatusCode()
 {
     return status_code_;
