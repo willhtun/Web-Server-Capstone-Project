@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <!-- css -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto+Slab">
+    <link rel="stylesheet" href="/css/style.css" type="text/css"> 
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+  </head>
+
+  <body>
+      <div class="wrapper">
+          <main>
+              <div id="memehome">
+                  <section class="module content">
+                    <div id="create description">
+                        <center>
+                            <h1 style="color: #ffab40;">Make-a-Meme</h1>
+                            Your <i>one-stop</i> shop for becoming a "somebody" in the 21st century
+                        </center>
+                        <hr>
+                    </div>
+
+                    <div id="meme-form">
+                        <center>
+                        <h3></h3>
+                        <h3>Select a Meme Template and add Text</h3>
+                        <form action="/meme/create" method="post">
+                            <select name="image">
+                              <option>Select a template...</option>
+                              <option value="meme_templates/Evil-Kermit.jpg">Evil-Kermit</option>
+                            </select><br>
+                            <input type="text" name="top" placeholder="Top text..."><br>
+                            <input type="text" name="bottom" placeholder="Bottom text..."><br>
+                            <input type="submit" value="Create">
+                        </form>
+                        </center>
+                    </div>
+                  </section>
+              </div>
+          </main>
+      </div>
+  </body>
+</html>
