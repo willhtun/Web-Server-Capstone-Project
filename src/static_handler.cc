@@ -23,9 +23,9 @@ RequestHandler* StaticHandler::create(const NginxConfig& config, const std::stri
 
 std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
 {
-    // uri: /static/somefile.html
     BOOST_LOG_TRIVIAL(trace) << "Static Handler building response for request...";
 
+    // uri: /static/somefile.html
     std::string full_url = request.uri_path();
     std::string filename = full_url.substr(uri_.length() + 1, full_url.length());
     std::string fileextension;
@@ -35,20 +35,22 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
     if (dot_index != std::string::npos)
         fileextension = filename.substr(dot_index + 1, filename.length() - dot_index - 1);
 
-
     // determine file directory
     // should be already populated when object is created. Delete as necessary
     // std::string filedir_ = parse_uri(request.uri_path());
 
     //read in file
     std::string image;
+    
+    //GCP uri_path
     std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
      // local uri_path
     //std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
    
-    //if fail, give 404 error
+
     std::unique_ptr<Response> response(new Response());
-    //TODO: replace with error_handler
+
+    //if fail, give 404 error
     if (!ifs.is_open() || filename.length() == 0)
     {
         std::string error_msg = "404: File not found on uri_path. Please provide correct uri_path.";
@@ -103,7 +105,8 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
         contenttype = "application/msword";
 
     else
-    //TODO: Replace with error_handler
+
+    //if fail, give 404 error
     { 
         std::string error_msg = "404: File not found on uri_path. Please provide correct uri_path.";
         response->SetStatus(Response::NOT_FOUND);
@@ -113,7 +116,7 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
         return response;
     }
 
-    //send a correct response 
+    //build a correct response 
     response->SetStatus(Response::OK);
     response->SetHeader("Content-Type", contenttype);
     response->SetHeader("Content-Length", std::to_string(image.length()));

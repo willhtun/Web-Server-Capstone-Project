@@ -51,6 +51,7 @@ void session::handle_read(const boost::system::error_code& error,
         std::string data_ = oss.str();
         
         BOOST_LOG_TRIVIAL(trace) << "Sending data to request handler...";
+
         std::unique_ptr<Request> req = Request::request_handler(data_);
         if (req != nullptr)
         {
@@ -100,7 +101,7 @@ void session::handle_read(const boost::system::error_code& error,
     }
     else
     {
-        BOOST_LOG_TRIVIAL(error) << "async_read_some failed...";
+        BOOST_LOG_TRIVIAL(error) << "async_read_until failed...";
         delete this;
     }
 }

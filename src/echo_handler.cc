@@ -22,7 +22,6 @@ std::unique_ptr<Response> EchoHandler::HandleRequest(const Request& request)
     BOOST_LOG_TRIVIAL(trace) << "Echo handler building response for request...";
 
     std::unique_ptr<Response> response(new Response());
-
     std::string body_ = std::string(request.getReqRaw());
 
     response->SetStatus(Response::OK);

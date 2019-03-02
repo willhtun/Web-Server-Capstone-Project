@@ -85,26 +85,25 @@ int main(int argc, char* argv[])
     
     if (!config_parser.Parse(argv[1], &config))
     {
-        BOOST_LOG_TRIVIAL(fatal) << "Bad config file...";
         std::cerr << "Bad config file\n";
+        BOOST_LOG_TRIVIAL(fatal) << "Bad config file...";
         return 1;
     }
+    
     BOOST_LOG_TRIVIAL(info) << "Config parsing success...";
         
-    boost::asio::io_service io_service;
-    using namespace std; // For atoi.
-
     int port = config.GetPort();
     if (port == 0)
     { // Exit with error if port is unspecified
-        BOOST_LOG_TRIVIAL(fatal) << "No port specified...";
         std::cerr << "No port specified\n";
+        BOOST_LOG_TRIVIAL(fatal) << "No port specified...";
         return 1;
     } 
 
     BOOST_LOG_TRIVIAL(info) << "Starting server on port " << port << "...";
 
     //Start the server
+    boost::asio::io_service io_service;
     server s(io_service, port, &config);
     io_service.run();
     

@@ -24,9 +24,7 @@ class server
         config_ = config;
         start_accept();
     }
-
-    void run();
-
+    //Used to testing purposes
     friend class Serv;
 
   private:
@@ -40,7 +38,6 @@ class server
     tcp::acceptor acceptor_;
     NginxConfig* config_;
 };
-
 
 class Serv {
   public:

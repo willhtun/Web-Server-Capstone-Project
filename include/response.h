@@ -29,10 +29,13 @@ class Response
         SERVICE_UNAVAILABLE = 503
     };
 
+    //set methods
     void SetStatus(const statuscode status_code);
     void SetHeader(const std::string& header_name, const std::string& header_value);
     void ReSetHeader(const std::string& header_name, const std::string& header_value);
     void SetBody(std::string body_value);
+
+    //Get methods
     statuscode getStatusCode();
     std::string Output();
 
