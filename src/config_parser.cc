@@ -44,22 +44,6 @@ void NginxConfig::ParseString(int depth, std::map<std::string, NginxConfig*> &co
     }
 }
 
-std::vector<std::string> NginxConfig::getReqHandlers()
-{
-    /*
-        Author: Konner Macias
-    */
-    std::vector<std::string> reqHandlers;
-    for (const auto& statement : statements_)
-    {
-        if (statement->tokens_[0] == "handler") 
-        {
-            reqHandlers.push_back(PeekURL(statement->child_block_->ToString()));
-        }
-    }
-    return reqHandlers;
-}
-
 std::string NginxConfig::PeekURL(std::string s) 
 {
     int i = s.find("url");
@@ -73,29 +57,6 @@ std::string NginxConfig::PeekURL(std::string s)
     }
     return "";
 }
-
-void NginxConfig::addStatusEntry(std::pair<std::string,std::string> entry)
-{
-    /*
-        Author: Konner Macias
-    */
-   status_entries_.push_back(entry);
-}
-
-std::vector<std::pair<std::string,std::string>> NginxConfig::getStatusEntries()
-{
-    /*
-        Author: Konner Macias
-    */
-   return status_entries_;
-}
-
-/*
-StatusObject* NginxConfig::getStatusObject()
-{
-    return status_obj_;
-}
-*/
 
 int NginxConfig::GetPort() 
 {

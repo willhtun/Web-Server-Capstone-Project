@@ -23,19 +23,13 @@ class NginxConfig {
   public:
     std::string ToString(int depth = 0);
     void ParseString(int depth, std::map<std::string, NginxConfig*> &configTable_, std::map<std::string, std::string> &handlerTable_);
-    
-    std::vector<std::string> getReqHandlers();
-    //StatusObject* getStatusObject();
-    void addStatusEntry(std::pair<std::string,std::string> entry);
-    std::vector<std::pair<std::string,std::string>> getStatusEntries();
+
     int GetPort();
     std::string GetRoot();
     std::string GetAttribute(std::string attr) const;
     std::vector<std::shared_ptr<NginxConfigStatement>> statements_;
   private:
     std::string PeekURL(std::string s);
-    //StatusObject* status_obj_; // each config has status databased passed along unfortunately
-    std::vector<std::pair<std::string,std::string>> status_entries_;
 };
 
 // The driver that parses a config file and generates an NginxConfig.

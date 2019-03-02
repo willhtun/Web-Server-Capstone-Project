@@ -50,6 +50,7 @@ add_library(proxy_handler src/proxy_handler.cc)
 add_library(dispatcher src/dispatcher.cc)
 add_library(handler_manager src/handler_manager.cc)
 add_library(status_obj src/status_obj.cc)
+add_library(meme_db src/meme_db.cc)
 
 # Update executable name, srcs, and deps
 # add_executable(example_server src/example_server_main.cc)
