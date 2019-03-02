@@ -3,7 +3,7 @@ import sys
 import telnetlib
 
 # start up server
-webserver = subprocess.Popen(["build/bin/server_main", "tests/configs/echo_server_config"], stdout=subprocess.PIPE)
+webserver = subprocess.Popen(["./bin/server_main", "../tests/configs/echo_server_config"], stdout=subprocess.PIPE)
 host = "localhost"
 port = 8080
 
