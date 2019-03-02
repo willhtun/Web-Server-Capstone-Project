@@ -28,5 +28,6 @@ ENTRYPOINT ["./server_main"]
 # Use CMD to specify arguments to ENTRYPOINT
 # TODO(!): Update with real server args
 COPY --from=builder /usr/src/project/tests/configs/echo_server_config .
+COPY --from=builder /usr/src/project/tests/configs/python_server_config .
 CMD ["./echo_server_config"]
 
