@@ -3,7 +3,6 @@
   <head>
     <!-- css -->
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto+Slab">
-    <link rel="stylesheet" href="/css/style.css" type="text/css"> 
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 
@@ -18,6 +17,13 @@
                 }
             }
         }
+
+        var meme_select = form.elements;
+        if (meme_select[0].value == "Select a template...") {
+            alert("Please select a proper meme template");
+            return false;
+        }
+        return true;
     }
     </script>
   </head>
@@ -39,8 +45,8 @@
                         <center>
                         <h3></h3>
                         <h3>Select a Meme Template and add Text</h3>
-                        <form action="/meme/create" method="post" onsubmit="return checkform(this)">
-                            <select name="image" required>
+                        <form onsubmit="return checkform(this)">
+                            <select  required name="image">
                               <option>Select a template...</option>
                               <option value="meme_templates/Evil-Kermit.jpg">Evil-Kermit</option>
                             </select><br>
