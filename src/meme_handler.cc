@@ -1,5 +1,7 @@
 #include <string>
 #include <vector>
+#include <boost/algorithm/string/classification.hpp> // Include boost::for is_any_of
+#include <boost/algorithm/string/split.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include "meme_handler.h"
@@ -40,6 +42,9 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
         MemeList();
     }
     
+    if (request.method() == "POST") {
+        parseRequestBody(request.body());
+    }
     /* TODO:: figure how how we want to generate and store IDs of memes created
     if(memepage_ == memeID)
     {
@@ -93,6 +98,16 @@ bool MemeHandler::MemeCreate()
     ifs.close();
     std::cout << "Closed ifstream..." << std::endl;
     return false;
+}
+
+std::map<std::string,std::string> MemeHandler::parseRequestBody(std::string body)
+{
+    std::map<std::string,std::string> memeMap;
+    
+    std::vector<std::string> items;
+    boost::split(items, body, boost::is_any_of("&"), boost::token_compress_on);
+    // I'm gonna add more here
+    return memeMap;
 }
 
 void MemeHandler::MemeView()

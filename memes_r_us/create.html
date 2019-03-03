@@ -27,6 +27,7 @@
     }
     </script>
 
+    <!--
     <link rel="stylesheet" type="text/css" href="css_help/css/lib/control/iconselect.css">
     <script type="text/javascript" src="css_help/lib/control/iconselect.js"></script>
     <script type="text/javascript" src="css_help/lib/iscroll.js"></script>
@@ -44,6 +45,7 @@
     };
 
     </script>
+    -->
   </head>
 
   <body>
@@ -63,10 +65,8 @@
                         <center>
                         <h3></h3>
                         <h3>Select a Meme Template and add Text</h3>
-                        <form onsubmit="return checkform(this)">
-                            <div action="/meme/create" id="my-meme-select" style="width:200px;">
-                                
-                            </div>
+                        <form action="/meme/create.html" onsubmit="return checkform(this)" method=post>
+                            <!--<div action="/meme/create" id="my-meme-select" style="width:200px;"></div>-->
                             <h3></h3>
                             <select required name="image" id="meme_template">
                               <option>Select a template...</option>

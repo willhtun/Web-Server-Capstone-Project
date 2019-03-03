@@ -25,25 +25,6 @@ std::unique_ptr<Request> Request::request_handler(std::string raw_req)
     }
 }
 
-std::string Request::getReqRaw() const{
-    return req_;
-}
-
-std::string Request::method() const
-{
-    return method_;
-}
-
-std::string Request::uri_path() const
-{
-    return uri_path_;
-}
-
-std::string Request::http_version() const
-{
-    return http_version_;
-}
-
 bool Request::check_first_request_line(std::string req_line)
 {
     // check for correct formatting
@@ -127,6 +108,32 @@ bool Request::parse_request()
         std::pair<std::string,std::string> header_field(header_key, header_value);
         this->header_fields_.push_back(header_field);
     }
+    // assign body
+    this->body_ = req_lines[req_lines.size()-1];
     BOOST_LOG_TRIVIAL(trace) << "Finished adding heading pairs...";
     return true;
+}
+
+std::string Request::getReqRaw() const{
+    return req_;
+}
+
+std::string Request::method() const
+{
+    return method_;
+}
+
+std::string Request::uri_path() const
+{
+    return uri_path_;
+}
+
+std::string Request::http_version() const
+{
+    return http_version_;
+}
+
+std::string Request::body() const
+{
+    return body_;
 }

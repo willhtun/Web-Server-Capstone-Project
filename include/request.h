@@ -20,6 +20,7 @@ class Request
     std::string method() const;
     std::string uri_path() const;
     std::string http_version() const;
+    std::string body() const;
   private:
     bool parse_request();
     bool check_first_request_line(std::string req_line);
@@ -28,5 +29,6 @@ class Request
     std::string method_;
     std::string uri_path_;
     std::string http_version_;
+    std::string body_;
     Header_Fields header_fields_;
 };
