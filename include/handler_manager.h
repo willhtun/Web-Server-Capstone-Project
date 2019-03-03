@@ -5,6 +5,7 @@
 #include "static_handler.h"
 #include "error_handler.h"
 #include "status_handler.h"
+#include "meme_handler.h"
 #include "proxy_handler.h"
 
 class HandlerManager

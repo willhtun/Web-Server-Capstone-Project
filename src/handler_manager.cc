@@ -24,7 +24,7 @@ std::unique_ptr<RequestHandler> HandlerManager::createByName(const std::string& 
     }    
     if (name =="meme")
     {
-        return std::unique_ptr<RequestHandler>(ProxyHandler::create(config,path));   
+        return std::unique_ptr<RequestHandler>(MemeHandler::create(config,path));   
     }    
     return nullptr;
 };
