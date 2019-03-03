@@ -7,7 +7,6 @@
 #include <fstream>
 
 
-
 RequestHandler* MemeHandler::create(const NginxConfig& config, const std::string& path)
 {
     std::cout << "Creating" << std::endl;
@@ -26,20 +25,13 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
 {
     //Meme landing page. Will probably need to move into another function once we figure out the uri path strategy 
     BOOST_LOG_TRIVIAL(trace) << "Meme handler building response for request...";
-
     std::string full_url = request.uri_path();
     memepage_ = full_url.substr(uri_.length() + 1, full_url.length());
-
-    std::unique_ptr<Response> response(new Response());
-    std::string memebody_;
 
     std::cout << "Processing request:\n" << request.getReqRaw() << std::endl;
     if (memepage_ == "create.html") //Landing Page for Meme Creation
     {
-        std::cout << "Oh boi, we're creating that landing page" << std::endl;
-        MemeCreate(move(response));
-        std::cout << "What now.." << std::endl;
-
+        errorflag = MemeCreate();
     }
 
     std::cout << "Finished with create.html..." << std::endl;
@@ -63,9 +55,9 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     //Send Response
     
     std::cout << "what's my error flag: " <<  errorflag << std::endl;
+    std::unique_ptr<Response> response(new Response());
     if (!errorflag)
     {
-        std::unique_ptr<Response> response(new Response());
         response->SetStatus(Response::OK);
         response->ReSetHeader("Content-Type","text/html");
         response->SetHeader("Content-Length", std::to_string(memebody_.length()));
@@ -74,21 +66,23 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     
     BOOST_LOG_TRIVIAL(trace) << "Response built by meme handler...";
     std::cout << "Finished creating response..." << std::endl;
+    std::cout << "memebody:\n" << memebody_ << std::endl;
+    std::cout << "Response:\n" << response->Output() << std::endl;
     return response;
 };
 
-void MemeHandler::MemeCreate(std::unique_ptr<Response> response)
+bool MemeHandler::MemeCreate()
 {
-    //GCP uri_path
-    //std::ifstream ifs("static" + filedir_ + "/" + memepage_, std::ios::in | std::ios::binary);
-    //local uri_path
+    /*
+        Hosts create.html page. Returns false if we achieved no error.
+    */
     std::cout << "Creating ifrstream..." << std::endl;
     std::ifstream ifs(".." + filedir_ + "/" + memepage_, std::ios::in | std::ios::binary);
 
     std::cout << "Creating that meme..." << std::endl;
     if (!ifs.is_open() || memepage_.length() == 0)
     {
-        MemeError(move(response));
+        return true;
     }
     
     std::cout << "hopefully should be displaying content..." << std::endl;
@@ -98,6 +92,7 @@ void MemeHandler::MemeCreate(std::unique_ptr<Response> response)
     }
     ifs.close();
     std::cout << "Closed ifstream..." << std::endl;
+    return false;
 }
 
 void MemeHandler::MemeView()

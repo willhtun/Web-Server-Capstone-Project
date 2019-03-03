@@ -17,7 +17,7 @@ public:
     std::unique_ptr<Response> HandleRequest(const Request& request);
 
 private:
-    void MemeCreate(std::unique_ptr<Response> response);
+    bool MemeCreate();
     void MemeView();
     void MemeList();
     void MemeError(std::unique_ptr<Response> response);
