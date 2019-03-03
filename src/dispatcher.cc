@@ -5,6 +5,7 @@
 #include "static_handler.h"
 #include "status_handler.h"
 #include "error_handler.h"
+#include "meme_handler.h"
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/system/system_error.hpp>

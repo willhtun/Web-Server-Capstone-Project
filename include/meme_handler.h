@@ -17,6 +17,15 @@ public:
     std::unique_ptr<Response> HandleRequest(const Request& request);
 
 private:
+    void MemeCreate(std::unique_ptr<Response> response);
+    void MemeView();
+    void MemeList();
+    void MemeError(std::unique_ptr<Response> response);
+
     std::string root_;
     std::string uri_;
+    std::string filedir_;
+    std::string memepage_;
+    std::string memebody_;
+    bool errorflag = false;
 };
