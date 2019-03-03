@@ -6,6 +6,20 @@
     <link rel="stylesheet" href="/css/style.css" type="text/css"> 
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+    <script>
+    function checkform(form) {
+        var inputs = form.getElementsByTagName('input');
+        for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].hasAttribute("required")) {
+                if (inputs[i].value == "") {
+                    alert("Please fill all required fields to become a true meme master");
+                    return false;
+                }
+            }
+        }
+    }
+    </script>
   </head>
 
   <body>
@@ -25,13 +39,13 @@
                         <center>
                         <h3></h3>
                         <h3>Select a Meme Template and add Text</h3>
-                        <form action="/meme/create" method="post">
-                            <select name="image">
+                        <form action="/meme/create" method="post" onsubmit="return checkform(this)">
+                            <select name="image" required>
                               <option>Select a template...</option>
                               <option value="meme_templates/Evil-Kermit.jpg">Evil-Kermit</option>
                             </select><br>
-                            <input type="text" name="top" placeholder="Top text..."><br>
-                            <input type="text" name="bottom" placeholder="Bottom text..."><br>
+                            <input type="text" name="top" placeholder="Top text..." required><br>
+                            <input type="text" name="bottom" placeholder="Bottom text..." required><br>
                             <input type="submit" value="Create">
                         </form>
                         </center>
