@@ -5,9 +5,13 @@
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include "meme_handler.h"
-#include <sstream> 
+#include <sstream>
 #include <fstream>
+#include <thread>
+#include <mutex>
+#include <string>
 
+std::mutex mtx;
 
 RequestHandler* MemeHandler::create(const NginxConfig& config, const std::string& path)
 {
@@ -44,13 +48,19 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     
     if (request.method() == "POST") {
         std::map<std::string,std::string> memeMap = parseRequestBody(request.body());
-        
+
+        // add meme-id with correct locks in place
+        mtx.lock();
+        memeMap["meme-id"] = std::to_string(MemeDB::getMemeEntries().size() + 1);
+        mtx.unlock();
+
+        // add meme to memeDB
+        MemeDB::addMemeEntry(memeMap);
         for(std::map<std::string,std::string>::const_iterator it = memeMap.begin();
                 it != memeMap.end(); ++it)
         {
             std::cout << "Key: " << it->first << " Value: " << it->second << std::endl;
         }
-        // TODO: add meme-id to this memeMap and add to memeDB
     }
     /* TODO:: figure how how we want to generate and store IDs of memes created
     if(memepage_ == memeID)
@@ -66,7 +76,6 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     */
     //Send Response
     
-    std::cout << "what's my error flag: " <<  errorflag << std::endl;
     std::unique_ptr<Response> response(new Response());
     if (!errorflag)
     {
@@ -133,6 +142,14 @@ std::map<std::string,std::string> MemeHandler::parseRequestBody(std::string body
         int symbol_ind = key_value[1].find("%2F");
         if (symbol_ind != std::string::npos) { key_value[1].replace(symbol_ind, 3, "/"); }
         
+        // replace "+" with " " if needed
+        std::string::size_type n = 0;
+        while ((n = key_value[1].find("+", n)) != std::string::npos)
+        {
+            key_value[1].replace(n, 1, " ");
+            n += 1; // update for added " "
+        }
+
         // add key value to memeMap
         memeMap[key_value[0]] = key_value[1];
     }

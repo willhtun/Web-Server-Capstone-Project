@@ -5,6 +5,7 @@
 #include "request.h"
 #include "response.h"
 #include "request_handler.h"
+#include "meme_db.h"
 
 class MemeHandler : public RequestHandler
 {
