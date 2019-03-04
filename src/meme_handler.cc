@@ -6,6 +6,8 @@
 #include <boost/log/trivial.hpp>
 #include "meme_handler.h"
 #include <sstream>
+#include "meme_db.h"
+#include <sstream> 
 #include <fstream>
 #include <thread>
 #include <mutex>
@@ -41,9 +43,9 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     }
 
     std::cout << "Finished with create.html..." << std::endl;
-    if(memepage_ == "list.html") // List all created memes
+    if(memepage_ == "list") // List all created memes
     {
-        MemeList();
+        errorflag = MemeList();
     }
     
     if (request.method() == "POST") {
@@ -177,16 +179,23 @@ void MemeHandler::MemeView()
 }
 void MemeHandler::MemeList()
 {
-    /* From Assignment Example 
-    std::string body = std::string(
-        for($meme in $all_memes)
-            output <a href="/meme/view?id=$meme.id">
-                $meme.id: $meme.image, $meme.top, $meme.bottom
-         </a>
-    );
-    */
+    std::vector<std::map<std::string,std::string>> memelist = MemeDB::getMemeEntries();
+    // build body string
+    std::string memebody_ = "<html>\n<body>";
+    memebody_ += "<h2>MEME LIST</h2>\n";
 
+    // bring in meme information and create links TODO: adjust according to how the information is stored. 
+
+    for (int i = 0; i < memelist.size(); i++) 
+    {
+        memebody_ += "<a href=\"ss.gitrdone.cs130.org/meme/view?id=" + memelist[i]["id"] +"\">";
+        memebody_ += "MemeID: " + memelist[i]["id"]+ " | Image: " + memelist[i]["image"] + " | Top Text: " + memelist[i]["toptext"] + " | Bottom Text: " + memelist[i]["bottomtext"]+ "\n";
+        memebody_ += "</a>\n";
+    }
+    
+    memebody_ += "</body>\n</html>";
 }
+
 
 void MemeHandler::MemeError(std::unique_ptr<Response> response)
 {
@@ -196,5 +205,4 @@ void MemeHandler::MemeError(std::unique_ptr<Response> response)
     response->SetHeader("Content-Length", std::to_string(error_msg.length()));
     response->SetBody(error_msg);
     errorflag = true;
-
 }
