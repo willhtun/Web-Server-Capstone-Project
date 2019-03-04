@@ -42,6 +42,7 @@ http {
     handler meme {
       location /memes_r_us;
       url /meme;
+      save /memes_r_us;
     }
   }
 }

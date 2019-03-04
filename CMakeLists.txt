@@ -59,6 +59,13 @@ add_library(meme_handler src/meme_handler.cc)
 
 add_executable(server_main src/server_main.cc)
 target_link_libraries(server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler proxy_handler meme_handler request config_parser response status_obj meme_db Boost::system Boost::log_setup Boost::log)
+include(cmake/FindSQLite3.cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package (SQLite3)
+if (SQLITE3_FOUND)
+  include_directories(${SQLITE3_INCLUDE_DIRS})
+  target_link_libraries (server_main ${SQLITE3_LIBRARIES})
+endif (SQLITE3_FOUND)
 
 # Update test executable name, srcs, and deps
 # add_executable(example_lib_test tests/example_lib_test.cc)

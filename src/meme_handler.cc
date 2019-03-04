@@ -17,10 +17,11 @@ std::mutex mtx;
 
 RequestHandler* MemeHandler::create(const NginxConfig& config, const std::string& path)
 {
-    std::cout << "Creating" << std::endl;
+    // std::cout << "Creating" << std::endl;
     MemeHandler* mh = new MemeHandler();
     mh->root_ = path;
     mh->filedir_ = config.GetAttribute("location");
+    mh->savedir_ = config.GetAttribute("save");
     mh->uri_ = config.GetAttribute("url");
 
     BOOST_LOG_TRIVIAL(trace) << "Meme handler created";
@@ -35,29 +36,26 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     std::string full_url = request.uri_path();
     memepage_ = full_url.substr(uri_.length() + 1, full_url.length());
 
-    std::cout << "Processing request:\n" << request.getReqRaw() << std::endl;
+    // std::cout << "Processing request:\n" << request.getReqRaw() << std::endl;
     if (memepage_ == "create") //Landing Page for Meme Creation
     {
         errorflag = MemeCreate();
     }
-
-    std::cout << "Finished with create.html..." << std::endl;
-    if(memepage_ == "list") // List all created memes
+    else if(memepage_ == "list") // List all created memes
     {
         errorflag = MemeList();
     }
-
-    if(memepage_.substr(0,4) == "view") // Page to view a meme
+    else if(memepage_.substr(0,4) == "view") // Page to view a meme
     {
         errorflag = MemeView();
     }
-    
-    if (request.method() == "POST") {
+    else if (request.method() == "POST") {
         std::map<std::string,std::string> memeMap = parseRequestBody(request.body());
 
         // add meme-id with correct locks in place
         mtx.lock();
         memeMap["meme-id"] = std::to_string(MemeDB::getMemeEntries().size() + 1);
+        AddToDatabase(stoi(memeMap["meme-id"]), memeMap["image"], memeMap["top"], memeMap["bottom"]);
         mtx.unlock();
 
         // add meme to memeDB
@@ -65,8 +63,9 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
         for(std::map<std::string,std::string>::const_iterator it = memeMap.begin();
                 it != memeMap.end(); ++it)
         {
-            std::cout << "Key: " << it->first << " Value: " << it->second << std::endl;
+            // std::cout << "Key: " << it->first << " Value: " << it->second << std::endl;
         }
+
     }
     else 
     {
@@ -94,8 +93,8 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     
     
     BOOST_LOG_TRIVIAL(trace) << "Response built by meme handler...";
-    std::cout << "Finished creating response..." << std::endl;
-    std::cout << "Response:\n" << response->Output() << std::endl;
+    // std::cout << "Finished creating response..." << std::endl;
+    // std::cout << "Response:\n" << response->Output() << std::endl;
     return response;
 };
 
@@ -104,23 +103,23 @@ bool MemeHandler::MemeCreate()
     /*
         Hosts create.html page. Returns false if we achieved no error.
     */
-    std::cout << "Creating ifrstream..." << std::endl;
+    // std::cout << "Creating ifrstream..." << std::endl;
     std::ifstream ifs(".." + filedir_ + "/" + memepage_ + ".html", std::ios::in | std::ios::binary);
 
-    std::cout << "Creating that meme..." << std::endl;
+    // std::cout << "Creating that meme..." << std::endl;
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
     }
     
-    std::cout << "hopefully should be displaying content..." << std::endl;
+    // std::cout << "hopefully should be displaying content..." << std::endl;
     char buf[512];
     while (ifs.read(buf, sizeof(buf)).gcount() > 0) 
     {
         memebody_.append(buf, ifs.gcount());
     }
     ifs.close();
-    std::cout << "Closed ifstream..." << std::endl;
+    // std::cout << "Closed ifstream..." << std::endl;
     return false;
 }
 
@@ -165,9 +164,21 @@ std::map<std::string,std::string> MemeHandler::parseRequestBody(std::string body
     return memeMap;
 }
 
+static int callback_GetEntryFromDatabase(void* ptr, int argc, char **argv, char **azColName){
+
+    std::map<std::string,std::string>* entry = static_cast<std::map<std::string,std::string>*>(ptr);
+
+    for(int i = 0; i<argc; i++){
+        entry->insert(std::pair<std::string,std::string>(std::string(azColName[i]),std::string(argv[i])));
+    }
+
+    return 0;
+}
+
 bool MemeHandler::MemeView()
 {
     int meme_id_index = memepage_.find("id=");
+    std::map<std::string,std::string> meme_object;
     std::string meme_id;
     if (meme_id_index != std::string::npos) 
     {
@@ -179,10 +190,31 @@ bool MemeHandler::MemeView()
         return true;
     }
 
-    std::map<std::string,std::string> meme_object = MemeDB::getMemeEntriesById(meme_id);
-    std::string meme_object_img = meme_object["image"];
-    std::string meme_object_top = meme_object["top"];
-    std::string meme_object_bot = meme_object["bottom"];
+    // ==================== DATABASE OPERATIONS ==================== //
+    int rc;
+    rc = sqlite3_open(("../" + savedir_ + "/test.db").c_str(), &db);
+
+    if(rc) 
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Error opening database...";
+        return false;
+    } 
+    BOOST_LOG_TRIVIAL(trace) << "Opened database for writing...";
+
+    std::string selector = "SELECT * FROM MEME_HISTORY WHERE MEME_ID=" + meme_id;
+    rc = sqlite3_exec(db, selector.c_str(), callback_GetEntryFromDatabase, &meme_object, NULL);
+    if(rc != SQLITE_OK)
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Error reading table...";
+    } 
+
+    sqlite3_close(db);
+    BOOST_LOG_TRIVIAL(trace) << "Closed database";
+    // ============================ END ============================ //
+
+    std::string meme_object_img = meme_object["IMAGE"];
+    std::string meme_object_top = meme_object["TOP"];
+    std::string meme_object_bot = meme_object["BOTTOM"];
 
     memebody_ = "<html>"
                     "<style>"
@@ -203,7 +235,8 @@ bool MemeHandler::MemeView()
 
 bool MemeHandler::MemeList()
 {
-    std::vector<std::map<std::string,std::string>> memelist = MemeDB::getMemeEntries();
+    std::vector<std::map<std::string,std::string>> memelist_backup = MemeDB::getMemeEntries();
+    std::vector<std::map<std::string,std::string>> memelist = GetAllFromDatabase();
     // build body string
     memebody_ += "<html>\n<body>";
     memebody_ += "<h2>SPICY MEME LIST</h2>\n";
@@ -212,11 +245,89 @@ bool MemeHandler::MemeList()
 
     for (int i = 0; i < memelist.size(); i++) 
     {
-        memebody_ += "<a href=\"http://localhost:8080/meme/view?id=" + memelist[i]["meme-id"] +"\">";
-        memebody_ += "MemeID: " + memelist[i]["meme-id"]+ " | Image: " + memelist[i]["image"] + " | Top Text: " + memelist[i]["top"] + " | Bottom Text: " + memelist[i]["bottom"]+ "\n";
+        memebody_ += "<a href=\"http://localhost:8080/meme/view?id=" + memelist[i]["MEME_ID"] +"\">";
+        memebody_ += "MemeID: " + memelist[i]["MEME_ID"]+ " | Image: " + memelist[i]["IMAGE"] + " | Top Text: " + memelist[i]["TOP"] + " | Bottom Text: " + memelist[i]["BOTTOM"]+ "\n";
         memebody_ += "</a><br />\n";
     }
     
     memebody_ += "</body>\n</html>";
     return false;
+}
+
+bool MemeHandler::AddToDatabase(int id_, std::string image_, std::string top_, std::string bottom_) {
+    int rc;
+    rc = sqlite3_open(("../" + savedir_ + "/test.db").c_str(), &db);
+
+    if(rc) 
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Error opening/creating database...";
+        return false;
+    } 
+    BOOST_LOG_TRIVIAL(trace) << "Opened database for writing...";
+
+    std::string table = "CREATE TABLE IF NOT EXISTS MEME_HISTORY("
+      "MEME_ID  INTEGER  PRIMARY KEY  NOT NULL,"
+      "IMAGE    TEXT                  NOT NULL,"
+      "TOP      TEXT                  NOT NULL,"
+      "BOTTOM   TEXT                  NOT NULL);";
+
+    rc = sqlite3_exec(db, table.c_str(), NULL, NULL, NULL);
+    if(rc != SQLITE_OK)
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Error creating table...";
+        return false;
+    } 
+    BOOST_LOG_TRIVIAL(trace) << "Successfully created table!";
+
+    std::string entry = "INSERT INTO MEME_HISTORY (MEME_ID,IMAGE,TOP,BOTTOM) "
+                        "VALUES (" + std::to_string(id_) + ", '" + image_ + "', '" + top_ + "', '" + bottom_ + "');";
+
+    rc = sqlite3_exec(db, entry.c_str(), NULL, NULL, NULL);
+    if(rc != SQLITE_OK)
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Error adding entry to table...";
+        return false;
+    } 
+    BOOST_LOG_TRIVIAL(trace) << "Successfully added entry!";
+
+    sqlite3_close(db);
+    BOOST_LOG_TRIVIAL(trace) << "Closed database";
+    return true;
+}
+
+static int callback_GetAllFromDatabase(void* ptr, int argc, char **argv, char **azColName){
+
+    std::vector<std::map<std::string,std::string>>* vectormap = static_cast<std::vector<std::map<std::string,std::string>>*>(ptr);
+    std::map<std::string,std::string>* entry = new std::map<std::string,std::string>();
+
+    for(int i = 0; i<argc; i++){
+        entry->insert(std::pair<std::string,std::string>(std::string(azColName[i]),std::string(argv[i])));
+    }
+
+    vectormap->push_back(*entry);
+    
+    return 0;
+}
+
+std::vector<std::map<std::string,std::string>> MemeHandler::GetAllFromDatabase() {
+    std::vector<std::map<std::string,std::string>> meme_entries_;
+    int rc;
+    rc = sqlite3_open(("../" + savedir_ + "/test.db").c_str(), &db);
+
+    if(rc) 
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Error opening/creating database...";
+    } 
+    BOOST_LOG_TRIVIAL(trace) << "Opened database for reading...";
+
+    std::string selector = "SELECT * from MEME_HISTORY";
+    rc = sqlite3_exec(db, selector.c_str(), callback_GetAllFromDatabase, &meme_entries_, NULL);
+    if(rc != SQLITE_OK)
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Error reading table...";
+    } 
+
+    sqlite3_close(db);
+    BOOST_LOG_TRIVIAL(trace) << "Closed database";
+    return meme_entries_;
 }

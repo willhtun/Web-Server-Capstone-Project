@@ -12,7 +12,9 @@ RUN apt-get update && apt-get install -y \
     libboost-system-dev \
     libboost-regex-dev \
     libgtest-dev \
-    gcovr
+    gcovr \
+    sqlite3 \
+    libsqlite3-dev
     
     
 
