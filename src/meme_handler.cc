@@ -198,6 +198,7 @@ bool MemeHandler::MemeView()
     if(rc) 
     {
         BOOST_LOG_TRIVIAL(trace) << "Error opening database...";
+        sqlite3_close(db);
         return false;
     } 
     BOOST_LOG_TRIVIAL(trace) << "Opened database for writing...";
@@ -262,6 +263,7 @@ bool MemeHandler::AddToDatabase(int id_, std::string image_, std::string top_, s
     if(rc) 
     {
         BOOST_LOG_TRIVIAL(trace) << "Error opening/creating database...";
+        sqlite3_close(db);
         return false;
     } 
     BOOST_LOG_TRIVIAL(trace) << "Opened database for writing...";
@@ -276,6 +278,7 @@ bool MemeHandler::AddToDatabase(int id_, std::string image_, std::string top_, s
     if(rc != SQLITE_OK)
     {
         BOOST_LOG_TRIVIAL(trace) << "Error creating table...";
+        sqlite3_close(db);
         return false;
     } 
     BOOST_LOG_TRIVIAL(trace) << "Successfully created table!";
@@ -287,6 +290,7 @@ bool MemeHandler::AddToDatabase(int id_, std::string image_, std::string top_, s
     if(rc != SQLITE_OK)
     {
         BOOST_LOG_TRIVIAL(trace) << "Error adding entry to table...";
+        sqlite3_close(db);
         return false;
     } 
     BOOST_LOG_TRIVIAL(trace) << "Successfully added entry!";
