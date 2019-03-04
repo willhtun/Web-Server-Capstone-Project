@@ -47,6 +47,11 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     {
         errorflag = MemeList();
     }
+
+    if(memepage_.substr(0,4) == "view") // List all created memes
+    {
+        MemeView();
+    }
     
     if (request.method() == "POST") {
         std::map<std::string,std::string> memeMap = parseRequestBody(request.body());
@@ -109,7 +114,8 @@ bool MemeHandler::MemeCreate()
     
     std::cout << "hopefully should be displaying content..." << std::endl;
     char buf[512];
-    while (ifs.read(buf, sizeof(buf)).gcount() > 0) {
+    while (ifs.read(buf, sizeof(buf)).gcount() > 0) 
+    {
         memebody_.append(buf, ifs.gcount());
     }
     ifs.close();
@@ -158,25 +164,49 @@ std::map<std::string,std::string> MemeHandler::parseRequestBody(std::string body
     return memeMap;
 }
 
-void MemeHandler::MemeView()
+bool MemeHandler::MemeView()
 {
-    /* From Assignment Example 
-    std::string memebody_ = std::string(
-        "<style>
-        body { display: inline-block; position: relative; }
-        span { color: white; font: 2em bold Impact, sans-serif; position: absolute; text-align: center; width: 100%; }
-        #top { top: 0; }
-        #bottom { bottom: 0; }
-        </style>
-        <body>                                                                                                                                         
-        <img src="$meme.image">
-        <span id="top">$meme.top</span>
-        <span id="bottom">$meme.bottom</span>
-        </body>"
-    );
+    int meme_id_index = memepage_.find("id=");
+    std::string meme_id;
+    if (meme_id_index != std::string::npos) 
+    {
+        meme_id = memepage_.substr(meme_id_index + 3, memepage_.length() - 1);
+    }
+    else
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Invalid meme id...";
+        return false;
+    }
+
+    /* actual code
+    std::map<std::string,std::string> meme_object = MemeDB::getMemeEntriesById(meme_id);
+    std::string meme_object_img = meme_object["image"];
+    std::string meme_object_top = meme_object["toptext"];
+    std::string meme_object_bot = meme_object["bottomtext"];
     */
 
+    // placeholders
+    std::string meme_object_img = "pikachu-face.png";
+    std::string meme_object_top = "When the score";
+    std::string meme_object_bot = "Also me: Static makes life easier";
+
+    memebody_ = "<html>"
+                    "<style>"
+                        "body { display: inline-block; position: relative; }"
+                        "span { color: white; font: 2em bold Impact, sans-serif; position: absolute; text-align: center; width: 100%; }"
+                        "#top { top: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}"
+                        "#bottom { bottom: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}"
+                    "</style>"
+                    "<body>"
+                        "<img src=\"http://localhost:8080/meme_templates/" + meme_object_img + "\">" // change to GCP 
+                        "<span id=\"top\">" + meme_object_top + "</span>"
+                        "<span id=\"bottom\">" + meme_object_bot + "</span>"
+                    "</body>"
+                "</html>";
+
+    return true;
 }
+
 void MemeHandler::MemeList()
 {
     std::vector<std::map<std::string,std::string>> memelist = MemeDB::getMemeEntries();

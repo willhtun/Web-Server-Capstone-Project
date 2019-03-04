@@ -77,7 +77,7 @@ void session::handle_read(const boost::system::error_code& error,
                 // add data to status database
                 BOOST_LOG_TRIVIAL(trace) << "Adding url and response code into Status Database...";
                 StatusObject::addStatusEntry(req->uri_path(), std::to_string(resp->getStatusCode()));
-                BOOST_LOG_TRIVIAL(trace) << "New status added...";
+                BOOST_LOG_TRIVIAL(trace) << "...";
             }
             
             else
