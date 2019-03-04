@@ -21,7 +21,6 @@ private:
     bool MemeCreate();
     bool MemeView();
     bool MemeList();
-    void MemeError(std::unique_ptr<Response> response);
     std::map<std::string,std::string> parseRequestBody(std::string body);
 
     std::string root_;

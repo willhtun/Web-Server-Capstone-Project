@@ -48,7 +48,7 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
         errorflag = MemeList();
     }
 
-    if(memepage_.substr(0,4) == "view") // List all created memes
+    if(memepage_.substr(0,4) == "view") // List a created memes
     {
         errorflag = MemeView();
     }
@@ -90,7 +90,16 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
         response->ReSetHeader("Content-Type","text/html");
         response->SetHeader("Content-Length", std::to_string(memebody_.length()));
         response->SetBody(memebody_);
-    }   
+    }  
+    else
+    {
+        std::string error_msg = "404: File not found on uri_path. Please provide correct uri_path.";
+        response->SetStatus(Response::NOT_FOUND);
+        response->ReSetHeader("Content-Type", "text/plain");
+        response->SetHeader("Content-Length", std::to_string(error_msg.length()));
+        response->SetBody(error_msg);
+    }
+    
     
     BOOST_LOG_TRIVIAL(trace) << "Response built by meme handler...";
     std::cout << "Finished creating response..." << std::endl;
@@ -213,20 +222,9 @@ bool MemeHandler::MemeList()
     {
         memebody_ += "<a href=\"http://localhost:8080/meme/view?id=" + memelist[i]["meme-id"] +"\">";
         memebody_ += "MemeID: " + memelist[i]["meme-id"]+ " | Image: " + memelist[i]["image"] + " | Top Text: " + memelist[i]["toptext"] + " | Bottom Text: " + memelist[i]["bottomtext"]+ "\n";
-        memebody_ += "</a>\n";
+        memebody_ += "</a><br />\n";
     }
     
     memebody_ += "</body>\n</html>";
     return false;
-}
-
-
-void MemeHandler::MemeError(std::unique_ptr<Response> response)
-{
-    std::string error_msg = "404: File not found on uri_path. Please provide correct uri_path.";
-    response->SetStatus(Response::NOT_FOUND);
-    response->ReSetHeader("Content-Type", "text/plain");
-    response->SetHeader("Content-Length", std::to_string(error_msg.length()));
-    response->SetBody(error_msg);
-    errorflag = true;
 }
