@@ -105,7 +105,7 @@ bool MemeHandler::MemeCreate()
         Hosts create.html page. Returns false if we achieved no error.
     */
     // std::cout << "Creating ifrstream..." << std::endl;
-    std::ifstream ifs(".." + filedir_ + "/" + memepage_ + ".html", std::ios::in | std::ios::binary);
+    std::ifstream ifs(".." + filedir_ + "/create.html", std::ios::in | std::ios::binary);
 
     // std::cout << "Creating that meme..." << std::endl;
     if (!ifs.is_open() || memepage_.length() == 0)

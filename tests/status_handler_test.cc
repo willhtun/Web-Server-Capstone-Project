@@ -21,14 +21,17 @@ protected:
     std::unique_ptr<Request> make_request(std::string raw_req) {
         return Request::request_handler(raw_req);
     }
-    };
+};
 
 TEST_F(StatusHandlerTest, successTest) {
-  std::unique_ptr<Request> req = make_request("GET /status\r\n\r\n");
-  init_status_handler("../tests/configs/echo_server_config");
-  
-  std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
-  
-  EXPECT_EQ(resp->getStatusCode(), Response::OK);
-  
+    StatusObject::addStatusEntry("this","one");
+    StatusObject::url_handlers_map_.insert(std::pair <std::string, std::string>("another","one"));
+    std::unique_ptr<Request> req = make_request("GET /status\r\n\r\n");
+    init_status_handler("../tests/configs/echo_server_config");
+    
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+    
+    EXPECT_EQ(resp->getStatusCode(), Response::OK);
 }
+
+
