@@ -20,6 +20,7 @@ TEST_F(RequestTests, MethodTypeCheckCorrectness)
     EXPECT_EQ(req->method(), "GET");
     EXPECT_EQ(req->uri_path(), "/");
     EXPECT_EQ(req->http_version(), "HTTP/1.1");
+    EXPECT_EQ(req->body(), "");
     
     // test against POST request
     req = check_request("POST / HTTP/1.1\r\n\r\n");

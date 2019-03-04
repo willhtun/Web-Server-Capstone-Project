@@ -50,7 +50,6 @@ TEST_F(HandlerManagerTest, StatusTest)
 {
     std::string input = "status";
     std::string fakepath = "/status";
-    std::string match = "unique_ptr<RequestHandler>";
     bool what = (typeid(check(input, nginxconfig, fakepath)) == typeid(std::unique_ptr<RequestHandler>));
     EXPECT_TRUE(what);
 }
@@ -62,3 +61,20 @@ TEST_F(HandlerManagerTest, FakeTest)
     bool what = (typeid(check(input, nginxconfig, fakepath)) == typeid(std::unique_ptr<RequestHandler>));
     EXPECT_TRUE(what);
 }
+
+TEST_F(HandlerManagerTest, ProxyTest)
+{
+    std::string input = "proxy";
+    std::string fakepath = "/proxy";
+    bool what = (typeid(check(input, nginxconfig, fakepath)) == typeid(std::unique_ptr<RequestHandler>));
+    EXPECT_TRUE(what);
+}
+
+TEST_F(HandlerManagerTest, MemeTest)
+{
+    std::string input = "meme";
+    std::string fakepath = "/meme";
+    bool what = (typeid(check(input, nginxconfig, fakepath)) == typeid(std::unique_ptr<RequestHandler>));
+    EXPECT_TRUE(what);
+}
+

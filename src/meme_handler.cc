@@ -29,7 +29,6 @@ RequestHandler* MemeHandler::create(const NginxConfig& config, const std::string
     return mh;
 };
 
-
 std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
 {
     BOOST_LOG_TRIVIAL(trace) << "Meme handler building response for request...";
@@ -45,10 +44,12 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     {
         errorflag = MemeList();
     }
+
     else if(memepage_.substr(0,4) == "view") // Page to view a meme
     {
         errorflag = MemeView();
     }
+    
     else if (request.method() == "POST") {
         std::map<std::string,std::string> memeMap = parseRequestBody(request.body());
 
@@ -67,7 +68,7 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
         }
 
     }
-    else 
+    else
     {
         errorflag = true; 
     }

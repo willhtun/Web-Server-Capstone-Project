@@ -149,3 +149,52 @@ TEST_F(StaticHandlerTest, CsvRequest) {
     handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(1,1);
 }
+
+TEST_F(StaticHandlerTest, CssRequest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/css_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, jsRequest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/js_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, tifRequest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/tif_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, zipRequest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/zip_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, rtfRequest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/rtf_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, jsonRequest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/json_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(1,1);
+}
+
+TEST_F(StaticHandlerTest, xmlRequest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/xml_request"));
+    InitiateStaticHandler("../tests/configs/echo_server_config");
+    handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(1,1);
+}
