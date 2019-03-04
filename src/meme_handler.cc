@@ -43,7 +43,14 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     }
     
     if (request.method() == "POST") {
-        parseRequestBody(request.body());
+        std::map<std::string,std::string> memeMap = parseRequestBody(request.body());
+        
+        for(std::map<std::string,std::string>::const_iterator it = memeMap.begin();
+                it != memeMap.end(); ++it)
+        {
+            std::cout << "Key: " << it->first << " Value: " << it->second << std::endl;
+        }
+        // TODO: add meme-id to this memeMap and add to memeDB
     }
     /* TODO:: figure how how we want to generate and store IDs of memes created
     if(memepage_ == memeID)
@@ -71,7 +78,6 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     
     BOOST_LOG_TRIVIAL(trace) << "Response built by meme handler...";
     std::cout << "Finished creating response..." << std::endl;
-    std::cout << "memebody:\n" << memebody_ << std::endl;
     std::cout << "Response:\n" << response->Output() << std::endl;
     return response;
 };
@@ -102,11 +108,34 @@ bool MemeHandler::MemeCreate()
 
 std::map<std::string,std::string> MemeHandler::parseRequestBody(std::string body)
 {
+    /*
+        Parses request body and assigns appropriate key value pairs inside
+        of a meme map which is returned.
+
+        Author: Konner Macias
+    */
     std::map<std::string,std::string> memeMap;
-    
+
+    // split on & frist
     std::vector<std::string> items;
     boost::split(items, body, boost::is_any_of("&"), boost::token_compress_on);
-    // I'm gonna add more here
+
+    // bad request checks
+    if (items.size() < 3) { return memeMap; }
+
+    for (size_t i = 0; i < items.size(); i++)
+    {
+        std::vector<std::string> key_value;
+        boost::split(key_value, items[i], boost::is_any_of("="), boost::token_compress_on);
+        if (key_value.size() != 2) { return memeMap; }
+
+        // replace "%2F" with "/" if needed
+        int symbol_ind = key_value[1].find("%2F");
+        if (symbol_ind != std::string::npos) { key_value[1].replace(symbol_ind, 3, "/"); }
+        
+        // add key value to memeMap
+        memeMap[key_value[0]] = key_value[1];
+    }
     return memeMap;
 }
 
