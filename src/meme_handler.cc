@@ -69,21 +69,10 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
             std::cout << "Key: " << it->first << " Value: " << it->second << std::endl;
         }
     }
-    /* TODO:: figure how how we want to generate and store IDs of memes created
-    if(memepage_ == memeID)
-    {
-        MemeView();
-    }
-    */
-    /*
-    else //Send Error Response 
-    {
-        MemeError(move(response));
-    }
-    */
-    //Send Response
     
     std::unique_ptr<Response> response(new Response());
+
+    //Send Correct Response
     if (!errorflag)
     {
         response->SetStatus(Response::OK);
@@ -91,7 +80,7 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
         response->SetHeader("Content-Length", std::to_string(memebody_.length()));
         response->SetBody(memebody_);
     }  
-    else
+    else //Send Error Response
     {
         std::string error_msg = "404: File not found on uri_path. Please provide correct uri_path.";
         response->SetStatus(Response::NOT_FOUND);
@@ -189,8 +178,8 @@ bool MemeHandler::MemeView()
 
     std::map<std::string,std::string> meme_object = MemeDB::getMemeEntriesById(meme_id);
     std::string meme_object_img = meme_object["image"];
-    std::string meme_object_top = meme_object["toptext"];
-    std::string meme_object_bot = meme_object["bottomtext"];
+    std::string meme_object_top = meme_object["top"];
+    std::string meme_object_bot = meme_object["bottom"];
 
     memebody_ = "<html>"
                     "<style>"
@@ -214,14 +203,14 @@ bool MemeHandler::MemeList()
     std::vector<std::map<std::string,std::string>> memelist = MemeDB::getMemeEntries();
     // build body string
     memebody_ += "<html>\n<body>";
-    memebody_ += "<h2>MEME LIST</h2>\n";
+    memebody_ += "<h2>SPICY MEME LIST</h2>\n";
 
     // bring in meme information and create links TODO: adjust according to how the information is stored. 
 
     for (int i = 0; i < memelist.size(); i++) 
     {
         memebody_ += "<a href=\"http://localhost:8080/meme/view?id=" + memelist[i]["meme-id"] +"\">";
-        memebody_ += "MemeID: " + memelist[i]["meme-id"]+ " | Image: " + memelist[i]["image"] + " | Top Text: " + memelist[i]["toptext"] + " | Bottom Text: " + memelist[i]["bottomtext"]+ "\n";
+        memebody_ += "MemeID: " + memelist[i]["meme-id"]+ " | Image: " + memelist[i]["image"] + " | Top Text: " + memelist[i]["top"] + " | Bottom Text: " + memelist[i]["bottom"]+ "\n";
         memebody_ += "</a><br />\n";
     }
     
