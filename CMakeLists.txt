@@ -103,6 +103,12 @@ target_link_libraries(status_obj_test server session dispatcher handler_manager 
 add_executable(proxy_handler_test tests/proxy_handler_test.cc)
 target_link_libraries(proxy_handler_test proxy_handler request config_parser response status_obj gtest_main gmock_main Boost::system Boost::log_setup Boost::log)
 
+add_executable(meme_handler_test tests/meme_handler_test.cc)
+target_link_libraries(meme_handler_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler meme_handler status_obj meme_db gtest_main Boost::system Boost::log_setup Boost::log)
+
+add_executable(meme_db_test tests/meme_db_test.cc)
+target_link_libraries(meme_db_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler meme_handler status_obj meme_db gtest_main Boost::system Boost::log_setup Boost::log)
+
 # Update with test binary
 # gtest_discover_tests(example_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 gtest_discover_tests(config_parser_test /usr/src/projects/git-r-done build/googletest)
@@ -118,6 +124,7 @@ gtest_discover_tests(static_handler_test /usr/src/projects/git-r-done build/goog
 gtest_discover_tests(status_handler_test /usr/src/projects/git-r-done build/googletest)
 gtest_discover_tests(status_obj_test /usr/src/projects/git-r-done build/googletest)
 gtest_discover_tests(proxy_handler_test /usr/src/projects/git-r-done build/googletest)
+gtest_discover_tests(meme_handler_test /usr/src/projects/git-r-done build/googletest)
 
 # Update with target/test targets
 # include(cmake/CodeCoverageReportConfig.cmake)

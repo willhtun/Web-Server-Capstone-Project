@@ -31,13 +31,12 @@ RequestHandler* MemeHandler::create(const NginxConfig& config, const std::string
 
 std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
 {
-    //Meme landing page. Will probably need to move into another function once we figure out the uri path strategy 
     BOOST_LOG_TRIVIAL(trace) << "Meme handler building response for request...";
     std::string full_url = request.uri_path();
     memepage_ = full_url.substr(uri_.length() + 1, full_url.length());
 
     std::cout << "Processing request:\n" << request.getReqRaw() << std::endl;
-    if (memepage_ == "create.html") //Landing Page for Meme Creation
+    if (memepage_ == "create") //Landing Page for Meme Creation
     {
         errorflag = MemeCreate();
     }
@@ -48,7 +47,7 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
         errorflag = MemeList();
     }
 
-    if(memepage_.substr(0,4) == "view") // List a created memes
+    if(memepage_.substr(0,4) == "view") // Page to view a meme
     {
         errorflag = MemeView();
     }
@@ -68,6 +67,10 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
         {
             std::cout << "Key: " << it->first << " Value: " << it->second << std::endl;
         }
+    }
+    else 
+    {
+        errorflag = true; 
     }
     
     std::unique_ptr<Response> response(new Response());
@@ -102,7 +105,7 @@ bool MemeHandler::MemeCreate()
         Hosts create.html page. Returns false if we achieved no error.
     */
     std::cout << "Creating ifrstream..." << std::endl;
-    std::ifstream ifs(".." + filedir_ + "/" + memepage_, std::ios::in | std::ios::binary);
+    std::ifstream ifs(".." + filedir_ + "/" + memepage_ + ".html", std::ios::in | std::ios::binary);
 
     std::cout << "Creating that meme..." << std::endl;
     if (!ifs.is_open() || memepage_.length() == 0)
