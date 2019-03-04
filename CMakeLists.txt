@@ -58,7 +58,7 @@ add_library(meme_handler src/meme_handler.cc)
 # target_link_libraries(example_server example_lib Boost::system)
 
 add_executable(server_main src/server_main.cc)
-target_link_libraries(server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler proxy_handler meme_handler request config_parser response status_obj meme_db Boost::system Boost::log_setup Boost::log)
+target_link_libraries(server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler proxy_handler meme_handler request config_parser response status_obj Boost::system Boost::log_setup Boost::log)
 
 # Update test executable name, srcs, and deps
 # add_executable(example_lib_test tests/example_lib_test.cc)

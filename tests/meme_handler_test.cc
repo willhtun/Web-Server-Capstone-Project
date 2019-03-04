@@ -48,9 +48,8 @@ TEST_F(MemeHandlerTest, BadCreatePageTest) {
     //std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/create_request"));
     std::unique_ptr<Request> req = make_request("GET /meme/create HTTP/1.1\r\n\r\n");
     init_meme_handler("../tests/configs/echo_server_config");
-
-    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
 }
 
@@ -59,7 +58,6 @@ TEST_F(MemeHandlerTest, ListPageTest) {
     init_meme_handler("../tests/configs/echo_server_config");
 
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
-
     EXPECT_EQ(resp->getStatusCode(), Response::OK);
 }
 

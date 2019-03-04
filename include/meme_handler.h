@@ -3,10 +3,11 @@
 #include <string>
 #include <vector>
 #include <sqlite3.h>
+#include <chrono>
+#include <ctime>    
 #include "request.h"
 #include "response.h"
 #include "request_handler.h"
-#include "meme_db.h"
 
 class MemeHandler : public RequestHandler
 {
@@ -23,8 +24,9 @@ private:
     bool MemeView();
     bool MemeList();
     std::map<std::string,std::string> parseRequestBody(std::string body);
+    
     sqlite3 *db;
-    bool AddToDatabase(int id_, std::string image_, std::string top_, std::string bottom);
+    bool AddToDatabase(std::string id_, std::string image_, std::string top_, std::string bottom);
     std::vector<std::map<std::string,std::string>> GetAllFromDatabase();
 
     std::string root_;
