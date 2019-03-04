@@ -59,13 +59,6 @@ add_library(meme_handler src/meme_handler.cc)
 
 add_executable(server_main src/server_main.cc)
 target_link_libraries(server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler proxy_handler meme_handler request config_parser response status_obj meme_db Boost::system Boost::log_setup Boost::log)
-include(cmake/FindSQLite3.cmake)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-find_package (SQLite3)
-if (SQLITE3_FOUND)
-  include_directories(${SQLITE3_INCLUDE_DIRS})
-  target_link_libraries (server_main ${SQLITE3_LIBRARIES})
-endif (SQLITE3_FOUND)
 
 # Update test executable name, srcs, and deps
 # add_executable(example_lib_test tests/example_lib_test.cc)
@@ -115,6 +108,30 @@ target_link_libraries(meme_handler_test server session dispatcher handler_manage
 
 add_executable(meme_db_test tests/meme_db_test.cc)
 target_link_libraries(meme_db_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler meme_handler status_obj meme_db gtest_main Boost::system Boost::log_setup Boost::log)
+
+# Link SQLite3
+include(cmake/FindSQLite3.cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package (SQLite3)
+if (SQLITE3_FOUND)
+  include_directories(${SQLITE3_INCLUDE_DIRS})
+  target_link_libraries (server_main ${SQLITE3_LIBRARIES})
+  target_link_libraries (config_parser_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (dispatcher_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (echo_handler_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (error_handler_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (handler_manager_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (request_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (response_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (server_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (session_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (static_handler_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (status_handler_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (status_obj_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (proxy_handler_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (meme_handler_test ${SQLITE3_LIBRARIES})
+  target_link_libraries (meme_db_test ${SQLITE3_LIBRARIES})
+endif (SQLITE3_FOUND)
 
 # Update with test binary
 # gtest_discover_tests(example_lib_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
