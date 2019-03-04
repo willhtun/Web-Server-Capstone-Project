@@ -50,7 +50,7 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
 
     if(memepage_.substr(0,4) == "view") // List all created memes
     {
-        MemeView();
+        errorflag = MemeView();
     }
     
     if (request.method() == "POST") {
@@ -175,20 +175,13 @@ bool MemeHandler::MemeView()
     else
     {
         BOOST_LOG_TRIVIAL(trace) << "Invalid meme id...";
-        return false;
+        return true;
     }
 
-    /* actual code
     std::map<std::string,std::string> meme_object = MemeDB::getMemeEntriesById(meme_id);
     std::string meme_object_img = meme_object["image"];
     std::string meme_object_top = meme_object["toptext"];
     std::string meme_object_bot = meme_object["bottomtext"];
-    */
-
-    // placeholders
-    std::string meme_object_img = "pikachu-face.png";
-    std::string meme_object_top = "When the score";
-    std::string meme_object_bot = "Also me: Static makes life easier";
 
     memebody_ = "<html>"
                     "<style>"
@@ -198,32 +191,33 @@ bool MemeHandler::MemeView()
                         "#bottom { bottom: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}"
                     "</style>"
                     "<body>"
-                        "<img src=\"http://localhost:8080/meme_templates/" + meme_object_img + "\">" // change to GCP 
+                        "<img src=\"http://localhost:8080/" + meme_object_img + "\">" // change to GCP 
                         "<span id=\"top\">" + meme_object_top + "</span>"
                         "<span id=\"bottom\">" + meme_object_bot + "</span>"
                     "</body>"
                 "</html>";
 
-    return true;
+    return false;
 }
 
-void MemeHandler::MemeList()
+bool MemeHandler::MemeList()
 {
     std::vector<std::map<std::string,std::string>> memelist = MemeDB::getMemeEntries();
     // build body string
-    std::string memebody_ = "<html>\n<body>";
+    memebody_ += "<html>\n<body>";
     memebody_ += "<h2>MEME LIST</h2>\n";
 
     // bring in meme information and create links TODO: adjust according to how the information is stored. 
 
     for (int i = 0; i < memelist.size(); i++) 
     {
-        memebody_ += "<a href=\"ss.gitrdone.cs130.org/meme/view?id=" + memelist[i]["id"] +"\">";
-        memebody_ += "MemeID: " + memelist[i]["id"]+ " | Image: " + memelist[i]["image"] + " | Top Text: " + memelist[i]["toptext"] + " | Bottom Text: " + memelist[i]["bottomtext"]+ "\n";
+        memebody_ += "<a href=\"http://localhost:8080/meme/view?id=" + memelist[i]["meme-id"] +"\">";
+        memebody_ += "MemeID: " + memelist[i]["meme-id"]+ " | Image: " + memelist[i]["image"] + " | Top Text: " + memelist[i]["toptext"] + " | Bottom Text: " + memelist[i]["bottomtext"]+ "\n";
         memebody_ += "</a>\n";
     }
     
     memebody_ += "</body>\n</html>";
+    return false;
 }
 
 

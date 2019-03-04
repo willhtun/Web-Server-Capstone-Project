@@ -16,7 +16,7 @@ std::vector<std::map<std::string,std::string>> MemeDB::getMemeEntries()
 std::map<std::string,std::string> MemeDB::getMemeEntriesById(std::string id) 
 {
    for (int i = 0; i < meme_entries_.size(); i++) {
-      if ((meme_entries_[i])["id"] == id)
+      if ((meme_entries_[i])["meme-id"] == id)
          return meme_entries_[i];
    }
    // Not returning anything for not found
