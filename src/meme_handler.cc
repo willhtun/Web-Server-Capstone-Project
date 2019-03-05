@@ -51,10 +51,11 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
 
         // add meme-id with correct locks in place to database
         mtx.lock();
-        std::string id_ = std::to_string(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())); // still does not solve race condition completely
-        AddToDatabase(id_, memeMap["image"], memeMap["top"], memeMap["bottom"]);
+        std::string meme_id = std::to_string(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())); // still does not solve race condition completely
+        AddToDatabase(meme_id, memeMap["image"], memeMap["top"], memeMap["bottom"]);
         mtx.unlock();
 
+        errorflag = MemeResult(meme_id);                    
     }
     else
     {
@@ -185,14 +186,13 @@ bool MemeHandler::MemeView()
 
         Author: Will Htun
     */
-
-    // Extract meme ID
-    int meme_id_index = memepage_.find("id=");
     std::map<std::string,std::string> meme_object;
+    int meme_id_index = memepage_.find("id=");
     std::string meme_id;
     if (meme_id_index != std::string::npos) 
     {
         meme_id = memepage_.substr(meme_id_index + 3, memepage_.length() - 1);
+        
     }
     else
     {
@@ -237,6 +237,62 @@ bool MemeHandler::MemeView()
                         "<img src=\"http://localhost:8080/" + meme_object_img + "\">" // change to GCP 
                         "<span id=\"top\">" + meme_object_top + "</span>"
                         "<span id=\"bottom\">" + meme_object_bot + "</span>"
+                    "</body>"
+                "</html>";
+
+    return false;
+}
+
+bool MemeHandler::MemeResult(std::string id_)
+{
+    /*
+        Returns an html page pouplated with the meme object associated with the meme ID
+
+        Author: Will Htun
+    */
+    std::map<std::string,std::string> meme_object;
+
+    // SQL SELECT operation
+    int rc;
+    rc = sqlite3_open(("../" + savedir_ + "/test.db").c_str(), &db);
+    if(rc) 
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Error opening database...";
+        sqlite3_close(db);
+        return false;
+    } 
+    BOOST_LOG_TRIVIAL(trace) << "Opened database for writing...";
+
+    std::string selector = "SELECT * FROM MEME_HISTORY WHERE MEME_ID=" + id_;
+    rc = sqlite3_exec(db, selector.c_str(), callback_GetEntryFromDatabase, &meme_object, NULL);
+    if(rc != SQLITE_OK)
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Error reading table...";
+    } 
+
+    sqlite3_close(db);
+    BOOST_LOG_TRIVIAL(trace) << "Closed database";
+
+    // Populate HTML
+    std::string meme_object_img = meme_object["IMAGE"];
+    std::string meme_object_top = meme_object["TOP"];
+    std::string meme_object_bot = meme_object["BOTTOM"];
+
+    memebody_ = "<html>"
+                    "<style>"
+                        "div { display: inline-block; position: relative; }"
+                        "span { color: white; font: 2em bold Impact, sans-serif; position: absolute; text-align: center; width: 100%; }"
+                        "#top { top: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}"
+                        "#bottom { bottom: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}"
+                    "</style>"
+                    "<body>"
+                        "<div>"
+                        "<img src=\"http://localhost:8080/" + meme_object_img + "\">" // change to GCP 
+                        "<span id=\"top\">" + meme_object_top + "</span>"
+                        "<span id=\"bottom\">" + meme_object_bot + "</span>"
+                        "</div></br>"
+                        "<a href=\"http://localhost:8080/meme/create\"> Create more! </a></br>"
+                        "<a href=\"http://localhost:8080/meme/list\"> View All Memes </a></br>"
                     "</body>"
                 "</html>";
 

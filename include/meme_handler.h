@@ -23,6 +23,7 @@ private:
     bool MemeCreate();
     bool MemeView();
     bool MemeList();
+    bool MemeResult(std::string id_);
     std::map<std::string,std::string> parseRequestBody(std::string body);
     
     sqlite3 *db;
