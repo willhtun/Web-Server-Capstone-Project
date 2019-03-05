@@ -147,10 +147,11 @@ std::map<std::string,std::string> MemeHandler::parseRequestBody(std::string body
         Author: Konner Macias
     */
     std::map<std::string,std::string> memeMap;
-
+    // URL to ASCII decoding and
     // split on & frist
     std::vector<std::string> items;
-    boost::split(items, body, boost::is_any_of("&"), boost::token_compress_on);
+    std::string decoded_body = URLParser::urlDecode(body);
+    boost::split(items, decoded_body, boost::is_any_of("&"), boost::token_compress_on);
 
     // bad request checks
     if (items.size() < 3) { return memeMap; }
@@ -164,7 +165,7 @@ std::map<std::string,std::string> MemeHandler::parseRequestBody(std::string body
         // replace "%2F" with "/" if needed
         int symbol_ind = key_value[1].find("%2F");
         if (symbol_ind != std::string::npos) { key_value[1].replace(symbol_ind, 3, "/"); }
-        
+
         // replace "+" with " " if needed
         std::string::size_type n = 0;
         while ((n = key_value[1].find("+", n)) != std::string::npos)
@@ -186,7 +187,10 @@ bool MemeHandler::MemeView()
 
         Author: Will Htun
     */
-    std::map<std::string,std::string> meme_object;
+    std::string meme_object_img;
+    std::string meme_object_top;
+    std::string meme_object_bot;
+
     int meme_id_index = memepage_.find("id=");
     std::string meme_id;
     if (meme_id_index != std::string::npos) 
@@ -202,6 +206,7 @@ bool MemeHandler::MemeView()
 
     // SQL SELECT operation
     int rc;
+    sqlite3_stmt *stmt;
     rc = sqlite3_open(("../" + savedir_ + "/test.db").c_str(), &db);
     if(rc) 
     {
@@ -210,9 +215,21 @@ bool MemeHandler::MemeView()
         return false;
     } 
     BOOST_LOG_TRIVIAL(trace) << "Opened database for writing...";
+    // Injection Test
+    // meme_id = "1551771020; DROP TABLE MEME_HISTORY";
 
-    std::string selector = "SELECT * FROM MEME_HISTORY WHERE MEME_ID=" + meme_id;
-    rc = sqlite3_exec(db, selector.c_str(), callback_GetEntryFromDatabase, &meme_object, NULL);
+    std::string selector = "SELECT * FROM MEME_HISTORY WHERE MEME_ID = ?";
+    rc = sqlite3_prepare_v2(db, selector.c_str(), selector.length(), &stmt, NULL);
+    if( rc == SQLITE_OK ) {
+        sqlite3_bind_text(stmt, 1, meme_id.c_str(), meme_id.length(), 0);
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            meme_object_img = strdup((const char*)sqlite3_column_text(stmt, 1));
+            meme_object_top = strdup((const char*)sqlite3_column_text(stmt, 2));
+            meme_object_bot = strdup((const char*)sqlite3_column_text(stmt, 3));
+        }
+        sqlite3_finalize(stmt);
+    }
+    //rc = sqlite3_exec(db, selector.c_str(), callback_GetEntryFromDatabase, &meme_object, NULL);
     if(rc != SQLITE_OK)
     {
         BOOST_LOG_TRIVIAL(trace) << "Error reading table...";
@@ -220,11 +237,6 @@ bool MemeHandler::MemeView()
 
     sqlite3_close(db);
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
-
-    // Populate HTML
-    std::string meme_object_img = meme_object["IMAGE"];
-    std::string meme_object_top = meme_object["TOP"];
-    std::string meme_object_bot = meme_object["BOTTOM"];
 
     memebody_ = "<html>"
                     "<style>"
@@ -234,7 +246,7 @@ bool MemeHandler::MemeView()
                         "#bottom { bottom: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}"
                     "</style>"
                     "<body>"
-                        "<img src=\"http://localhost:8080/" + meme_object_img + "\">" // change to GCP 
+                        "<img src=\"http://localhost:8082/" + meme_object_img + "\">" // change to GCP 
                         "<span id=\"top\">" + meme_object_top + "</span>"
                         "<span id=\"bottom\">" + meme_object_bot + "</span>"
                     "</body>"
@@ -250,10 +262,13 @@ bool MemeHandler::MemeResult(std::string id_)
 
         Author: Will Htun
     */
-    std::map<std::string,std::string> meme_object;
+    std::string meme_object_img;
+    std::string meme_object_top;
+    std::string meme_object_bot;
 
     // SQL SELECT operation
     int rc;
+    sqlite3_stmt *stmt;
     rc = sqlite3_open(("../" + savedir_ + "/test.db").c_str(), &db);
     if(rc) 
     {
@@ -263,8 +278,19 @@ bool MemeHandler::MemeResult(std::string id_)
     } 
     BOOST_LOG_TRIVIAL(trace) << "Opened database for writing...";
 
-    std::string selector = "SELECT * FROM MEME_HISTORY WHERE MEME_ID=" + id_;
-    rc = sqlite3_exec(db, selector.c_str(), callback_GetEntryFromDatabase, &meme_object, NULL);
+    std::string selector = "SELECT * FROM MEME_HISTORY WHERE MEME_ID = ?";
+    rc = sqlite3_prepare_v2(db, selector.c_str(), selector.length(), &stmt, NULL);
+    if(rc == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, id_.c_str(), id_.length(), 0);
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            meme_object_img = strdup((const char*)sqlite3_column_text(stmt, 1));
+            meme_object_top = strdup((const char*)sqlite3_column_text(stmt, 2));
+            meme_object_bot = strdup((const char*)sqlite3_column_text(stmt, 3));
+        }
+        sqlite3_finalize(stmt);
+    }
+
+   //rc = sqlite3_exec(db, selector.c_str(), callback_GetEntryFromDatabase, &meme_object, NULL);
     if(rc != SQLITE_OK)
     {
         BOOST_LOG_TRIVIAL(trace) << "Error reading table...";
@@ -272,11 +298,6 @@ bool MemeHandler::MemeResult(std::string id_)
 
     sqlite3_close(db);
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
-
-    // Populate HTML
-    std::string meme_object_img = meme_object["IMAGE"];
-    std::string meme_object_top = meme_object["TOP"];
-    std::string meme_object_bot = meme_object["BOTTOM"];
 
     memebody_ = "<html>"
                     "<style>"
@@ -287,12 +308,12 @@ bool MemeHandler::MemeResult(std::string id_)
                     "</style>"
                     "<body>"
                         "<div>"
-                        "<img src=\"http://localhost:8080/" + meme_object_img + "\">" // change to GCP 
+                        "<img src=\"http://localhost:8082/" + meme_object_img + "\">" // change to GCP 
                         "<span id=\"top\">" + meme_object_top + "</span>"
                         "<span id=\"bottom\">" + meme_object_bot + "</span>"
                         "</div></br>"
-                        "<a href=\"http://localhost:8080/meme/create\"> Create more! </a></br>"
-                        "<a href=\"http://localhost:8080/meme/list\"> View All Memes </a></br>"
+                        "<a href=\"http://localhost:8082/meme/create\"> Create more! </a></br>"
+                        "<a href=\"http://localhost:8082/meme/list\"> View All Memes </a></br>"
                     "</body>"
                 "</html>";
 
@@ -310,7 +331,7 @@ bool MemeHandler::MemeList()
 
     for (int i = 0; i < memelist.size(); i++) 
     {
-        memebody_ += "<a href=\"http://localhost:8080/meme/view?id=" + memelist[i]["MEME_ID"] +"\">";
+        memebody_ += "<a href=\"http://localhost:8082/meme/view?id=" + memelist[i]["MEME_ID"] +"\">";
         memebody_ += "MemeID: " + memelist[i]["MEME_ID"]+ " | Image: " + memelist[i]["IMAGE"] + " | Top Text: " + memelist[i]["TOP"] + " | Bottom Text: " + memelist[i]["BOTTOM"]+ "\n";
         memebody_ += "</a><br />\n";
     }
@@ -328,6 +349,7 @@ bool MemeHandler::AddToDatabase(std::string id_, std::string image_, std::string
 
     // SQL CREATE operation
     int rc;
+    sqlite3_stmt *stmt;
     rc = sqlite3_open(("../" + savedir_ + "/test.db").c_str(), &db);
     if(rc) 
     {
@@ -354,9 +376,22 @@ bool MemeHandler::AddToDatabase(std::string id_, std::string image_, std::string
 
     // SQL INSERT operation
     std::string entry = "INSERT INTO MEME_HISTORY (MEME_ID,IMAGE,TOP,BOTTOM) "
-                        "VALUES (" + id_ + ", '" + image_ + "', '" + top_ + "', '" + bottom_ + "');";
+                         "VALUES (?,?,?,?);";
+                        //"VALUES (" + id_ + ", '" + image_ + "', '" + top_ + "', '" + bottom_ + "');";
+    rc = sqlite3_prepare_v2(db, entry.c_str(), entry.length(), &stmt, NULL);
+    if( rc == SQLITE_OK ) {
+        // bind the value 
+        sqlite3_bind_text(stmt, 1, id_.c_str(), id_.length(), 0);
+        sqlite3_bind_text(stmt, 2, image_.c_str(), image_.length(), 0);
+        sqlite3_bind_text(stmt, 3, top_.c_str(), top_.length(), 0);
+        sqlite3_bind_text(stmt, 4, bottom_.c_str(), bottom_.length(), 0);
 
-    rc = sqlite3_exec(db, entry.c_str(), NULL, NULL, NULL);
+        // commit 
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+    }
+
+    //rc = sqlite3_exec(db, entry.c_str(), NULL, NULL, NULL);
     if(rc != SQLITE_OK)
     {
         BOOST_LOG_TRIVIAL(trace) << "Error adding entry to table...";
@@ -389,7 +424,7 @@ std::vector<std::map<std::string,std::string>> MemeHandler::GetAllFromDatabase()
     } 
     BOOST_LOG_TRIVIAL(trace) << "Opened database for reading...";
 
-    std::string selector = "SELECT * from MEME_HISTORY";
+    std::string selector = "SELECT * FROM MEME_HISTORY";
     rc = sqlite3_exec(db, selector.c_str(), callback_GetAllFromDatabase, &meme_entries_, NULL);
     if(rc != SQLITE_OK)
     {

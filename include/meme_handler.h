@@ -8,6 +8,7 @@
 #include "request.h"
 #include "response.h"
 #include "request_handler.h"
+#include "url_parser.h"
 
 class MemeHandler : public RequestHandler
 {
