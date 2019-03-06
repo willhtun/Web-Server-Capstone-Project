@@ -152,6 +152,7 @@ std::map<std::string,std::string> MemeHandler::parseRequestBody(std::string body
     // split on & frist
     std::vector<std::string> items;
     boost::split(items, body, boost::is_any_of("&"), boost::token_compress_on);
+    bool deepfry = false;
 
     // bad request checks
     if (items.size() < 3) { return memeMap; }
@@ -161,9 +162,7 @@ std::map<std::string,std::string> MemeHandler::parseRequestBody(std::string body
 
         std::vector<std::string> key_value;
         boost::split(key_value, items[i], boost::is_any_of("="), boost::token_compress_on);
-        std::cout << key_value[1] << " ++ ";
         key_value[1] = URLParser::urlDecode(key_value[1]);
-        std::cout << key_value[1];
 
         if (key_value.size() != 2) { return memeMap; }
 
@@ -179,16 +178,21 @@ std::map<std::string,std::string> MemeHandler::parseRequestBody(std::string body
             n += 1; // update for added " "
         }
         // add key value to memeMap
+        if (key_value[0] == "deepfry" && key_value[1] == "True")
+            deepfry = true;
+
         memeMap[key_value[0]] = key_value[1];
     }
+
+    if (deepfry)
+    {
+        memeMap["image"] = "df-" + memeMap["image"];
+    }
+    memeMap["image"] = "meme_templates/" + memeMap["image"];
 
     memeMap["name"] = URLParser::htmlEncode(memeMap["name"]);
     memeMap["top"] = URLParser::htmlEncode(memeMap["top"]);
     memeMap["bottom"] = URLParser::htmlEncode(memeMap["bottom"]);
-
-    std::cout << memeMap["name"] << std::endl;
-    std::cout << memeMap["top"] << std::endl;
-    std::cout << memeMap["bottom"] << std::endl;
 
     return memeMap;
 }
@@ -261,7 +265,7 @@ bool MemeHandler::MemeView()
                         "#bottom { bottom: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}"
                     "</style>"
                     "<body>"
-                        "<h>" + meme_object_name + "</h></br>"c
+                        "<h>" + meme_object_name + "</h></br>"
                         "<div>"
                         "<img src=\"http://localhost:8082/" + meme_object_img + "\">" // change to GCP 
                         "<span id=\"top\">" + meme_object_top + "</span>"
