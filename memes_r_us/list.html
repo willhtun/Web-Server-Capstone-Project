@@ -14,13 +14,14 @@
     </head>
 
     <style>
-        hr { margin: 0; }
         #name { margin: 25px 0; font-size: 30px; width: 100%; text-align: center; }
         #meme-wrapper { display: flex; justify-content: center;}
         #meme { display: inline-block; position: relative; margin-left:auto; margin-right:auto; }
         span { color: white; font: 2em bold Impact, sans-serif; position: absolute; text-align: center; width: 100%; }
         #top { top: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}
         #bottom { bottom: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}
+        #entry { margin-left: 200px;}
+        #level {margin-top: 30px; margin-bottom: 30px; }
     </style>
 
     <nav class="navbar is-transparent">
@@ -48,16 +49,15 @@
         </div>
     </nav>
 
-    <hr>
+    <!-- Header-->
+    <nav class="level" id="level">
+        <div class="level-item has-text-centered">
+            <div>
+            <p class="title" style="color: #ffab40;">Browse All Memes</p>
+            <br>
+            <p class="description"> Dank history </p>
+            </div>
+        </div>
+    </nav>
 
     <body>
-        <p id="name"> meme_object_name </p></br>
-        <div id="meme-wrapper">
-            <div id="meme">
-            <img src="http://localhost:8082/meme_object_img">
-            <span id="top"> meme_object_top </span>
-            <span id="bottom"> meme_object_bot </span>
-            </div></br>
-        </div>
-    </body>
-</html>

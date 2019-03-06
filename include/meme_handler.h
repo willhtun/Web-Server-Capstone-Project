@@ -5,6 +5,7 @@
 #include <sqlite3.h>
 #include <chrono>
 #include <ctime>    
+#include <boost/algorithm/string/replace.hpp>
 #include "request.h"
 #include "response.h"
 #include "request_handler.h"

@@ -257,23 +257,27 @@ bool MemeHandler::MemeView()
     sqlite3_close(db);
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
 
-    memebody_ = "<html>"
-                    "<style>"
-                        "div { display: inline-block; position: relative; }"
-                        "span { color: white; font: 2em bold Impact, sans-serif; position: absolute; text-align: center; width: 100%; }"
-                        "#top { top: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}"
-                        "#bottom { bottom: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}"
-                    "</style>"
-                    "<body>"
-                        "<h>" + meme_object_name + "</h></br>"
-                        "<div>"
-                        "<img src=\"http://localhost:8082/" + meme_object_img + "\">" // change to GCP 
-                        "<span id=\"top\">" + meme_object_top + "</span>"
-                        "<span id=\"bottom\">" + meme_object_bot + "</span>"
-                        "</div></br>"
-                        "<a href=\"http://localhost:8082/meme/list\"> Back </a></br>"
-                    "</body>"
-                "</html>";
+
+
+
+
+    std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
+    if (!ifs.is_open() || memepage_.length() == 0)
+    {
+        return true;
+    }
+
+    char buf[512];
+    while (ifs.read(buf, sizeof(buf)).gcount() > 0) 
+    {
+        memebody_.append(buf, ifs.gcount());
+    }
+    
+    ifs.close();
+    boost::replace_all(memebody_, "meme_object_name", meme_object_name);
+    boost::replace_all(memebody_, "meme_object_img", meme_object_img);
+    boost::replace_all(memebody_, "meme_object_top", meme_object_top);
+    boost::replace_all(memebody_, "meme_object_bot", meme_object_bot);
 
     return false;
 }
@@ -325,24 +329,24 @@ bool MemeHandler::MemeResult(std::string id_)
     sqlite3_close(db);
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
 
-    memebody_ = "<html>"
-                    "<style>"
-                        "div { display: inline-block; position: relative; }"
-                        "span { color: white; font: 2em bold Impact, sans-serif; position: absolute; text-align: center; width: 100%; }"
-                        "#top { top: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}"
-                        "#bottom { bottom: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}"
-                    "</style>"
-                    "<body>"
-                        "<h>" + meme_object_name + "</h></br>"
-                        "<div>"
-                        "<img src=\"http://localhost:8082/" + meme_object_img + "\">" // change to GCP 
-                        "<span id=\"top\">" + meme_object_top + "</span>"
-                        "<span id=\"bottom\">" + meme_object_bot + "</span>"
-                        "</div></br>"
-                        "<a href=\"http://localhost:8082/meme/create\"> Create more! </a></br>"
-                        "<a href=\"http://localhost:8082/meme/list\"> View All Memes </a></br>"
-                    "</body>"
-                "</html>";
+    std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
+    if (!ifs.is_open() || memepage_.length() == 0)
+    {
+        return true;
+    }
+
+    char buf[512];
+    while (ifs.read(buf, sizeof(buf)).gcount() > 0) 
+    {
+        memebody_.append(buf, ifs.gcount());
+    }
+    
+    ifs.close();
+
+    boost::replace_all(memebody_, "meme_object_name", meme_object_name);
+    boost::replace_all(memebody_, "meme_object_img", meme_object_img);
+    boost::replace_all(memebody_, "meme_object_top", meme_object_top);
+    boost::replace_all(memebody_, "meme_object_bot", meme_object_bot);
 
     return false;
 }
@@ -351,15 +355,27 @@ bool MemeHandler::MemeList()
 {
     std::vector<std::map<std::string,std::string>> memelist = GetAllFromDatabase();
     // build body string
-    memebody_ += "<html>\n<body>";
-    memebody_ += "<h2>SPICY MEME LIST</h2>\n";
+    std::ifstream ifs(".." + filedir_ + "/list.html", std::ios::in | std::ios::binary);
+    if (!ifs.is_open() || memepage_.length() == 0)
+    {
+        return true;
+    }
+
+    char buf[512];
+    while (ifs.read(buf, sizeof(buf)).gcount() > 0) 
+    {
+        memebody_.append(buf, ifs.gcount());
+    }
+    
+    ifs.close();
 
     // bring in meme information and create links TODO: adjust according to how the information is stored. 
 
     for (int i = 0; i < memelist.size(); i++) 
     {
-        memebody_ += "<a href=\"http://localhost:8082/meme/view?id=" + memelist[i]["MEME_ID"] +"\">";
-        memebody_ += "MemeID: " + memelist[i]["MEME_ID"]+ " | Name: " + memelist[i]["NAME"] + " | Image: " + memelist[i]["IMAGE"] + " | Top Text: " + memelist[i]["TOP"] + " | Bottom Text: " + memelist[i]["BOTTOM"]+ "\n";
+        memebody_ += "<a id=\"entry\" href=\"http://localhost:8082/meme/view?id=" + memelist[i]["MEME_ID"] +"\">";
+     //   memebody_ += "MemeID: " + memelist[i]["MEME_ID"]+ " | Name: " + memelist[i]["NAME"] + " | Image: " + memelist[i]["IMAGE"] + " | Top Text: " + memelist[i]["TOP"] + " | Bottom Text: " + memelist[i]["BOTTOM"]+ "\n";
+        memebody_ += "MemeID: " + memelist[i]["MEME_ID"]+ " | Name: " + memelist[i]["NAME"] + "\n";
         memebody_ += "</a><br />\n";
     }
     
