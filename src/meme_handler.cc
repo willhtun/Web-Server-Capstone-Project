@@ -123,7 +123,7 @@ bool MemeHandler::MemeCreate()
         Hosts create.html page. Returns false if we achieved no error.
     */
     //std::ifstream ifs(".." + filedir_ + "/create.html", std::ios::in | std::ios::binary);
-    std::ifstream ifs("memes_r_us" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us/create.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -258,7 +258,7 @@ bool MemeHandler::MemeView()
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
 
     //std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
-    std::ifstream ifs("memes_r_us" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us/view.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -327,7 +327,7 @@ bool MemeHandler::MemeResult(std::string id_)
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
 
     //std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
-    std::ifstream ifs("memes_r_us" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us/view.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -354,7 +354,7 @@ bool MemeHandler::MemeList()
     std::vector<std::map<std::string,std::string>> memelist = GetAllFromDatabase();
     // build body string
     //std::ifstream ifs(".." + filedir_ + "/list.html", std::ios::in | std::ios::binary);
-    std::ifstream ifs("memes_r_us" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us/list.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
