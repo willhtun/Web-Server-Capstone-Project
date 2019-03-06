@@ -29,7 +29,7 @@ private:
     std::map<std::string,std::string> parseRequestBody(std::string body);
     
     sqlite3 *db;
-    bool AddToDatabase(std::string id_, std::string name_, std::string image_, std::string top_, std::string bottom_);
+    std::string AddToDatabase(std::string name_, std::string image_, std::string top_, std::string bottom_);
     std::vector<std::map<std::string,std::string>> GetAllFromDatabase();
 
     std::string root_;

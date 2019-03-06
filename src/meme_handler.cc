@@ -29,7 +29,6 @@ RequestHandler* MemeHandler::create(const NginxConfig& config, const std::string
 
 std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
 {
-    std::cout << request.getReqRaw() << std::endl;
     BOOST_LOG_TRIVIAL(trace) << "Meme handler building response for request...";
 
     std::string full_url = request.uri_path();
@@ -49,14 +48,14 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     }
     else if (request.method() == "POST") {
         std::map<std::string,std::string> memeMap = parseRequestBody(request.body());
-
+        std::string redirect_id;
         // add meme-id with correct locks in place to database
         mtx.lock();
-        std::string meme_id = std::to_string(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())); // still does not solve race condition completely
-        AddToDatabase(meme_id, memeMap["name"], memeMap["image"], memeMap["top"], memeMap["bottom"]);
+        //std::string meme_id = std::to_string(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())); // still does not solve race condition completely
+        redirect_id = AddToDatabase(memeMap["name"], memeMap["image"], memeMap["top"], memeMap["bottom"]);
         mtx.unlock();
 
-        errorflag = MemeResult(meme_id);                    
+        errorflag = MemeResult(redirect_id);                    
     }
     else
     {
@@ -384,7 +383,7 @@ bool MemeHandler::MemeList()
     return false;
 }
 
-bool MemeHandler::AddToDatabase(std::string id_, std::string name_, std::string image_, std::string top_, std::string bottom_) {
+std::string MemeHandler::AddToDatabase(std::string name_, std::string image_, std::string top_, std::string bottom_) {
     /*
         Add an entry to the database with the given values.
 
@@ -393,13 +392,14 @@ bool MemeHandler::AddToDatabase(std::string id_, std::string name_, std::string 
 
     // SQL CREATE operation
     int rc;
+    std::string id_ = "10000";
     sqlite3_stmt *stmt;
     rc = sqlite3_open(("../" + savedir_ + "/meme_vault.db").c_str(), &db);
     if(rc) 
     {
         BOOST_LOG_TRIVIAL(trace) << "Error opening/creating database...";
         sqlite3_close(db);
-        return false;
+        errorflag = true;
     } 
     BOOST_LOG_TRIVIAL(trace) << "Opened database for writing...";
 
@@ -415,14 +415,24 @@ bool MemeHandler::AddToDatabase(std::string id_, std::string name_, std::string 
     {
         BOOST_LOG_TRIVIAL(trace) << "Error creating table...";
         sqlite3_close(db);
-        return false;
+        errorflag = true;
     } 
     BOOST_LOG_TRIVIAL(trace) << "Successfully created table!";
-
+    // SQL SELECT operation for counter
+    std::string selector = ("SELECT * FROM MEME_HISTORY WHERE MEME_ID = (SELECT MAX(MEME_ID) FROM MEME_HISTORY)");
+    rc = sqlite3_prepare_v2(db, selector.c_str(), selector.length(), &stmt, NULL);
+    if(rc == SQLITE_OK) 
+    {
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            id_ = strdup((const char*)sqlite3_column_text(stmt, 0));
+            id_ = std::to_string(stoi(id_) + 1);
+        }
+        sqlite3_finalize(stmt);
+    }
     // SQL INSERT operation
     std::string entry = "INSERT INTO MEME_HISTORY (MEME_ID,NAME,IMAGE,TOP,BOTTOM) "
                          "VALUES (?,?,?,?,?);";
-                        //"VALUES (" + id_ + ", '" + image_ + "', '" + top_ + "', '" + bottom_ + "');";
+
     rc = sqlite3_prepare_v2(db, entry.c_str(), entry.length(), &stmt, NULL);
     if( rc == SQLITE_OK ) {
         // bind the value 
@@ -442,13 +452,14 @@ bool MemeHandler::AddToDatabase(std::string id_, std::string name_, std::string 
     {
         BOOST_LOG_TRIVIAL(trace) << "Error adding entry to table...";
         sqlite3_close(db);
-        return false;
+        errorflag = true;
     } 
     BOOST_LOG_TRIVIAL(trace) << "Successfully added entry!";
 
     sqlite3_close(db);
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
-    return true;
+    errorflag = false;
+    return id_;
 }
 
 std::vector<std::map<std::string,std::string>> MemeHandler::GetAllFromDatabase() {
