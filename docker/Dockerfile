@@ -17,6 +17,8 @@ COPY --from=builder /usr/src/project/build/bin/server_main .
  # Copy static files directory
 COPY --from=builder /usr/src/project/static_files1/* ./static/static_files1/
 COPY --from=builder /usr/src/project/static_files2/* ./static/static_files2/
+COPY --from=builder /usr/src/project/memes_r_us/* ./memes_r_us
+COPY --from=builder /usr/src/project/static_meme_templates/* ./meme_templates
 
 # TODO(!): Expose some port(s)
 EXPOSE 80

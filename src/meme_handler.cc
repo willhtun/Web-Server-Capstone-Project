@@ -122,7 +122,8 @@ bool MemeHandler::MemeCreate()
     /*
         Hosts create.html page. Returns false if we achieved no error.
     */
-    std::ifstream ifs(".." + filedir_ + "/create.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/create.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -256,11 +257,8 @@ bool MemeHandler::MemeView()
     sqlite3_close(db);
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
 
-
-
-
-
-    std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -328,7 +326,8 @@ bool MemeHandler::MemeResult(std::string id_)
     sqlite3_close(db);
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
 
-    std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -354,7 +353,8 @@ bool MemeHandler::MemeList()
 {
     std::vector<std::map<std::string,std::string>> memelist = GetAllFromDatabase();
     // build body string
-    std::ifstream ifs(".." + filedir_ + "/list.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/list.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -372,7 +372,7 @@ bool MemeHandler::MemeList()
 
     for (int i = 0; i < memelist.size(); i++) 
     {
-        memebody_ += "<a id=\"entry\" href=\"http://localhost:8082/meme/view?id=" + memelist[i]["MEME_ID"] +"\">";
+        memebody_ += "<a id=\"entry\" href=\"http://ss.gitrdone.cs130.org/meme/view?id=" + memelist[i]["MEME_ID"] +"\">";
      //   memebody_ += "MemeID: " + memelist[i]["MEME_ID"]+ " | Name: " + memelist[i]["NAME"] + " | Image: " + memelist[i]["IMAGE"] + " | Top Text: " + memelist[i]["TOP"] + " | Bottom Text: " + memelist[i]["BOTTOM"]+ "\n";
         memebody_ += "MemeID: " + memelist[i]["MEME_ID"]+ " | Name: " + memelist[i]["NAME"] + "\n";
         memebody_ += "</a><br />\n";
