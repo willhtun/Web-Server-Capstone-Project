@@ -1,8 +1,8 @@
 #port 7100 is exposed by docker
 http {
   server {
-    listen 8082;
-    root /usr/src/project;
+    listen 80;
+    root /usr/src/projects;
     handler meme {
       location /memes_r_us;
       url /meme;

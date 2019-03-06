@@ -84,13 +84,13 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     BOOST_LOG_TRIVIAL(trace) << "Response built by meme handler...";
     return response;
 };
-
+/*
 static int callback_GetEntryFromDatabase(void* ptr, int argc, char **argv, char **azColName){
-    /*
+    
         Callback function for SQL command. ptr should be a pointer to map to be populated with the search result.
 
         Author: Will Htun
-    */
+    
     std::map<std::string,std::string>* entry = static_cast<std::map<std::string,std::string>*>(ptr);
     for(int i = 0; i<argc; i++)
     {
@@ -98,7 +98,7 @@ static int callback_GetEntryFromDatabase(void* ptr, int argc, char **argv, char 
     }
     return 0;
 }
-
+*/
 static int callback_GetAllFromDatabase(void* ptr, int argc, char **argv, char **azColName){
     /*
         Callback function for SQL command. Returns a vector of maps to the address pointer 
