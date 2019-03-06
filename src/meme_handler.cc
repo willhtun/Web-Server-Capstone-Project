@@ -177,6 +177,9 @@ std::map<std::string,std::string> MemeHandler::parseRequestBody(std::string body
         // add key value to memeMap
         memeMap[key_value[0]] = key_value[1];
     }
+    memeMap["top"] = URLParser::htmlEncode(memeMap["top"]);
+    memeMap["bottom"] = URLParser::htmlEncode(memeMap["bottom"]);
+
     return memeMap;
 }
 
