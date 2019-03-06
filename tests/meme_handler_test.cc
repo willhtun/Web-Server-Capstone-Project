@@ -43,36 +43,81 @@ class MemeHandlerTest : public ::testing::Test
     }
 };
 
+//-----------Create Tests -----------//
+TEST_F(MemeHandlerTest, GoodCreatePageTest) {
+    //std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/create_request"));
+    std::unique_ptr<Request> req = make_request("GET /meme/create HTTP/1.1\r\n\r\n");
+    init_meme_handler("../tests/configs/meme_config");
+    
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(resp->getStatusCode(), Response::OK);
+}
 
 TEST_F(MemeHandlerTest, BadCreatePageTest) {
     //std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/create_request"));
     std::unique_ptr<Request> req = make_request("GET /meme/create HTTP/1.1\r\n\r\n");
-    init_meme_handler("../tests/configs/echo_server_config");
+    init_meme_handler("../tests/configs/bad_meme_config");
     
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
 }
 
+//-----------List Tests -----------//
 TEST_F(MemeHandlerTest, ListPageTest) {
     std::unique_ptr<Request> req = make_request("GET /meme/list HTTP/1.1\r\n\r\n");
-    init_meme_handler("../tests/configs/echo_server_config");
+    init_meme_handler("../tests/configs/meme_config");
 
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK);
 }
 
+//-----------View Tests -----------//
 TEST_F(MemeHandlerTest, BadViewPageTest) {
     std::unique_ptr<Request> req = make_request("GET /meme/view HTTP/1.1\r\n\r\n");
-    init_meme_handler("../tests/configs/echo_server_config");
+    init_meme_handler("../tests/configs/meme_config");
 
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
 
     EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND); 
 }
 
+TEST_F(MemeHandlerTest, PostAndViewPageTest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request"));
+    init_meme_handler("../tests/configs/meme_config");
+
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+
+    std::unique_ptr<Request> req2 = make_request("GET /meme/viewid=25 HTTP/1.1\r\n\r\n");
+    init_meme_handler("../tests/configs/meme_config");
+
+    std::unique_ptr<Response> resp2 = handler_->HandleRequest(*(req2.get()));
+
+    EXPECT_EQ(resp2->getStatusCode(), Response::OK); 
+}
+
+//-----------Post Tests -----------//
+TEST_F(MemeHandlerTest, PostTest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request"));
+    init_meme_handler("../tests/configs/meme_config");
+
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+
+    EXPECT_EQ(resp->getStatusCode(), Response::OK);
+}
+
+TEST_F(MemeHandlerTest, PostDBFailTest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request"));
+    init_meme_handler("../tests/configs/bad_meme_config");
+
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+
+    EXPECT_EQ(resp->getStatusCode(), Response::OK); // This shouldn't work.
+}
+
+//-----------Error Tests -----------//
 TEST_F(MemeHandlerTest, ErrorTest) {
     std::unique_ptr<Request> req = make_request("GET /meme/missing HTTP/1.1\r\n\r\n");
-    init_meme_handler("../tests/configs/echo_server_config");
+    init_meme_handler("../tests/configs/meme_config");
 
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
 
