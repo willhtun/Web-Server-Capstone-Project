@@ -2,7 +2,7 @@
 http {
   server {
     listen 80;
-    root /usr/src/projects;
+    root /usr/src/project;
     handler meme {
       location /memes_r_us;
       url /meme;
