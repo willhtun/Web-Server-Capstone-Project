@@ -379,6 +379,7 @@ bool MemeHandler::MemeList()
         memebody_ += "</a><br />\n";
     }
     
+    memebody_ += "</div>\n</div>\n";
     memebody_ += "</body>\n</html>";
     return false;
 }

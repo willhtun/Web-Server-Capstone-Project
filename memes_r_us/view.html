@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-    <head>
+
+<head>
     <!-- css -->
     <!-- bulma -->
     <meta charset="utf-8">
@@ -11,53 +12,92 @@
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 
-    </head>
+</head>
 
-    <style>
-        hr { margin: 0; }
-        #name { margin: 25px 0; font-size: 30px; width: 100%; text-align: center; }
-        #meme-wrapper { display: flex; justify-content: center;}
-        #meme { display: inline-block; position: relative; margin-left:auto; margin-right:auto; }
-        span { color: white; font: 2em bold Impact, sans-serif; position: absolute; text-align: center; width: 100%; }
-        #top { top: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}
-        #bottom { bottom: 0; left: 0; font-family: \"Impact\", Charcoal, sans-serif;}
-    </style>
+<style>
+    hr {
+        margin: 0;
+    }
 
-    <nav class="navbar is-transparent">
-        <div class="navbar-brand">
-            <a class="navbar-item" >
+    #name {
+        margin: 25px 0;
+        font-size: 30px;
+        width: 100%;
+        text-align: center;
+    }
+
+    #meme-wrapper {
+        display: flex;
+        justify-content: center;
+    }
+
+    #meme {
+        display: inline-block;
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    span {
+        color: white;
+        font: 2em bold Impact, sans-serif;
+        position: absolute;
+        text-align: center;
+        width: 100%;
+    }
+
+    #top {
+        top: 0;
+        left: 0;
+
+        font-family: \"Impact\", Charcoal, sans-serif;
+
+    }
+
+    #bottom {
+        bottom: 0;
+        left: 0;
+        font-family: \"Impact\", Charcoal, sans-serif;
+
+    }
+</style>
+
+<nav class="navbar is-transparent">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/meme/create">
             <b>Make-a-Meme</b>
-            </a>
-            <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+        </a>
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
             <span></span>
             <span></span>
             <span></span>
-            </div>
         </div>
-        
-        <div id="navbar-konner" class="navbar-menu">
-            <div class="navbar-start">
+    </div>
+
+    <div id="navbar-konner" class="navbar-menu">
+        <div class="navbar-start">
             <a class="navbar-item" href="/meme/create">
                 Create
             </a>
             <a class="navbar-item" href="/meme/list">
                 Browse
             </a>
-            </div>
-            </div>
         </div>
-    </nav>
+    </div>
+    </div>
+</nav>
 
-    <hr>
+<hr>
 
-    <body>
-        <p id="name"> meme_object_name </p></br>
-        <div id="meme-wrapper">
-            <div id="meme">
+<body>
+    <p id="name"> meme_object_name </p></br>
+    <div id="meme-wrapper">
+        <div id="meme">
             <img src="http://localhost:8082/meme_object_img">
             <span id="top"> meme_object_top </span>
             <span id="bottom"> meme_object_bot </span>
-            </div></br>
-        </div>
-    </body>
+        </div></br>
+    </div>
+</body>
+
 </html>
