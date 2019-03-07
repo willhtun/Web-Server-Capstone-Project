@@ -106,9 +106,10 @@ target_link_libraries(proxy_handler_test proxy_handler request config_parser res
 add_executable(meme_handler_test tests/meme_handler_test.cc)
 target_link_libraries(meme_handler_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler meme_handler url_parser status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
-# Link SQLite3
-include_directories(/usr/lib/x86_64-linux-gnu/)
-link_directories(/usr/lib/x86_64-linux-gnu/)
+
+set (LIB_DIR_LOCATION ${NAME}/lib)
+find_library(SQLite3 NAMES sqlite3 libsqlite3 PATHS ${LIB_DIR_LOCATION})
+set(INCLUDE_DIRS ${NAME}/include)
 
   target_link_libraries (server_main sqlite3)
   target_link_libraries (config_parser_test sqlite3)
@@ -125,6 +126,7 @@ link_directories(/usr/lib/x86_64-linux-gnu/)
   target_link_libraries (status_obj_test sqlite3)
   target_link_libraries (proxy_handler_test sqlite3)
   target_link_libraries (meme_handler_test sqlite3)
+  target_include_directories(server_main PRIVATE ${INCLUDE_DIRS})
 
 
 # Update with test binary
