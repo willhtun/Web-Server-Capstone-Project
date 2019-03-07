@@ -107,26 +107,36 @@ add_executable(meme_handler_test tests/meme_handler_test.cc)
 target_link_libraries(meme_handler_test server session dispatcher handler_manager request config_parser response error_handler echo_handler static_handler status_handler meme_handler url_parser status_obj gtest_main Boost::system Boost::log_setup Boost::log)
 
 
-set (LIB_DIR_LOCATION ${NAME}/lib)
-find_library(SQLite3 NAMES sqlite3 libsqlite3 PATHS ${LIB_DIR_LOCATION})
-set(INCLUDE_DIRS ${NAME}/include)
+add_library(sqlite3 STATIC IMPORTED)
+set_target_properties(sqlite3
+  PROPERTIES
+  IMPORTED_LOCATION /usr/lib/x86_64-linux-gnu/libsqlite3.a
+  INTERFACE_INCLUDE_DIRECTORIES /usr/include
+)
 
-  target_link_libraries (server_main sqlite3)
-  target_link_libraries (config_parser_test sqlite3)
-  target_link_libraries (dispatcher_test sqlite3)
-  target_link_libraries (echo_handler_test sqlite3)
-  target_link_libraries (error_handler_test sqlite3)
-  target_link_libraries (handler_manager_test sqlite3)
-  target_link_libraries (request_test sqlite3)
-  target_link_libraries (response_test sqlite3)
-  target_link_libraries (server_test sqlite3)
-  target_link_libraries (session_test sqlite3)
-  target_link_libraries (static_handler_test sqlite3)
-  target_link_libraries (status_handler_test sqlite3)
-  target_link_libraries (status_obj_test sqlite3)
-  target_link_libraries (proxy_handler_test sqlite3)
-  target_link_libraries (meme_handler_test sqlite3)
-  target_include_directories(server_main PRIVATE ${INCLUDE_DIRS})
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set_target_properties(sqlite3
+    PROPERTIES
+      INTERFACE_LINK_LIBRARIES "dl;pthread"
+   )
+endif()
+
+target_link_libraries (server_main sqlite3)
+target_link_libraries (config_parser_test sqlite3)
+target_link_libraries (dispatcher_test sqlite3)
+target_link_libraries (echo_handler_test sqlite3)
+target_link_libraries (error_handler_test sqlite3)
+target_link_libraries (handler_manager_test sqlite3)
+target_link_libraries (request_test sqlite3)
+target_link_libraries (response_test sqlite3)
+target_link_libraries (server_test sqlite3)
+target_link_libraries (session_test sqlite3)
+target_link_libraries (static_handler_test sqlite3)
+target_link_libraries (status_handler_test sqlite3)
+target_link_libraries (status_obj_test sqlite3)
+target_link_libraries (proxy_handler_test sqlite3)
+target_link_libraries (meme_handler_test sqlite3)
+
 
 
 # Update with test binary
