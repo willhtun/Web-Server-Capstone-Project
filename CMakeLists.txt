@@ -151,7 +151,7 @@ gtest_discover_tests(meme_handler_test /usr/src/projects/git-r-done build/google
 #generate_coverage_report(TARGETS example_server example_lib TESTS example_lib_test)
 
 include(cmake/CodeCoverageReportConfig.cmake)
-generate_coverage_report(TARGETS server session dispatcher handler_manager echo_handler error_handler static_handler status_handler proxy_handler request config_parser response status_obj meme_handler url_parser TESTS config_parser_test dispatcher_test echo_handler_test error_handler_test handler_manager_test request_test response_test server_test session_test static_handler_test status_handler_test status_obj_test proxy_handler_test meme_handler_test)
+generate_coverage_report(TARGETS server_main server session dispatcher handler_manager echo_handler error_handler static_handler status_handler proxy_handler request config_parser response status_obj meme_handler url_parser TESTS config_parser_test dispatcher_test echo_handler_test error_handler_test handler_manager_test request_test response_test server_test session_test static_handler_test status_handler_test status_obj_test proxy_handler_test meme_handler_test)
 
 #Add integration test to cmake 
 add_test(NAME Integration COMMAND bash ../tests/integration_test.sh)
