@@ -50,7 +50,7 @@ TEST_F(MemeHandlerTest, GoodCreatePageTest) {
     init_meme_handler("../tests/configs/meme_config");
     
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
-    EXPECT_EQ(1,1);
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
 }
 
 TEST_F(MemeHandlerTest, BadCreatePageTest) {
@@ -68,7 +68,7 @@ TEST_F(MemeHandlerTest, ListPageTest) {
     init_meme_handler("../tests/configs/meme_config");
 
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
-    EXPECT_EQ(1,1);
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
 }
 
 
@@ -93,21 +93,21 @@ TEST_F(MemeHandlerTest, PostAndViewPageTest) {
 
     std::unique_ptr<Response> resp2 = handler_->HandleRequest(*(req2.get()));
 
-    EXPECT_EQ(1,1); 
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND); 
 }
 
 //-----------Post Tests -----------//
 TEST_F(MemeHandlerTest, PostTest) {
-    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request"));
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request2"));
     init_meme_handler("../tests/configs/meme_config");
 
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
 
-    EXPECT_EQ(1,1);
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
 }
 
 TEST_F(MemeHandlerTest, PostDBFailTest) {
-    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request"));
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request3"));
     init_meme_handler("../tests/configs/bad_meme_config");
 
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
@@ -127,10 +127,6 @@ TEST_F(MemeHandlerTest, ErrorTest) {
 
 //-----------SQL Tests -----------//
 TEST_F(MemeHandlerTest, SQLInjectionTest) {
-    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request"));
-    init_meme_handler("../tests/configs/meme_config");
-
-    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
 
     std::unique_ptr<Request> req2 = make_request("GET /meme/viewid=10000;DROP+ALL+TABLES HTTP/1.1\r\n\r\n");
     init_meme_handler("../tests/configs/meme_config");
