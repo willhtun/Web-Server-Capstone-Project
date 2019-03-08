@@ -44,5 +44,8 @@ http {
       url /meme;
       save /memes_r_us;
     }
+    handler health {
+      url /health;
+    }
   }
 }

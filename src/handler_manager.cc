@@ -26,5 +26,9 @@ std::unique_ptr<RequestHandler> HandlerManager::createByName(const std::string& 
     {
         return std::unique_ptr<RequestHandler>(MemeHandler::create(config,path));   
     }    
+    if (name =="health")
+    {
+        return std::unique_ptr<RequestHandler>(HealthHandler::create(config,path));   
+    }    
     return nullptr;
 };

@@ -7,6 +7,7 @@
 #include "status_handler.h"
 #include "meme_handler.h"
 #include "proxy_handler.h"
+#include "health_handler.h"
 
 class HandlerManager
 {
