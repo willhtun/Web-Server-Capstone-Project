@@ -28,5 +28,7 @@ std::unique_ptr<Response> ErrorHandler::HandleRequest(const Request& request)
     
     BOOST_LOG_TRIVIAL(trace) << "Response built by error handler...";
 
+        std::cout << "::ResponseMetrics:: response_code:404" << std::endl;
+
     return response;
 };

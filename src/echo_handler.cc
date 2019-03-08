@@ -31,5 +31,7 @@ std::unique_ptr<Response> EchoHandler::HandleRequest(const Request& request)
     
     BOOST_LOG_TRIVIAL(trace) << "Response built by echo handler...";
 
+    std::cout << "::ResponseMetrics:: response_code:200" << std::endl;
+
     return response;
 };

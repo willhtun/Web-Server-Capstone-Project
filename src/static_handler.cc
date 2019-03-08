@@ -43,9 +43,9 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
     std::string image;
     
     //GCP uri_path
-    //std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+    std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
      // local uri_path
-    std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
    
 
     std::unique_ptr<Response> response(new Response());
@@ -58,6 +58,10 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
         response->ReSetHeader("Content-Type", "text/plain");
         response->SetHeader("Content-Length", std::to_string(error_msg.length()));
         response->SetBody(error_msg);
+
+        std::cout << "::ResponseMetrics:: response_code:404" << std::endl;
+
+        return response;
     }
     char buf[512];
     while (ifs.read(buf, sizeof(buf)).gcount() > 0) {
@@ -113,6 +117,9 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
         response->ReSetHeader("Content-Type", "text/plain");
         response->SetHeader("Content-Length", std::to_string(error_msg.length()));
         response->SetBody(error_msg);
+
+        std::cout << "::ResponseMetrics:: response_code:404" << std::endl;
+
         return response;
     }
 
@@ -122,6 +129,8 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
     response->SetHeader("Content-Length", std::to_string(image.length()));
     response->SetBody(image);
     BOOST_LOG_TRIVIAL(trace) << "Response built by static handler...";
+
+    std::cout << "::ResponseMetrics:: response_code:200" << std::endl;
     
     return response;
 };

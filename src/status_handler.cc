@@ -57,5 +57,7 @@ std::unique_ptr<Response> StatusHandler::HandleRequest(const Request& request)
     response->SetBody(body);
     BOOST_LOG_TRIVIAL(trace) << "Response built by Status Handler...";
 
+    std::cout << "::ResponseMetrics:: response_code:200" << std::endl;
+
     return response;
 };
