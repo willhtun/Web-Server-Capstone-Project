@@ -29,6 +29,10 @@ std::unique_ptr<RequestHandler> HandlerManager::createByName(const std::string& 
     if (name =="health")
     {
         return std::unique_ptr<RequestHandler>(HealthHandler::create(config,path));   
-    }    
+    } 
+    if (name =="bad")
+    {
+        return std::unique_ptr<RequestHandler>(BadHandler::create(config,path));   
+    }       
     return nullptr;
 };

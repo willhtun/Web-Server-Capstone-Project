@@ -8,6 +8,7 @@
 #include "meme_handler.h"
 #include "proxy_handler.h"
 #include "health_handler.h"
+#include "bad_handler.h"
 
 class HandlerManager
 {

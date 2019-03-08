@@ -30,6 +30,6 @@ TEST_F(HealthHandlerTest, successTest) {
   std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
   
   EXPECT_EQ(resp->getStatusCode(), Response::OK);
-  //EXPECT_EQ(resp->Output(), "OK");
+
 }
 

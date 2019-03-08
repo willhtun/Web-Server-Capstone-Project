@@ -7,6 +7,7 @@
 #include "error_handler.h"
 #include "meme_handler.h"
 #include "health_handler.h"
+#include "bad_handler.h"
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/system/system_error.hpp>
