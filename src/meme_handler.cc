@@ -401,7 +401,7 @@ bool MemeHandler::MemeSearch() {
         BOOST_LOG_TRIVIAL(trace) << "Invalid meme id...";
         return true;
     }
-    std::cout << "TERM: " << search_term << std::endl;
+    
     std::vector<std::map<std::string,std::string>> memelist = SearchFromDatabase(search_term);
     // build body string
     std::ifstream ifs(".." + filedir_ + "/list.html", std::ios::in | std::ios::binary);
@@ -551,7 +551,18 @@ std::vector<std::map<std::string,std::string>> MemeHandler::SearchFromDatabase(s
     */
 
     std::vector<std::map<std::string,std::string>> meme_entries_;
-    term = "%" + term + "%";
+
+    // replace "+" with " " if needed
+    std::string::size_type n = 0;
+    while ((n = term.find("+", n)) != std::string::npos)
+    {
+        term.replace(n, 1, " ");
+        n += 1; // update for added " "
+    }
+
+    term = "%" + URLParser::urlDecode(term) + "%";
+    term = URLParser::htmlEncode(term);
+
     // SQL SELECT operation
     int rc;
     sqlite3_stmt *stmt;

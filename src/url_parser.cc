@@ -1,7 +1,7 @@
 #include "url_parser.h"
       
 // Function referenced from http://www.cplusplus.com/forum/general/94849/
-std::string URLParser::urlDecode(std::string &eString) 
+std::string URLParser::urlDecode(std::string eString) 
 {
     std::string ret;
     char ch;
@@ -22,7 +22,7 @@ std::string URLParser::urlDecode(std::string &eString)
     return (ret);
 }
 
-std::string URLParser::htmlEncode(std::string& data) 
+std::string URLParser::htmlEncode(std::string data) 
 {
     std::string buffer;
     buffer.reserve(data.size());

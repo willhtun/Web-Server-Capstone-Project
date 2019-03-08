@@ -6,6 +6,6 @@
 class URLParser 
 {
     public:
-        static std::string urlDecode(std::string &eString);
-        static std::string htmlEncode(std::string& data);
+        static std::string urlDecode(std::string eString);
+        static std::string htmlEncode(std::string data);
 };
