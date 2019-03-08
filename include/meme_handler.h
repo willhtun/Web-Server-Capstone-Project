@@ -25,12 +25,14 @@ private:
     bool MemeCreate();
     bool MemeView();
     bool MemeList();
+    bool MemeSearch();
     bool MemeResult(std::string id_);
     std::map<std::string,std::string> parseRequestBody(std::string body);
     
     sqlite3 *db;
     std::string AddToDatabase(std::string name_, std::string image_, std::string top_, std::string bottom_);
     std::vector<std::map<std::string,std::string>> GetAllFromDatabase();
+    std::vector<std::map<std::string,std::string>> SearchFromDatabase(std::string term);
 
     std::string root_;
     std::string uri_;

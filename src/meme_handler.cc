@@ -42,6 +42,10 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
     {
         errorflag = MemeList();
     }
+    else if(memepage_.substr(0,7) == "list?q=") // Page to view a meme
+    {
+        errorflag = MemeSearch();
+    }
     else if(memepage_.substr(0,4) == "view") // Page to view a meme
     {
         errorflag = MemeView();
@@ -122,8 +126,8 @@ bool MemeHandler::MemeCreate()
     /*
         Hosts create.html page. Returns false if we achieved no error.
     */
-    //std::ifstream ifs(".." + filedir_ + "/create.html", std::ios::in | std::ios::binary);
-    std::ifstream ifs("memes_r_us/create.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs(".." + filedir_ + "/create.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs("memes_r_us/create.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -248,7 +252,6 @@ bool MemeHandler::MemeView()
         }
         sqlite3_finalize(stmt);
     }
-    //rc = sqlite3_exec(db, selector.c_str(), callback_GetEntryFromDatabase, &meme_object, NULL);
     if(rc != SQLITE_OK)
     {
         BOOST_LOG_TRIVIAL(trace) << "Error reading table...";
@@ -257,8 +260,8 @@ bool MemeHandler::MemeView()
     sqlite3_close(db);
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
 
-    //std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
-    std::ifstream ifs("memes_r_us/view.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
+   // std::ifstream ifs("memes_r_us/view.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -317,7 +320,6 @@ bool MemeHandler::MemeResult(std::string id_)
         sqlite3_finalize(stmt);
     }
 
-   //rc = sqlite3_exec(db, selector.c_str(), callback_GetEntryFromDatabase, &meme_object, NULL);
     if(rc != SQLITE_OK)
     {
         BOOST_LOG_TRIVIAL(trace) << "Error reading table...";
@@ -326,8 +328,8 @@ bool MemeHandler::MemeResult(std::string id_)
     sqlite3_close(db);
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
 
-    //std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
-    std::ifstream ifs("memes_r_us/view.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
+    // std::ifstream ifs("memes_r_us/view.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -353,8 +355,53 @@ bool MemeHandler::MemeList()
 {
     std::vector<std::map<std::string,std::string>> memelist = GetAllFromDatabase();
     // build body string
-    //std::ifstream ifs(".." + filedir_ + "/list.html", std::ios::in | std::ios::binary);
-    std::ifstream ifs("memes_r_us/list.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs(".." + filedir_ + "/list.html", std::ios::in | std::ios::binary);
+    // std::ifstream ifs("memes_r_us/list.html", std::ios::in | std::ios::binary);
+    if (!ifs.is_open() || memepage_.length() == 0)
+    {
+        return true;
+    }
+
+    char buf[512];
+    while (ifs.read(buf, sizeof(buf)).gcount() > 0) 
+    {
+        memebody_.append(buf, ifs.gcount());
+    }
+    
+    ifs.close();
+
+    // bring in meme information and create links TODO: adjust according to how the information is stored. 
+
+    for (int i = 0; i < memelist.size(); i++) 
+    {
+        memebody_ += "<a id=\"entry\" href=\"http://ss.gitrdone.cs130.org/meme/view?id=" + memelist[i]["MEME_ID"] +"\">";
+     //   memebody_ += "MemeID: " + memelist[i]["MEME_ID"]+ " | Name: " + memelist[i]["NAME"] + " | Image: " + memelist[i]["IMAGE"] + " | Top Text: " + memelist[i]["TOP"] + " | Bottom Text: " + memelist[i]["BOTTOM"]+ "\n";
+        memebody_ += "MemeID: " + memelist[i]["MEME_ID"]+ " | Name: " + memelist[i]["NAME"] + "\n";
+        memebody_ += "</a><br />\n";
+    }
+    
+    memebody_ += "</div>\n</div>\n";
+    memebody_ += "</body>\n</html>";
+    return false;
+}
+
+bool MemeHandler::MemeSearch() {
+    int search_index = memepage_.find("list?q=");
+    std::string search_term;
+    if (search_index != std::string::npos) 
+    {
+        search_term = memepage_.substr(search_index + 7, memepage_.length() - 1);
+    }
+    else
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Invalid meme id...";
+        return true;
+    }
+    std::cout << "TERM: " << search_term << std::endl;
+    std::vector<std::map<std::string,std::string>> memelist = SearchFromDatabase(search_term);
+    // build body string
+    std::ifstream ifs(".." + filedir_ + "/list.html", std::ios::in | std::ios::binary);
+    // std::ifstream ifs("memes_r_us/list.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -447,7 +494,6 @@ std::string MemeHandler::AddToDatabase(std::string name_, std::string image_, st
         sqlite3_finalize(stmt);
     }
 
-    //rc = sqlite3_exec(db, entry.c_str(), NULL, NULL, NULL);
     if(rc != SQLITE_OK)
     {
         BOOST_LOG_TRIVIAL(trace) << "Error adding entry to table...";
@@ -490,5 +536,53 @@ std::vector<std::map<std::string,std::string>> MemeHandler::GetAllFromDatabase()
 
     sqlite3_close(db);
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
+    return meme_entries_;
+}
+
+std::vector<std::map<std::string,std::string>> MemeHandler::SearchFromDatabase(std::string term) {
+    /*
+        Returns all the memes in the database that contain the term string
+
+        Author: Will Htun
+    */
+
+    std::vector<std::map<std::string,std::string>> meme_entries_;
+    term = "%" + term + "%";
+    // SQL SELECT operation
+    int rc;
+    sqlite3_stmt *stmt;
+    rc = sqlite3_open(("../" + savedir_ + "/meme_vault.db").c_str(), &db);
+
+    if(rc) 
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Error opening/creating database...";
+    } 
+    BOOST_LOG_TRIVIAL(trace) << "Opened database for reading...";
+
+    std::string selector = "SELECT * FROM MEME_HISTORY WHERE NAME LIKE ? OR TOP LIKE ? OR BOTTOM LIKE ?";
+    rc = sqlite3_prepare_v2(db, selector.c_str(), selector.length(), &stmt, NULL);
+    if( rc == SQLITE_OK ) {
+        sqlite3_bind_text(stmt, 1, term.c_str(), term.length(), 0);
+        sqlite3_bind_text(stmt, 2, term.c_str(), term.length(), 0);
+        sqlite3_bind_text(stmt, 3, term.c_str(), term.length(), 0);
+        while (sqlite3_step(stmt) != SQLITE_DONE) {
+            std::map<std::string,std::string>* meme_object = new std::map<std::string,std::string>;
+            meme_object->insert(std::pair<std::string, std::string> ("MEME_ID", strdup((const char*)sqlite3_column_text(stmt, 0))));
+            meme_object->insert(std::pair<std::string, std::string> ("NAME", strdup((const char*)sqlite3_column_text(stmt, 1))));
+            meme_object->insert(std::pair<std::string, std::string> ("IMAGE", strdup((const char*)sqlite3_column_text(stmt, 2))));
+            meme_object->insert(std::pair<std::string, std::string> ("TOP", strdup((const char*)sqlite3_column_text(stmt, 3))));
+            meme_object->insert(std::pair<std::string, std::string> ("BOTTOM", strdup((const char*)sqlite3_column_text(stmt, 4))));
+            meme_entries_.push_back(*meme_object);
+        }
+        sqlite3_finalize(stmt);
+    }
+    if(rc != SQLITE_OK)
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Error reading table...";
+    } 
+
+    sqlite3_close(db);
+    BOOST_LOG_TRIVIAL(trace) << "Closed database";
+
     return meme_entries_;
 }

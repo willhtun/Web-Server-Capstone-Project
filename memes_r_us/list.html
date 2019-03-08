@@ -46,20 +46,31 @@
         top: 0;
         left: 0;
 
-        font-family: \"Impact\", Charcoal, sans-serif;}
-#bottom {
-            bottom: 0;
-            left: 0;
+        font-family: \"Impact\", Charcoal, sans-serif;
+    }
 
-            font-family: \"Impact\", Charcoal, sans-serif;}
-#entry {
-                margin-left: 200px;
-            }
+    #bottom {
+        bottom: 0;
+        left: 0;
 
-            #level {
-                margin-top: 30px;
-                margin-bottom: 30px;
-            }
+        font-family: \"Impact\", Charcoal, sans-serif;
+    }
+
+    #entry {
+        margin-left: 200px;
+    }
+
+    #level {
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+    .search-box {
+        float: left;
+    }
+    .description {
+        margin-bottom: 25px;
+    }
+
 </style>
 
 <nav class="navbar is-transparent">
@@ -94,6 +105,14 @@
             <p class="title" style="color: #ffab40;">Browse All Memes</p>
             <br>
             <p class="description"> Dank history </p>
+            <form method="get">
+                <div class="search-box"> 
+                    <input class="input search-box" type="text" name="q" placeholder="Enter phrase" required>
+                </div>
+                <div class="search-box"> 
+                    <input class="button is-link" type="submit" value="Search">
+                </div>
+            </form>
         </div>
     </div>
 </nav>
