@@ -77,8 +77,8 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
         response->SetBody(memebody_);
 
         //Server monitoring 
-        std::cout << "::HandlerMetrics:: handler:error" << std::endl;
-        std::cout << "::ResponseMetrics:: response_code:404" << std::endl;
+        std::cout << "::HandlerMetrics:: handler:meme" << std::endl;
+        std::cout << "::ResponseMetrics:: response_code:200" << std::endl;
     }  
     else //Send Error Response
     {
@@ -89,8 +89,8 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
         response->SetBody(error_msg);
 
         //Server monitoring 
-        std::cout << "::HandlerMetrics:: handler:meme" << std::endl;
-        std::cout << "::ResponseMetrics:: response_code:200" << std::endl;
+        std::cout << "::HandlerMetrics:: handler:error" << std::endl;
+        std::cout << "::ResponseMetrics:: response_code:404" << std::endl;
     }
     
     BOOST_LOG_TRIVIAL(trace) << "Response built by meme handler...";
