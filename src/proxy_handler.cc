@@ -52,6 +52,8 @@ unique_ptr<Response> ProxyHandler::HandleRequest(const Request& request)
     response->SetBody(mapz["Body"]);
     BOOST_LOG_TRIVIAL(trace) << "Response built by Proxy Handler...";
 
+    //Server monitoring 
+    std::cout << "::HandlerMetrics:: handler:proxy" << std::endl;
     std::cout << "::ResponseMetrics:: response_code:302" << std::endl;
     
 

@@ -31,6 +31,8 @@ std::unique_ptr<Response> HealthHandler::HandleRequest(const Request& request)
     
     BOOST_LOG_TRIVIAL(trace) << "Response built by health handler...";
 
+    //Server monitoring 
+    std::cout << "::HandlerMetrics:: handler:health" << std::endl;
     std::cout << "::ResponseMetrics:: response_code:200" << std::endl;
 
     return response;

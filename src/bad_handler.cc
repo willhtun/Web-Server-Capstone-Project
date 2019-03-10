@@ -30,5 +30,9 @@ std::unique_ptr<Response> BadHandler::HandleRequest(const Request& request)
     
     BOOST_LOG_TRIVIAL(trace) << "Response built by bad handler...";
 
+    //Server monitoring 
+    std::cout << "::HandlerMetrics:: handler:bad" << std::endl;
+    std::cout << "::ResponseMetrics:: response_code:400" << std::endl;
+
     return response;
 };

@@ -62,6 +62,7 @@ void session::handle_read(const boost::system::error_code& error,
                                      << ", HTTP Version: " << req->http_version()
                                      << " }";
 
+            
             // construct dispatcher and handle incoming request
             BOOST_LOG_TRIVIAL(info) << "Constructing dispatcher...";
             Dispatcher dispatcher(config_);

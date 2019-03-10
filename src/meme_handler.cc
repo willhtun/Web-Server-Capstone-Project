@@ -76,6 +76,8 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
         response->SetHeader("Content-Length", std::to_string(memebody_.length()));
         response->SetBody(memebody_);
 
+        //Server monitoring 
+        std::cout << "::HandlerMetrics:: handler:error" << std::endl;
         std::cout << "::ResponseMetrics:: response_code:404" << std::endl;
     }  
     else //Send Error Response
@@ -86,6 +88,8 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request& request)
         response->SetHeader("Content-Length", std::to_string(error_msg.length()));
         response->SetBody(error_msg);
 
+        //Server monitoring 
+        std::cout << "::HandlerMetrics:: handler:meme" << std::endl;
         std::cout << "::ResponseMetrics:: response_code:200" << std::endl;
     }
     
