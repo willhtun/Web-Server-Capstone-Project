@@ -20,14 +20,18 @@ Important Files
 - dispatcher.cc : takes in request and creates a handler manager object
 - handler_manager.cc : returns an appropriate request handler for a given
                         request
-- echo_handler.cc : inherits from request_handler and echos request back as 
-                     response
-- static_handler.cc : inherits from request_handler and serves a static file 
-                        from a directory on server
-- error_handler.cc : inherits from request_handler and reurns a 404 response
-- status_handler.cc : inherits from request_handler and displays info on 
-                        the status of the web server
+- echo_handler.cc : * echos request back as response
+- static_handler.cc : * serves a static file from a directory on server
+- error_handler.cc : * reurns a 404 response
+- meme_handler.cc : * serves meme web app
+- health_handler.cc : * serves status of working server
+- bad_handler.cc : * serves any request that cannot be parsed
+- proxy_handler.cc : * serves content of another server via itself
+- status_handler.cc : * displays info on status of the web server
 - status_obj.cc : class to work with status entry database
+- url_parser.cc : class dedicated to encoding/decoding text
+
+* : inherits from request_handler
 
 
 ------------------------------------
@@ -55,7 +59,8 @@ Run the code
 ------------
 ** Build and test code first!
 
-$ .build/bin/server_main [config file]
+$ cd build
+$ bin/server_main ../tests/configs/echo_server_config
 
 Use your browser to view the page: http://localhost:8080/
 
@@ -230,20 +235,45 @@ Simply add a include block at the top so that it can recognize your handler.
 
 #include "NEWHANDLER_handler.h"
 
+Adding src to CMakeLists.txt
+----------------------------
+Next to all the add_library(X src/X.cc) in CMakeLists.txt, add your handler
+source code.
+
+add_library(your_handler src/your_handler.cc)
+
+Next, append your_handler inside of:
+
+target_link_libraries(server_main ..libs..
+
+Adding tests to CMakeLists.txt
+------------------------------
+Add the following:
+
+add_executable(your_handler_test tests/your_handler_test.cc)
+target_link_libraries(your_handler_test [lib files your test file depends on])
+
+
 How to add a handler summarized
 -------------------------------
 
 - Your handler must have the methods create, and HandleRequest.
 
--Your create method should be simple should use the same format as the 
+- Your create method should be simple should use the same format as the 
     exisiting handlers. See them for reference. 
 
 - For HandleRequest, here is where you use request information to build an
     appropriate response object.
 
--Add an if block to the handle_manger.cc with your new handler. 
+- Add an if block to the handle_manger.cc with your new handler. 
 
--#include your new handler in dispatcher.cc
+- #include your new handler in dispatcher.cc
+
+- Update CMakeLists.txt to include new lib.
+
+- Add your units tests inside /tests folder
+
+- Update CMakeLists.txt to include tests as well
 
 
 Notes
@@ -253,12 +283,18 @@ We currently have the following handlers:
     - StaticHandler
     - StatusHandler
     - ErrorHandler
+    - HealthHandler
+    - ProxyHandler
+    - MemeHandler
 
 We currently have the following paths configured:
     - /echo : our echo server which spits back the request
     - /static1/ : one directory path for static handler
     - /static2/ : another directory path for serving static files
     - /status : status page for displaying server info
+    - /meme/create : create page of meme handler
+    - /meme/list : list page of meme handler
+    - /meme/view?id= : view a meme corresponding to id
 
     Check these out if you need more implementation assistance.
     Feel free to expand upon these by adding in new handlers!

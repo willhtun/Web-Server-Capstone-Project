@@ -69,6 +69,12 @@
     }
     .description {
         margin-bottom: 25px;
+        text-align: center;
+    }
+    .sort {
+        margin-bottom: 25px;
+        text-align: center;
+        float: left;
     }
 
 </style>
@@ -107,11 +113,20 @@
             <p class="description"> Dank history </p>
             <form method="get">
                 <div class="search-box"> 
-                    <input class="input search-box" type="text" name="q" placeholder="Enter phrase" required>
+                    <input class="input search-box" type="text" name="q" placeholder="Enter phrase">
                 </div>
                 <div class="search-box"> 
                     <input class="button is-link" type="submit" value="Search">
                 </div>
+                <br> <br>
+                <p class="sort"> Sort By: </p>
+                <select required name="sort" id="search_filter">
+                    <option value="newest"> Newest </option>
+                    <option value="oldest"> Oldest </option>
+                    <option value="a-z"> A-Z </option>
+                    <option value="z-a"> Z-A </option>
+                    <option value="id"> ID </option>
+                </select><br>
             </form>
         </div>
     </div>

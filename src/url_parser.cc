@@ -1,4 +1,5 @@
 #include "url_parser.h"
+#include <boost/algorithm/string/replace.hpp>
       
 // Function referenced from http://www.cplusplus.com/forum/general/94849/
 std::string URLParser::urlDecode(std::string eString) 
@@ -37,5 +38,19 @@ std::string URLParser::htmlEncode(std::string data)
             default:   buffer.append(&data[pos], 1); break;
         }
     }
+    return buffer;
+}
+
+std::string URLParser::htmlDecode(std::string data) 
+{
+    std::string buffer = data;
+
+    boost::replace_all(buffer, "&amp;", "&");
+    boost::replace_all(buffer, "&quot;", "\"");
+    boost::replace_all(buffer, "&apos;", "\'");
+    boost::replace_all(buffer, "&lt;", "<");
+    boost::replace_all(buffer, "&gt;", ">");
+    boost::replace_all(buffer, "&nbsp;", " ");
+
     return buffer;
 }

@@ -87,7 +87,7 @@
                         <div class="field">
                             <label class="label">Name</label>
                             <div class="control radius-5">
-                                <input name="name" class="input" type="text" placeholder="Text input" required>
+                                <input name="name" class="input" type="text" placeholder="Text input" maxlength="50" required>
                             </div>
                         </div>
 
@@ -117,19 +117,21 @@
                         <div class="field">
                             <label class="label">Top-Text</label>
                             <div class="control radius-5">
-                                <input name="top" class="input" type="text" placeholder="Text input" required>
+                                <input name="top" class="input" type="text" placeholder="Text input" maxlength="50" required>
                             </div>
                         </div>
 
                         <div class="field">
                             <label class="label">Bottom-Text</label>
                             <div class="control radius-5">
-                                <input name="bottom" class="input" type="text" placeholder="Text input" required>
+                                <input name="bottom" class="input" type="text" placeholder="Text input" maxlength="50" required>
                             </div>
                         </div>
 
                         <div class="field is-grouped">
                             <div class="control">
+                                <input type="hidden" name="posttype" value="new">
+                                <input type="hidden" name="meme_id" value="10000">
                                 <input type="submit" value="Create" class="button is-link">
                             </div>
                         </div>

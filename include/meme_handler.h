@@ -23,16 +23,21 @@ public:
 
 private:
     bool MemeCreate();
-    bool MemeView();
+    bool MemeView(bool incorrectAccessToken);
+    bool MemeEdit();
     bool MemeList();
     bool MemeSearch();
+    bool MemeDelete();
     bool MemeResult(std::string id_);
     std::map<std::string,std::string> parseRequestBody(std::string body);
     
     sqlite3 *db;
-    std::string AddToDatabase(std::string name_, std::string image_, std::string top_, std::string bottom_);
+    std::string AddToDatabase(std::string meme_id_, std::string name_, std::string access_token_, std::string image_, std::string top_, std::string bottom_, bool newmeme_);
+    std::map<std::string,std::string> GetMemeFromDatabase(std::string id_);
     std::vector<std::map<std::string,std::string>> GetAllFromDatabase();
-    std::vector<std::map<std::string,std::string>> SearchFromDatabase(std::string term);
+    std::vector<std::map<std::string,std::string>> SearchFromDatabase(std::string term, std::string sort);
+    std::string gen_access_token(size_t len);
+    bool verifyTokenAuthentication(Request req);
 
     std::string root_;
     std::string uri_;

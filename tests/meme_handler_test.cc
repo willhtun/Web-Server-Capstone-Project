@@ -134,6 +134,40 @@ TEST_F(MemeHandlerTest, ErrorTest) {
     EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
 }
 
+
+//-----------Delete Tests -----------//
+TEST_F(MemeHandlerTest, ValidDeleteTest) {
+    // id = 10000 must exist
+    std::unique_ptr<Request> req = make_request("GET /meme/delete?id=10000 HTTP/1.1\r\n\r\n");
+    init_meme_handler("../tests/configs/meme_config");
+
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(resp->getStatusCode(), Response::OK);
+}
+
+TEST_F(MemeHandlerTest, BadDeleteTest) {
+    std::unique_ptr<Request> req = make_request("GET /meme/delete HTTP/1.1\r\n\r\n");
+    init_meme_handler("../tests/configs/meme_config");
+
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND); 
+}
+
+
+/*
+    This shouldn't happen if the view?id= is correct
+TEST_F(MemeHandlerTest, InvalidIdDeleteTest) {
+    // id = 10000 must exist
+    std::unique_ptr<Request> req = make_request("GET /meme/delete?id=1fewf HTTP/1.1\r\n\r\n");
+    init_meme_handler("../tests/configs/meme_config");
+
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
+}
+*/
+
+
 //-----------SQL Tests -----------//
 TEST_F(MemeHandlerTest, SQLInjectionTest) {
 
