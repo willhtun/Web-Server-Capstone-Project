@@ -46,6 +46,9 @@ http {
     }
     handler health {
       url /health;
+
+    handler bad {
+      url /bad;
     }
   }
 }

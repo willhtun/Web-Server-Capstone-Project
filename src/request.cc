@@ -21,7 +21,11 @@ std::unique_ptr<Request> Request::request_handler(std::string raw_req)
     }
     else
     {
-        return nullptr;
+        //Malformed request
+        request->method_ = "GET";
+        request->uri_path_ = "/bad";
+        request->http_version_ = "HTTP/1.1";
+        return request;
     }
 }
 

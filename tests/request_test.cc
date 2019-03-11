@@ -30,7 +30,7 @@ TEST_F(RequestTests, MethodTypeCheckCorrectness)
 
     // test against invalid method type
     req = check_request("KON / HTTP/1.1\r\n\r\n");
-    EXPECT_EQ(req, nullptr);
+    EXPECT_EQ(req->uri_path(), "/bad");
 }
 
 TEST_F(RequestTests, HTTPVersionCorrectness)
@@ -40,10 +40,10 @@ TEST_F(RequestTests, HTTPVersionCorrectness)
     EXPECT_EQ(req->http_version(), "HTTP/1.1");
     // check against wrong HTTP number
     req = check_request("GET / HTTP/1.0\r\n\r\n");
-    EXPECT_EQ(req, nullptr);
+    EXPECT_EQ(req->uri_path(),"/bad");
     // check against blank HTTP option
     req = check_request("GET / HTTP/\r\n\r\n");
-    EXPECT_EQ(req, nullptr);
+    EXPECT_EQ(req->uri_path(),"/bad");
 }
 
 TEST_F(RequestTests, HTTPBodyValueParsing)
@@ -71,13 +71,13 @@ TEST_F(RequestTests, InvalidInputTest)
 {
     // did not specify a method type and incorrect args
     std::unique_ptr<Request> req = check_request("/ HTTP/1.1");
-    EXPECT_EQ(req, nullptr);
+    EXPECT_EQ(req->uri_path(),"/bad");
     // did not contain: '\r\n\r\n'
     req = check_request("GET / HTTP/1.1");
-    EXPECT_EQ(req, nullptr);
+    EXPECT_EQ(req->uri_path(),"/bad");
     // check against empty input
     req = check_request("");
-    EXPECT_EQ(req, nullptr);
+    EXPECT_EQ(req->uri_path(),"/bad");
 }
 
 
