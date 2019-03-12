@@ -41,17 +41,45 @@ TEST_F(DispatcherTest, DispatchFunctionTest1)
     EXPECT_NE(dispatcher_->generateResponse(&req), nullptr);
 }
 
-TEST_F(DispatcherTest, DispatchFunctionTest2) 
+TEST_F(DispatcherTest, DispatchFunctionEchoTest) 
 {
     EXPECT_TRUE(InitiateDispatcher("../tests/configs/echo_server_config"));
     std::unique_ptr<Request> req = check_request("GET /echo HTTP/1.1\r\n\r\n");
     EXPECT_NE(dispatcher_->generateResponse(req.get()), nullptr);
 }
 
-TEST_F(DispatcherTest, DispatchFunctionTest3) 
+TEST_F(DispatcherTest, DispatchFunctionStaticTest) 
 {
     EXPECT_TRUE(InitiateDispatcher("../tests/configs/echo_server_config"));
     std::unique_ptr<Request> req = check_request("GET /static1/photo1.jpeg HTTP/1.1\r\n\r\n");
+    EXPECT_NE(dispatcher_->generateResponse(req.get()), nullptr);
+}
+
+TEST_F(DispatcherTest, DispatchFunctionHeatlhTest) 
+{
+    EXPECT_TRUE(InitiateDispatcher("../tests/configs/echo_server_config"));
+    std::unique_ptr<Request> req = check_request("GET /health HTTP/1.1\r\n\r\n");
+    EXPECT_NE(dispatcher_->generateResponse(req.get()), nullptr);
+}
+
+TEST_F(DispatcherTest, DispatchFunctionStatusTest) 
+{
+    EXPECT_TRUE(InitiateDispatcher("../tests/configs/echo_server_config"));
+    std::unique_ptr<Request> req = check_request("GET /status HTTP/1.1\r\n\r\n");
+    EXPECT_NE(dispatcher_->generateResponse(req.get()), nullptr);
+}
+
+TEST_F(DispatcherTest, DispatchFunctionMemeTest) 
+{
+    EXPECT_TRUE(InitiateDispatcher("../tests/configs/echo_server_config"));
+    std::unique_ptr<Request> req = check_request("GET /meme/create HTTP/1.1\r\n\r\n");
+    EXPECT_NE(dispatcher_->generateResponse(req.get()), nullptr);
+}
+
+TEST_F(DispatcherTest, DispatchFunctionProxyTest) 
+{
+    EXPECT_TRUE(InitiateDispatcher("../tests/configs/echo_server_config"));
+    std::unique_ptr<Request> req = check_request("GET /proxy2 HTTP/1.1\r\n\r\n");
     EXPECT_NE(dispatcher_->generateResponse(req.get()), nullptr);
 }
 

@@ -106,8 +106,17 @@ TEST_F(MemeHandlerTest, PostTest) {
     EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
 }
 
-TEST_F(MemeHandlerTest, PostDBFailTest) {
+TEST_F(MemeHandlerTest, EncodeTest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request3"));
+    init_meme_handler("../tests/configs/meme_config");
+
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
+}
+
+TEST_F(MemeHandlerTest, PostDBFailTest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request"));
     init_meme_handler("../tests/configs/bad_meme_config");
 
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
@@ -141,6 +150,5 @@ TEST_F(MemeHandlerTest, SQLInjectionTest) {
     std::unique_ptr<Response> resp3 = handler_->HandleRequest(*(req3.get()));
 
     EXPECT_EQ(resp3->getStatusCode(), Response::NOT_FOUND); 
-
 
 }
