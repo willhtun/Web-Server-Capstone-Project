@@ -44,11 +44,7 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
     
     //GCP uri_path
     std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
-<<<<<<< HEAD
     // local uri_path
-=======
-     // local uri_path
->>>>>>> 7dd5977... Here we go
     //std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
    
 

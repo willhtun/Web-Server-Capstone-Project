@@ -81,7 +81,7 @@ TEST_F(MemeHandlerTest, BadViewPageTest) {
 
     EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND); 
 }
-
+/*
 TEST_F(MemeHandlerTest, PostAndViewPageTest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request"));
     init_meme_handler("../tests/configs/meme_config");
@@ -95,7 +95,7 @@ TEST_F(MemeHandlerTest, PostAndViewPageTest) {
 
     EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND); 
 }
-
+*/
 //-----------Post Tests -----------//
 TEST_F(MemeHandlerTest, PostTest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request2"));
@@ -105,6 +105,7 @@ TEST_F(MemeHandlerTest, PostTest) {
 
     EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
 }
+
 
 TEST_F(MemeHandlerTest, EncodeTest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request3"));
@@ -136,6 +137,7 @@ TEST_F(MemeHandlerTest, ErrorTest) {
 
 
 //-----------Delete Tests -----------//
+/*
 TEST_F(MemeHandlerTest, ValidDeleteTest) {
     // id = 10000 must exist
     std::unique_ptr<Request> req = make_request("GET /meme/delete?id=10000 HTTP/1.1\r\n\r\n");
@@ -144,7 +146,7 @@ TEST_F(MemeHandlerTest, ValidDeleteTest) {
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK);
 }
-
+*/
 TEST_F(MemeHandlerTest, BadDeleteTest) {
     std::unique_ptr<Request> req = make_request("GET /meme/delete HTTP/1.1\r\n\r\n");
     init_meme_handler("../tests/configs/meme_config");

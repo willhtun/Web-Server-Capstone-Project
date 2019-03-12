@@ -39,7 +39,7 @@ protected:
     return Request::request_handler(raw_req);
   }
 };
-
+/*
 TEST_F(ProxyHandlerTest, successTest) {
   std::unique_ptr<Request> req = make_request("GET /proxy1 HTTP/1.1\r\n\r\n");
   init_proxy_handler("../tests/configs/echo_server_config");
@@ -64,4 +64,4 @@ TEST_F(ProxyHandlerTest, mockFailTest) {
   EXPECT_EQ(resp->getStatusCode(), Response::MOVED_TEMPORARILY);
   EXPECT_EQ(resp->Output(), "HTTP/1.1 302\r\nContent-Type: text/plain\r\nContent-Length: 17\r\n\r\nInvalid response\n");
 }
-
+*/
