@@ -383,6 +383,11 @@ bool MemeHandler::MemeView(bool incorrectAccessToken)
             meme_object_bot = strdup((const char *)sqlite3_column_text(stmt, 4));
             meme_object_atoken = strdup((const char *)sqlite3_column_text(stmt, 5));
         }
+        else
+        {
+            return true; 
+        }
+        
         sqlite3_finalize(stmt);
     }
     if (rc != SQLITE_OK)
