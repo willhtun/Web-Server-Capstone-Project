@@ -599,7 +599,11 @@ bool MemeHandler::MemeSearch()
     {
         memebody_ += "<p class=\"description\"> No results found </p>";
     }
-    
+    else
+    {
+        memebody_ += "<p class=\"description\"> Found " + std::to_string(memelist.size()) + " current search terms</p>";
+    }
+
     for (int i = 0; i < memelist.size(); i++) 
     {
         memebody_ += "<a id=\"entry\" href=\"http://ss.gitrdone.cs130.org/meme/view?id=" + memelist[i]["MEME_ID"] + "\">";
