@@ -23,7 +23,7 @@ protected:
     }
     };
 
-TEST_F(BadHandlerTest, successTest) {
+TEST_F(BadHandlerTest, badGetTest) {
   std::unique_ptr<Request> req = make_request("GE /blah HTTP/1.0\r\n\r\n");
   init_bad_handler("../tests/configs/echo_server_config");
   
@@ -33,3 +33,22 @@ TEST_F(BadHandlerTest, successTest) {
   EXPECT_EQ(resp->Output(), "HTTP/1.1 400\r\nContent-Type: text/plain\r\nContent-Length: 15\r\n\r\n400:Bad Request");
 }
 
+TEST_F(BadHandlerTest, badHTTPTest) {
+  std::unique_ptr<Request> req = make_request("GET /blah TTP/1.0\r\n\r\n");
+  init_bad_handler("../tests/configs/echo_server_config");
+  
+  std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+  
+  EXPECT_EQ(resp->getStatusCode(), Response::BAD_REQUEST);
+  EXPECT_EQ(resp->Output(), "HTTP/1.1 400\r\nContent-Type: text/plain\r\nContent-Length: 15\r\n\r\n400:Bad Request");
+}
+
+TEST_F(BadHandlerTest, extratextTest) {
+  std::unique_ptr<Request> req = make_request("GET /blah HTTP/1.0asdf\r\n\r\n");
+  init_bad_handler("../tests/configs/echo_server_config");
+  
+  std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+  
+  EXPECT_EQ(resp->getStatusCode(), Response::BAD_REQUEST);
+  EXPECT_EQ(resp->Output(), "HTTP/1.1 400\r\nContent-Type: text/plain\r\nContent-Length: 15\r\n\r\n400:Bad Request");
+}

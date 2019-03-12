@@ -53,47 +53,40 @@ void session::handle_read(const boost::system::error_code& error,
         BOOST_LOG_TRIVIAL(trace) << "Sending data to request handler...";
 
         std::unique_ptr<Request> req = Request::request_handler(data_);
-        if (req != nullptr)
+
+        // view data members of request
+        BOOST_LOG_TRIVIAL(trace) << "Info about request{ "
+                                    << "Method: " << req->method()
+                                    << ", URI Path: " << req->uri_path()
+                                    << ", HTTP Version: " << req->http_version()
+                                    << " }";
+
+        //Server monitoring 
+        std::cout << "::PathMetrics:: path:"<< req->uri_path() << std::endl;
+
+        // construct dispatcher and handle incoming request
+        BOOST_LOG_TRIVIAL(info) << "Constructing dispatcher...";
+        Dispatcher dispatcher(config_);
+        std::unique_ptr<Response> resp = dispatcher.generateResponse(req.get());
+
+        // check if dispatch returns a valid response pointer
+        if (resp)
         {
-            // view data members of request
-            BOOST_LOG_TRIVIAL(trace) << "Info about request{ "
-                                     << "Method: " << req->method()
-                                     << ", URI Path: " << req->uri_path()
-                                     << ", HTTP Version: " << req->http_version()
-                                     << " }";
-
-            //Server monitoring 
-            std::cout << "::PathMetrics:: path:"<< req->uri_path() << std::endl;
-
-            // construct dispatcher and handle incoming request
-            BOOST_LOG_TRIVIAL(info) << "Constructing dispatcher...";
-            Dispatcher dispatcher(config_);
-            std::unique_ptr<Response> resp = dispatcher.generateResponse(req.get());
-
-            // check if dispatch returns a valid response pointer
-            if (resp)
-            {
-                // get resp object and set httpresponse string
-                BOOST_LOG_TRIVIAL(info) << "Dispatcher generating appropriate response...";
-                httpresponse = resp->Output();
-                
-                // add data to status database
-                BOOST_LOG_TRIVIAL(trace) << "Adding url and response code into Status Database...";
-                StatusObject::addStatusEntry(req->uri_path(), std::to_string(resp->getStatusCode()));
-                BOOST_LOG_TRIVIAL(trace) << "...";
-            }
+            // get resp object and set httpresponse string
+            BOOST_LOG_TRIVIAL(info) << "Dispatcher generating appropriate response...";
+            httpresponse = resp->Output();
             
-            else
-            {
-                httpresponse = "";
-            }
-            
+            // add data to status database
+            BOOST_LOG_TRIVIAL(trace) << "Adding url and response code into Status Database...";
+            StatusObject::addStatusEntry(req->uri_path(), std::to_string(resp->getStatusCode()));
+            BOOST_LOG_TRIVIAL(trace) << "...";
         }
+        
         else
         {
-            std::string inc_req = "Incomplete request!\r\n\r\n";
-            httpresponse = inc_req.c_str();
+            httpresponse = "";
         }
+        
 
         //Write response to client
         boost::asio::async_write(socket_,
