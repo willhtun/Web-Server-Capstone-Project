@@ -71,7 +71,7 @@ TEST_F(ServerTest, TestStartAccept) {
 TEST_F(ServerTest, TestHandleAccept) {
   boost::asio::io_service io_service_;
   server* serv = new server(io_service_, 8080, &out_config_);
-  session* s = new session(io_service_, &out_config_);
+  session::pointer s = session::create(io_service_, &out_config_);
   Serv serv_friend;
   boost::system::error_code ec;
   serv_friend.call_handle_accept(serv, s, ec);
@@ -82,8 +82,17 @@ TEST_F(ServerTest, TestHandleAccept) {
 TEST_F(ServerTest, TestHandleBadAccept) {
   boost::asio::io_service io_service_;
   server* serv = new server(io_service_, 8080, &out_config_);
-  session* s = new session(io_service_, &out_config_);
+  session::pointer s = session::create(io_service_, &out_config_);
   Serv serv_friend;
   serv_friend.call_handle_accept(serv, s, boost::asio::error::eof);
+  EXPECT_EQ(1,1);
+}
+
+// Test handle stop
+TEST_F(ServerTest, TestHandleStop) {
+  boost::asio::io_service io_service_;
+  server* serv = new server(io_service_, 8080, &out_config_);
+  Serv serv_friend;
+  serv_friend.call_handle_stop(serv);
   EXPECT_EQ(1,1);
 }

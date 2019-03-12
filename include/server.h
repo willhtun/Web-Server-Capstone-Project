@@ -44,7 +44,10 @@ class Serv {
     void call_start_accept(server* serv) {
       serv->start_accept();
     }
-    void call_handle_accept(server* serv, session* new_session, const boost::system::error_code& error) {
-      //serv->handle_accept(new_session, error);
+    void call_handle_accept(server* serv, session::pointer new_session, const boost::system::error_code& error) {
+      serv->handle_accept(new_session, error);
+    }
+    void call_handle_stop(server* serv) {
+      serv->handle_stop();
     }
 };
