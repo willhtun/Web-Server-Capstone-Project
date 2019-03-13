@@ -3,10 +3,6 @@ http {
   server {
     listen 80;
     root /usr/src/project;
-    handler static {
-      location /static_meme_templates;
-      url /meme_templates;
-    }
     handler meme {
       location /memes_r_us;
       url /meme;

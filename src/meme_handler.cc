@@ -177,8 +177,8 @@ bool MemeHandler::MemeCreate()
     /*
         Hosts create.html page. Returns false if we achieved no error.
     */
-    std::ifstream ifs(".." + filedir_ + "/create.html", std::ios::in | std::ios::binary);
-    //std::ifstream ifs("memes_r_us/create.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/create.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us/create.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -240,8 +240,8 @@ bool MemeHandler::MemeDelete()
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
 
     // take them to list page after deletion
-    std::ifstream ifs(".." + filedir_ + "/delete.html", std::ios::in | std::ios::binary);
-    //std::ifstream ifs("memes_r_us/delete.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/delete.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us/delete.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -401,8 +401,8 @@ bool MemeHandler::MemeView(bool incorrectAccessToken)
     sqlite3_close(db);
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
 
-    std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
-    //std::ifstream ifs("memes_r_us/view.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us/view.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -482,8 +482,8 @@ bool MemeHandler::MemeResult(std::string id_)
     sqlite3_close(db);
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
 
-    std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
-    //std::ifstream ifs("memes_r_us/view.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/view.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us/view.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -523,8 +523,8 @@ bool MemeHandler::MemeList()
     std::reverse(memelist.begin(),memelist.end());
 
     // build body string
-    std::ifstream ifs(".." + filedir_ + "/list.html", std::ios::in | std::ios::binary);
-    //std::ifstream ifs("memes_r_us/list.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/list.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us/list.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -595,8 +595,8 @@ bool MemeHandler::MemeSearch()
 
 
     // build body string
-    std::ifstream ifs(".." + filedir_ + "/list.html", std::ios::in | std::ios::binary);
-    //std::ifstream ifs("memes_r_us/list.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/list.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us/list.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
@@ -653,8 +653,8 @@ bool MemeHandler::MemeEdit()
         return true;
     }
 
-    std::ifstream ifs(".." + filedir_ + "/edit.html", std::ios::in | std::ios::binary);
-    //std::ifstream ifs("memes_r_us/edit.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/edit.html", std::ios::in | std::ios::binary);
+    std::ifstream ifs("memes_r_us/edit.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
         return true;
