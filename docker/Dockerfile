@@ -6,6 +6,12 @@ WORKDIR /usr/src/project/build
 
 RUN cmake ..
 RUN make
+RUN mkdir static
+RUN mkdir static_files1
+RUN mkdir memes_r_us
+
+RUN cp -r ../memes_r_us ./
+RUN cp -r ../static ./
 RUN ctest --output-on_failure
 
 ### Deploy container ###
