@@ -27,7 +27,7 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
 
     // uri: /static/somefile.html
     std::string full_url = request.uri_path();
-    std::string filename = full_url.substr(uri_.length() + 1, full_url.length());
+    std::string filename = full_url.substr(uri_.length() + 3, full_url.length());
     std::string fileextension;
     std::string contenttype;
 
