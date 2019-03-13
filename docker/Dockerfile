@@ -12,7 +12,7 @@ RUN ctest --output-on_failure
 FROM ubuntu:latest as deploy
 
 # TODO(!): Copy server output binary to "."
-COPY --from=builder /usr/src/project/build/bin/server_main .
+COPY --from=builder /usr/src/project/build/bin/server_main ./server/
 
  # Copy static files directory
 COPY --from=builder /usr/src/project/static_files1/* ./static/static_files1/
@@ -20,16 +20,23 @@ COPY --from=builder /usr/src/project/static_files2/* ./static/static_files2/
 COPY --from=builder /usr/src/project/memes_r_us/* ./memes_r_us/
 COPY --from=builder /usr/src/project/static_meme_templates/* ./static/static_meme_templates/
 
+COPY --from=builder /usr/src/project/tests/configs/* ./tests/configs/
+COPY --from=builder /usr/src/project/tests/integration/* ./tests/integration/
+COPY --from=builder /usr/src/project/tests/meme_handler_tests/* ./tests/meme_handler_tests/
+COPY --from=builder /usr/src/project/tests/prac_requests/* ./tests/prac_requests/
+COPY --from=builder /usr/src/project/tests/static_handler_tests/* ./tests/static_handler_tests/
+
 # TODO(!): Expose some port(s)
 EXPOSE 80
 
 # Use ENTRYPOINT to specify the binary name
 # TODO(!): Update with real server name
-ENTRYPOINT ["./server_main"]
+ENTRYPOINT ["./server/server_main"]
 
 # Use CMD to specify arguments to ENTRYPOINT
 # TODO(!): Update with real server args
 COPY --from=builder /usr/src/project/tests/configs/echo_server_config .
+COPY --from=builder /usr/src/project/tests/configs/echo_server_config ./server/
 COPY --from=builder /usr/src/project/tests/configs/python_server_config .
 CMD ["./echo_server_config"]
 
