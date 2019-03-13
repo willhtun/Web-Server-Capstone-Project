@@ -15,10 +15,10 @@ FROM ubuntu:latest as deploy
 COPY --from=builder /usr/src/project/build/bin/server_main .
 
  # Copy static files directory
-COPY --from=builder /usr/src/project/static_files1/ ../static/static_files1/
-COPY --from=builder /usr/src/project/static_files2/ ../static/static_files2/
-COPY --from=builder /usr/src/project/memes_r_us/ ../memes_r_us/
-COPY --from=builder /usr/src/project/static_meme_templates/ ../static/static_meme_templates/
+COPY --from=builder /usr/src/project/static_files1/* ./static/static_files1/
+COPY --from=builder /usr/src/project/static_files2/* ./static/static_files2/
+COPY --from=builder /usr/src/project/memes_r_us/* ./memes_r_us/
+COPY --from=builder /usr/src/project/static_meme_templates/* ./static/static_meme_templates/
 
 # TODO(!): Expose some port(s)
 EXPOSE 80
@@ -31,5 +31,5 @@ ENTRYPOINT ["./server_main"]
 # TODO(!): Update with real server args
 COPY --from=builder /usr/src/project/tests/configs/echo_server_config .
 COPY --from=builder /usr/src/project/tests/configs/python_server_config .
-CMD ["echo_server_config"]
+CMD ["./echo_server_config"]
 
