@@ -21,6 +21,8 @@ public:
     //Handles the request and generates a response
     std::unique_ptr<Response> HandleRequest(const Request& request);
 
+    friend class MemeHandler_friend;
+
 private:
     bool MemeCreate();
     bool MemeView(bool incorrectAccessToken);
@@ -46,4 +48,11 @@ private:
     std::string memepage_;
     std::string memebody_;
     bool errorflag = false;
+};
+
+class MemeHandler_friend {
+    public:
+       std::map<std::string,std::string> call_GetMemeFromDatabase(MemeHandler* handler, std::string id_) {
+           return handler->GetMemeFromDatabase(id_);
+       }
 };

@@ -177,7 +177,7 @@ bool MemeHandler::MemeCreate()
     /*
         Hosts create.html page. Returns false if we achieved no error.
     */
-    //std::ifstream ifs(".." + filedir_ + "/create.html", std::ios::in | std::ios::binary);
+   // std::ifstream ifs(".." + filedir_ + "/create.html", std::ios::in | std::ios::binary);
     std::ifstream ifs("memes_r_us/create.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
