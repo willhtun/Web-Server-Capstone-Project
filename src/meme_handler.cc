@@ -127,7 +127,7 @@ bool MemeHandler::verifyTokenAuthentication(Request req)
     std::map<std::string, std::string> memeMap = parseRequestBody(req.body());
     
     // master token check
-    if (memeMap["access-token"].length() > 0 && memeMap["access-token"] == "partial=!complete") { return true; }
+    if (memeMap["access-token"].length() > 0 && memeMap["access-token"] == "partialnotcomplete") { return true; }
     // check that access token has length and our - in it
     bool isAuthorized = (memeMap["access-token"].length() > 0 && (memeMap["access-token"].find("-") != std::string::npos));
     if (isAuthorized)
