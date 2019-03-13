@@ -27,7 +27,7 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
 
     // uri: /static/somefile.html
     std::string full_url = request.uri_path();
-    std::string filename = full_url.substr(uri_.length() + 3, full_url.length());
+    std::string filename = full_url.substr(uri_.length() + 1, full_url.length());
     std::string fileextension;
     std::string contenttype;
 
@@ -43,9 +43,9 @@ std::unique_ptr<Response> StaticHandler::HandleRequest(const Request& request)
     std::string image;
     
     //GCP uri_path
-    //std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+    std::ifstream ifs("static" + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
     // local uri_path
-    std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/" + filename, std::ios::in | std::ios::binary);
    
 
     std::unique_ptr<Response> response(new Response());

@@ -11,7 +11,6 @@
 #include "handler_manager.h"
 #include "meme_handler.h"
 
-
 class MemeHandlerTest : public ::testing::Test 
 {
     protected:
@@ -58,15 +57,6 @@ TEST_F(MemeHandlerTest, GoodCreatePageTest) {
     
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK);
-}
-
-TEST_F(MemeHandlerTest, BadCreatePageTest) {
-    //std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/create_request"));
-    std::unique_ptr<Request> req = make_request("GET /meme/create HTTP/1.1\r\n\r\n");
-    init_meme_handler("../tests/configs/bad_meme_config");
-    
-    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
-    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
 }
 
 //-----------List Tests -----------//

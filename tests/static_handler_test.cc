@@ -67,134 +67,134 @@ class StaticHandlerTest : public ::testing::Test
 
 
 TEST_F(StaticHandlerTest, JpgRequest) {
-    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/jpg_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    std::unique_ptr<Request> req = make_request("GET /static2/photo1.jpg HTTP/1.1\r\n\r\n");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, JpegRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/jpeg_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, PngRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/png_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, HtmRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/htm_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, HtmlRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/html_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, GifRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/gif_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, InvalidRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/invalid_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND); 
 }
 
 TEST_F(StaticHandlerTest, PdfRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/pdf_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, TiffRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/pdf_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, DocRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/doc_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, TxtRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/txt_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, CsvRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/csv_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, CssRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/css_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, jsRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/js_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, tifRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/tif_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, zipRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/zip_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, rtfRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/rtf_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, jsonRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/json_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
 
 TEST_F(StaticHandlerTest, xmlRequest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/xml_request"));
-    InitiateStaticHandler("../tests/configs/echo_server_config");
+    InitiateStaticHandler("../tests/configs/static_config");
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }

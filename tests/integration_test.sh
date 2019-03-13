@@ -36,6 +36,9 @@ echo "http {
 
 mkdir static
 mkdir static_files1
+mkdir memes_r_us
+
+cp -r ../memes_r_us ./
 cp -r ../static ./
 
 #build the server with the config file
