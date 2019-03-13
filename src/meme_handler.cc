@@ -177,7 +177,7 @@ bool MemeHandler::MemeCreate()
     /*
         Hosts create.html page. Returns false if we achieved no error.
     */
-   // std::ifstream ifs(".." + filedir_ + "/create.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/create.html", std::ios::in | std::ios::binary);
     std::ifstream ifs("memes_r_us/create.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
@@ -240,7 +240,7 @@ bool MemeHandler::MemeDelete()
     BOOST_LOG_TRIVIAL(trace) << "Closed database";
 
     // take them to list page after deletion
-    // std::ifstream ifs(".." + filedir_ + "/delete.html", std::ios::in | std::ios::binary);
+    //std::ifstream ifs(".." + filedir_ + "/delete.html", std::ios::in | std::ios::binary);
     std::ifstream ifs("memes_r_us/delete.html", std::ios::in | std::ios::binary);
     if (!ifs.is_open() || memepage_.length() == 0)
     {
@@ -553,6 +553,9 @@ bool MemeHandler::MemeList()
 
     memebody_ += "</div>\n</div>\n";
     memebody_ += "</body>\n</html>";
+
+    boost::replace_all(memebody_, "searchterm_replacethis", "");
+
     return false;
 }
 
@@ -560,6 +563,7 @@ bool MemeHandler::MemeSearch()
 {
     int search_index = memepage_.find("list?q=");
     std::string search_term;
+    std::string search_term_replacement;
     if (search_index != std::string::npos)
     {   
         int j = memepage_.find("&");
@@ -570,6 +574,10 @@ bool MemeHandler::MemeSearch()
         BOOST_LOG_TRIVIAL(trace) << "Invalid meme id...";
         return true;
     }
+
+    search_term_replacement = search_term;
+    search_term = URLParser::urlDecode(search_term);
+    search_term = URLParser::htmlDecode(search_term);
 
     int sort_index = memepage_.find("&sort=");
     std::string sort_term;
@@ -621,6 +629,10 @@ bool MemeHandler::MemeSearch()
 
     memebody_ += "</div>\n</div>\n";
     memebody_ += "</body>\n</html>";
+
+    boost::replace_all(memebody_, "searchterm_replacethis", search_term_replacement);
+    boost::replace_all(memebody_, "sortterm_replacethis", sort_term);
+
     return false;
 }
 

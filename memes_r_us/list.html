@@ -12,6 +12,13 @@
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 
+    <script>
+           window.onload = function() {
+            var full_name = "sortterm_replacethis";
+            document.getElementById(full_name).setAttribute("selected", "selected");
+        }
+    </script>
+
 </head>
 
 <style>
@@ -113,7 +120,7 @@
             <p class="description"> Dank history </p>
             <form method="get">
                 <div class="search-box"> 
-                    <input class="input search-box" type="text" name="q" placeholder="Enter phrase">
+                    <input class="input search-box" type="text" name="q" value="searchterm_replacethis" placeholder="Enter phrase">
                 </div>
                 <div class="search-box"> 
                     <input class="button is-link" type="submit" value="Search">
@@ -121,11 +128,11 @@
                 <br> <br>
                 <p class="sort"> Sort By: </p>
                 <select required name="sort" id="search_filter">
-                    <option value="newest"> Newest </option>
-                    <option value="oldest"> Oldest </option>
-                    <option value="a-z"> A-Z </option>
-                    <option value="z-a"> Z-A </option>
-                    <option value="id"> ID </option>
+                    <option id="newest" value="newest"> Newest </option>
+                    <option id="oldest" value="oldest"> Oldest </option>
+                    <option id="a-z" value="a-z"> A-Z </option>
+                    <option id="z-a" value="z-a"> Z-A </option>
+                    <option id="id" value="id"> ID </option>
                 </select><br>
             </form>
         </div>
