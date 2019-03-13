@@ -51,7 +51,7 @@ std::unique_ptr<Response> MemeHandler::HandleRequest(const Request &request)
     {
         errorflag = MemeView(false);
     }
-    else if (memepage_.substr(0, 4) == "edit") // Page to view a meme
+    else if (memepage_.substr(0, 8) == "edit?id=") // Page to view a meme
     {
         errorflag = verifyTokenAuthentication(request) ? MemeEdit() : MemeView(true);
     }
@@ -200,16 +200,8 @@ bool MemeHandler::MemeDelete()
         Deletes meme specified by id
     */
     std::string meme_id;
-    int meme_id_index;
-    if ((meme_id_index = memepage_.find("id=")) != std::string::npos)
-    {
-        meme_id = memepage_.substr(meme_id_index + 3, memepage_.length() - 1);
-    }
-    else
-    {
-        BOOST_LOG_TRIVIAL(trace) << "Invalid meme id...";
-        return true; // this sets the error flag
-    }
+    int meme_id_index = (meme_id_index = memepage_.find("id=")) != std::string::npos;
+    meme_id = memepage_.substr(meme_id_index + 3, memepage_.length() - 1);
 
     // TODO: throw an error for bad meme_id?
     std::map<std::string, std::string> meme_object = GetMemeFromDatabase(meme_id);
@@ -220,7 +212,7 @@ bool MemeHandler::MemeDelete()
     {
         BOOST_LOG_TRIVIAL(trace) << "Error opening database...";
         sqlite3_close(db);
-        return false;
+        return true;
     }
     BOOST_LOG_TRIVIAL(trace) << "Opened database for writing...";
 
@@ -367,7 +359,7 @@ bool MemeHandler::MemeView(bool incorrectAccessToken)
     {
         BOOST_LOG_TRIVIAL(trace) << "Error opening database...";
         sqlite3_close(db);
-        return false;
+        return true;
     }
     BOOST_LOG_TRIVIAL(trace) << "Opened database for writing...";
     // Injection Test
@@ -454,7 +446,7 @@ bool MemeHandler::MemeResult(std::string id_)
     {
         BOOST_LOG_TRIVIAL(trace) << "Error opening database...";
         sqlite3_close(db);
-        return false;
+        return true;
     }
     BOOST_LOG_TRIVIAL(trace) << "Opened database for writing...";
 
@@ -564,17 +556,9 @@ bool MemeHandler::MemeSearch()
     int search_index = memepage_.find("list?q=");
     std::string search_term;
     std::string search_term_replacement;
-    if (search_index != std::string::npos)
-    {   
-        int j = memepage_.find("&");
-        search_term = memepage_.substr(search_index + 7, j - search_index - 7);
-    }
-    else
-    {
-        BOOST_LOG_TRIVIAL(trace) << "Invalid meme id...";
-        return true;
-    }
 
+    int j = memepage_.find("&");
+    search_term = memepage_.substr(search_index + 7, j - search_index - 7);
     search_term_replacement = search_term;
     search_term = URLParser::urlDecode(search_term);
     search_term = URLParser::htmlDecode(search_term);
@@ -642,16 +626,7 @@ bool MemeHandler::MemeEdit()
         Hosts create.html page. Returns false if we achieved no error.
     */
     int meme_id_index = memepage_.find("id=");
-    std::string meme_id;
-    if (meme_id_index != std::string::npos)
-    {
-        meme_id = memepage_.substr(meme_id_index + 3, memepage_.length() - 1);
-    }
-    else
-    {
-        BOOST_LOG_TRIVIAL(trace) << "Invalid meme id...";
-        return true;
-    }
+    std::string meme_id = memepage_.substr(meme_id_index + 3, memepage_.length() - 1);
 
     //std::ifstream ifs(".." + filedir_ + "/edit.html", std::ios::in | std::ios::binary);
     std::ifstream ifs("memes_r_us/edit.html", std::ios::in | std::ios::binary);

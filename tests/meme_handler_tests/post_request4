@@ -1,7 +1,7 @@
-POST /meme/edit?id=10003 HTTP/1.1
+POST /meme/result.html HTTP/1.1
 Host: ss.gitrdone.cs130.org
 Connection: keep-alive
-Content-Length: 31
+Content-Length: 70
 Cache-Control: max-age=0
 Origin: http://ss.gitrdone.cs130.org
 Upgrade-Insecure-Requests: 1
@@ -12,4 +12,4 @@ Referer: http://ss.gitrdone.cs130.org/meme/create
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
-access-token=partialnotcomplete
+name=&top=Top+text&bottom=Bottom+text

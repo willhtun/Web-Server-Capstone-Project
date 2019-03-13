@@ -1,4 +1,4 @@
-POST /meme/edit?id=10003 HTTP/1.1
+GET /meme/delete?id=10001 HTTP/1.1
 Host: ss.gitrdone.cs130.org
 Connection: keep-alive
 Content-Length: 31

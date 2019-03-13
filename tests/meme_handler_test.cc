@@ -119,7 +119,16 @@ TEST_F(MemeHandlerTest, PostDBFailTest) {
 
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
 
-    EXPECT_EQ(resp->getStatusCode(), Response::OK); // This shouldn't work.
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
+}
+
+TEST_F(MemeHandlerTest, PostNoParameterTest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request4"));
+    init_meme_handler("../tests/configs/bad_meme_config");
+
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
 }
 
 //-----------Error Tests -----------//
@@ -214,13 +223,17 @@ TEST_F(MemeHandlerTest, InvalidIdDeleteTest) {
 //-----------Edit Tests------------//
 
 TEST_F(MemeHandlerTest, ValidEditTest) {
-    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request2"));
+
+
+    // id = 10000 must exist <- should
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/edit_request"));
     init_meme_handler("../tests/configs/meme_config");
+
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK);
 
     // id = 10000 must exist <- should
-    req = make_request(get_req_string("../tests/meme_handler_tests/edit_request"));
+    req = make_request(get_req_string("../tests/meme_handler_tests/edit_post_req"));
     init_meme_handler("../tests/configs/meme_config");
 
     resp = handler_->HandleRequest(*(req.get()));
@@ -260,6 +273,13 @@ TEST_F(MemeHandlerTest, SearchTest) {
     EXPECT_EQ(resp->getStatusCode(), Response::OK);
 }
 
+TEST_F(MemeHandlerTest, BadSearchTest) {
+    std::unique_ptr<Request> req = make_request("GET /meme/list?q=&bad=bad HTTP/1.1\r\n\r\n");
+    init_meme_handler("../tests/configs/meme_config");
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
+}
+
 //-----------SQL Tests -----------//
 TEST_F(MemeHandlerTest, SQLInjectionTest) {
 
@@ -288,4 +308,32 @@ TEST_F(MemeHandlerTest, DatabaseFunctionTest) {
     std::map<std::string, std::string> meme = SQL_GetMemeFromDatabase("../tests/configs/meme_config", "10002");
 
     EXPECT_NE(meme["NAME"], "");
+}
+
+//-----------Bad Meme Save Directory--------------//
+TEST_F(MemeHandlerTest, BadDatabaseCreateTest) {
+    //std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/create_request"));
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request"));
+    init_meme_handler("../tests/configs/bad_meme_config");
+    
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
+}
+
+TEST_F(MemeHandlerTest, BadDatabaseDeleteTest) {
+    // id = 10000 must exist <- should
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/del_request"));
+    init_meme_handler("../tests/configs/bad_meme_config");
+
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
+}
+
+TEST_F(MemeHandlerTest, BadDatabaseEditTest) {
+    // id = 10000 must exist <- should
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/edit_post_req"));
+    init_meme_handler("../tests/configs/bad_meme_config");
+
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
 }

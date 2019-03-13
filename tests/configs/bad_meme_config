@@ -4,9 +4,9 @@ http {
     listen 80;
     root /usr/src/project;
     handler meme {
-      location /no_path;
+      location /memes_r_us;
       url /meme;
-      save /no_path;
+      save /rubbish;
     }
   }
 }
