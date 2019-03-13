@@ -197,6 +197,19 @@ TEST_F(MemeHandlerTest, ValidDeleteTest) {
     EXPECT_EQ(1,1);
 }
 
+TEST_F(MemeHandlerTest, WrongTokenDeleteTest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request2"));
+    init_meme_handler("../tests/configs/meme_config");
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(resp->getStatusCode(), Response::OK);
+
+    // id = 10000 must exist <- should
+    req = make_request(get_req_string("../tests/meme_handler_tests/del_request3"));
+    init_meme_handler("../tests/configs/meme_config");
+
+    resp = handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(1,1);
+}
 
 TEST_F(MemeHandlerTest, BadDeleteTest) {
     std::unique_ptr<Request> req = make_request("GET /meme/delete HTTP/1.1\r\n\r\n");
