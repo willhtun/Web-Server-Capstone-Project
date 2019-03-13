@@ -81,21 +81,21 @@ TEST_F(MemeHandlerTest, BadViewPageTest) {
 
     EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND); 
 }
-/*
+
 TEST_F(MemeHandlerTest, PostAndViewPageTest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request"));
     init_meme_handler("../tests/configs/meme_config");
 
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
 
-    std::unique_ptr<Request> req2 = make_request("GET /meme/viewid=10000 HTTP/1.1\r\n\r\n");
+    std::unique_ptr<Request> req2 = make_request("GET /meme/view?id=10000 HTTP/1.1\r\n\r\n");
     init_meme_handler("../tests/configs/meme_config");
 
     std::unique_ptr<Response> resp2 = handler_->HandleRequest(*(req2.get()));
 
     EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND); 
 }
-*/
+
 //-----------Post Tests -----------//
 TEST_F(MemeHandlerTest, PostTest) {
     std::unique_ptr<Request> req = make_request(get_req_string("../tests/meme_handler_tests/post_request2"));
@@ -135,6 +135,33 @@ TEST_F(MemeHandlerTest, ErrorTest) {
     EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
 }
 
+TEST_F(MemeHandlerTest, BadIDTest) {
+    std::unique_ptr<Request> req = make_request("GET /meme/view?id=10010 HTTP/1.1\r\n\r\n");
+    init_meme_handler("../tests/configs/meme_config");
+
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
+}
+
+TEST_F(MemeHandlerTest, NotNumberIDTest) {
+    std::unique_ptr<Request> req = make_request("GET /meme/view?id=abcde HTTP/1.1\r\n\r\n");
+    init_meme_handler("../tests/configs/meme_config");
+
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
+}
+
+//-----------List Tests -----------//
+TEST_F(MemeHandlerTest, ListTest) {
+    std::unique_ptr<Request> req = make_request("GET /meme/list HTTP/1.1\r\n\r\n");
+    init_meme_handler("../tests/configs/meme_config");
+
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND);
+}
 
 //-----------Delete Tests -----------//
 /*
