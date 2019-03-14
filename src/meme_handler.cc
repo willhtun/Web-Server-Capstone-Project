@@ -559,9 +559,11 @@ bool MemeHandler::MemeSearch()
 
     int j = memepage_.find("&");
     search_term = memepage_.substr(search_index + 7, j - search_index - 7);
-    search_term_replacement = search_term;
+    boost::replace_all(search_term, "+", " ");
+
     search_term = URLParser::urlDecode(search_term);
     search_term = URLParser::htmlDecode(search_term);
+    search_term_replacement = search_term;
 
     int sort_index = memepage_.find("&sort=");
     std::string sort_term;
@@ -874,6 +876,7 @@ std::vector<std::map<std::string, std::string>> MemeHandler::SearchFromDatabase(
     */
 
     std::vector<std::map<std::string, std::string>> meme_entries_;
+    term = URLParser::htmlEncode(term);
     term = "%" + term + "%";
     // SQL SELECT operation
     int rc;
