@@ -200,7 +200,7 @@ bool MemeHandler::MemeDelete()
         Deletes meme specified by id
     */
     std::string meme_id;
-    int meme_id_index = (meme_id_index = memepage_.find("id=")) != std::string::npos;
+    int meme_id_index = memepage_.find("id=");
     meme_id = memepage_.substr(meme_id_index + 3, memepage_.length() - 1);
 
     // TODO: throw an error for bad meme_id?
