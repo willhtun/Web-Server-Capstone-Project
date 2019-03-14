@@ -198,3 +198,10 @@ TEST_F(StaticHandlerTest, xmlRequest) {
     std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
     EXPECT_EQ(resp->getStatusCode(), Response::OK); 
 }
+
+TEST_F(StaticHandlerTest, excelRequest) {
+    std::unique_ptr<Request> req = make_request(get_req_string("../tests/static_handler_tests/excel_request"));
+    InitiateStaticHandler("../tests/configs/static_config");
+    std::unique_ptr<Response> resp = handler_->HandleRequest(*(req.get()));
+    EXPECT_EQ(resp->getStatusCode(), Response::NOT_FOUND); 
+}
