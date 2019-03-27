@@ -1,16 +1,10 @@
 ### Web Server (Capstone Project)
+#### Original Authors: Konner Macias, Victor Fu, Will Htun, Jason Wittmuss
 
 ![Front Page](https://i.imgur.com/PF8Fi97.png)
 
-*******************************************************************************
-***********    Welcome to git-r-done's Web Server API    **********************
-*******************************************************************************
+#### Welcome to git-r-done's Web Server API
 
------------------
-Original Authors: Konner Macias, Victor Fu, Will Htun, Jason Wittmuss
------------------
-
----------------
 Important Files
 --------------
 - server_main.cc : Takes in config file, calls config parser, and starts server
@@ -35,10 +29,8 @@ Important Files
 - status_obj.cc : class to work with status entry database
 - url_parser.cc : class dedicated to encoding/decoding text
 
-* : inherits from request_handler
+- * : inherits from request_handler
 
-
-------------------------------------
 How to build, test, and run the code
 ------------------------------------
 Here we assume you are in git-r-done/
@@ -46,7 +38,9 @@ Here we assume you are in git-r-done/
 Build
 -----------
 $ cd build
+
 $ cmake ..
+
 $ make
 
 Test
@@ -68,7 +62,6 @@ $ bin/server_main ../tests/configs/echo_server_config
 
 Use your browser to view the page: http://localhost:8080/
 
-------------------------------
  How to add a request handler 
 ------------------------------
 
@@ -79,6 +72,7 @@ E.g: Let's examine our Static Handler.
 --------------------------------------
 Inherits from: RequestHandler
 
+```
 Public:
 
     static RequestHandler* create(const NginxConfig& config,
@@ -94,7 +88,6 @@ Public:
 
         For StaticHandler, this reads in a file stream of data and builds an 
         appropriate response object to send back.
-
 Private:
     std::string root_;
 
@@ -104,13 +97,14 @@ Private:
     
         Variable holds which directory we are in. (e.g: static_files1/)
 
-
+```
 
 By this point, we know what StaticHandler does at a high level, but next comes
 learning what's involved with a standard Request and Response object.
 
 Request
 --------------------------
+```
 Public:
     Request(std::string req);
 
@@ -167,9 +161,10 @@ Private:
 
 Great! Now we understand the structure of a request object and what it is 
 capable of.
-
+```
 Response
 ----------------------
+```
 Public:
     Response();
 
@@ -203,6 +198,7 @@ Private:
         int statuslinesize_;
         int headersize_;
         int bodysize_;
+```
 
 Awesome! Let's look an example at how this would be used in a .cc:
 --
@@ -211,7 +207,7 @@ Awesome! Let's look an example at how this would be used in a .cc:
     response->SetHeader("Content-Type", contenttype);
     response->SetHeader("Content-Length", std::to_string(image.length()));
     response->SetBody(image);
---
+
 
 By this point, you should have been able to implement a new handler. 
 Now we must integrate it into rest of the code base. 
