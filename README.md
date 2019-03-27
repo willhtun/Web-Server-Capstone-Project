@@ -1,7 +1,10 @@
-### Web Server (Capstone Project)
+## Web Server (Capstone Project)
 #### Original Authors: Konner Macias, Victor Fu, Will Htun, Jason Wittmuss
+-----
 
 ![Front Page](https://i.imgur.com/PF8Fi97.png)
+
+-----
 
 #### Welcome to git-r-done's Web Server API
 
@@ -36,34 +39,28 @@ How to build, test, and run the code
 Here we assume you are in git-r-done/
 
 #### Build
------------
+``````
 $ cd build
-
 $ cmake ..
-
 $ make
-
+``````
 #### Test
-----------
+```
 $ cd build
-
 $ cmake ..
-
 $ make
-
 $ make test
-
+```
 For further info on tests:
-
+```
 $ tests/
-
+```
 #### Run the code
-------------
 ** Build and test code first!
-
+```
 $ cd build
-
 $ bin/server_main ../tests/configs/echo_server_config
+```
 
 Use your browser to view the page: http://localhost:8080/
 
@@ -73,8 +70,7 @@ Use your browser to view the page: http://localhost:8080/
 To make it easier to know how to contribute, we think showing by example is 
 fitting here.
 
-#### Static Handler.
---------------------------------------
+#### Static Handler
 Inherits from: RequestHandler
 
 ```
@@ -108,7 +104,7 @@ By this point, we know what StaticHandler does at a high level, but next comes
 learning what's involved with a standard Request and Response object.
 
 #### Request
---------------------------
+
 ```
 Public:
     Request(std::string req);
@@ -168,7 +164,6 @@ Great! Now we understand the structure of a request object and what it is
 capable of.
 ```
 #### Response
-----------------------
 ```
 Public:
     Response();
@@ -205,8 +200,8 @@ Private:
         int bodysize_;
 ```
 
-Awesome! Let's look an example at how this would be used in a .cc:
---
+#### Awesome! Let's look an example at how this would be used in a .cc:
+
     std::unique_ptr<Response> response(new Response());
     response->SetStatus(Response::OK);
     response->SetHeader("Content-Type", contenttype);
@@ -217,22 +212,22 @@ Awesome! Let's look an example at how this would be used in a .cc:
 By this point, you should have been able to implement a new handler. 
 Now we must integrate it into rest of the code base. 
 
-handler_manager.cc
---------------------------
+#### handler_manager.cc
+
 handler_manger is the responsible for the creation of instances of handlers.
 
 Inside handler_manager you will notice blocks of if statements that allow the 
 create of several handler types.
 
 To add yours, simply create an if block and add to the file. e.i.: 
-
+```
 if (name =="NEWHANDLER")
 {
     return std::unique_ptr<RequestHandler>(NEWHANDLER::create(config,path));
 }
+```
+#### dispatcher.cc
 
-dispatcher.cc
---------------------------
 Dispacher is responsible for controling incoming requests and dispatching 
 the correct handlers.
 
@@ -245,19 +240,21 @@ Adding src to CMakeLists.txt
 Next to all the add_library(X src/X.cc) in CMakeLists.txt, add your handler
 source code.
 
+```
 add_library(your_handler src/your_handler.cc)
-
+```
 Next, append your_handler inside of:
-
+```
 target_link_libraries(server_main ..libs..
+```
 
 Adding tests to CMakeLists.txt
 ------------------------------
 Add the following:
-
+```
 add_executable(your_handler_test tests/your_handler_test.cc)
 target_link_libraries(your_handler_test [lib files your test file depends on])
-
+```
 
 How to add a handler summarized
 -------------------------------
