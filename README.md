@@ -1,4 +1,4 @@
-## Web Server (Capstone Project)
+### Web Server (Capstone Project)
 #### Original Authors: Konner Macias, Victor Fu, Will Htun, Jason Wittmuss
 -----
 
