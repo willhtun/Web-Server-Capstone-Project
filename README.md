@@ -35,7 +35,7 @@ How to build, test, and run the code
 ------------------------------------
 Here we assume you are in git-r-done/
 
-Build
+#### Build
 -----------
 $ cd build
 
@@ -43,21 +43,26 @@ $ cmake ..
 
 $ make
 
-Test
+#### Test
 ----------
 $ cd build
+
 $ cmake ..
+
 $ make
+
 $ make test
 
 For further info on tests:
+
 $ tests/
 
-Run the code
+#### Run the code
 ------------
 ** Build and test code first!
 
 $ cd build
+
 $ bin/server_main ../tests/configs/echo_server_config
 
 Use your browser to view the page: http://localhost:8080/
@@ -68,7 +73,7 @@ Use your browser to view the page: http://localhost:8080/
 To make it easier to know how to contribute, we think showing by example is 
 fitting here.
 
-E.g: Let's examine our Static Handler.
+#### Static Handler.
 --------------------------------------
 Inherits from: RequestHandler
 
@@ -102,7 +107,7 @@ Private:
 By this point, we know what StaticHandler does at a high level, but next comes
 learning what's involved with a standard Request and Response object.
 
-Request
+#### Request
 --------------------------
 ```
 Public:
@@ -162,7 +167,7 @@ Private:
 Great! Now we understand the structure of a request object and what it is 
 capable of.
 ```
-Response
+#### Response
 ----------------------
 ```
 Public:
